@@ -1,10 +1,12 @@
-?start: statement*
+?start: (statement | ao_macro)*
 
 
 ?statement: [conditional_macro] ( group_definition
 				| alias_definition
 				| include
-				| assignment )
+				| assignment  ) 
+
+ao_macro: "**ao" expression NEWLINE
 
 
 
@@ -74,8 +76,8 @@ env_variable_expansion: "%" WORD "%"
 alias_definition: ("alias" | "Alias") dimensions END
 include: "$include" WORD_WITH_EXPANSION NEWLINE
 
-command: SET
-		| PARAMETER
+?command: SET -> set
+		| PARAMETER -> parameter
 		| TABLE
 		| VARIABLE
 		| SCALAR
@@ -101,7 +103,7 @@ set_map: symbol "." symbol
 
 values: "/" [item ((","|NEWLINE) item)*] "/"
 
-SET: "Set" | "SET" | "set"
+SET: ("Set" | "SET" | "set")
 PARAMETER: "Parameter" | "PARAMETER" | "parameter"
 TABLE: "Table"
 VARIABLE: "Varables" | "Positive Variables"
@@ -126,8 +128,8 @@ END: ";"
 
 string : ESCAPED_STRING
 FLEX_ESCAPED_STRING : /['"].*?(?<!\\)['"]/
-COMMENT : "*" /[^\n]/*
 
+COMMENT : /\*[^(*ao)]/ /[^\n]/*
 COMMENT_BLOCK: "$ontext" /(\S|\s)*?/ "$offtext"
 %ignore COMMENT_BLOCK
 

@@ -1,0 +1,17 @@
+?start: (statement | white_space | ao_macro)*
+
+statement: NOT_AO_MACRO newline
+
+ao_macro: AO_MACRO ANY newline
+
+white_space: WS
+newline: NEWLINE
+
+NOT_AO_MACRO: /(?!\*\*ao).+/
+AO_MACRO: "**ao"
+ANY: /.+/
+
+//%ignore WS
+
+%import common.WS
+%import common.NEWLINE
