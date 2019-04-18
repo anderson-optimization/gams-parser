@@ -2,7 +2,7 @@ from lark import Lark, Transformer
 
 with open('./grammer/gams.lark','r') as in_file:
 	text=in_file.read()
-	l = Lark(text)
+	l = Lark(text,propagate_positions=True)
 
 def test_set_basic():
 	with open('./test/gams/set-basic.gms','r') as in_file:

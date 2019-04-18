@@ -5,10 +5,11 @@ This python library uses `lark` to parse the algebraic modeling language `GAMS`.
 
 ## Goals
 
-Interested in two directions.
+Interested in two directions.  Optional 3rd
 
-1. Gather rich data on model in a gams file.
+1. Gather rich data on structure of model in a gams file.
 2. Inject custom defintions and data into gams files based upon a DSL.
+3. Gather defined data from model using python api.
 
 ## Grammer
 

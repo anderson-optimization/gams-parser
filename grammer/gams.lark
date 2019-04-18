@@ -1,6 +1,6 @@
 start: statement+
 
-statement: [macro_conditional] (symbol_definition 
+?statement: [macro_conditional] (symbol_definition 
 			| macro_include
 			| assignment_definition 
 			| equation_definition 
@@ -33,7 +33,7 @@ sense: "minimizing" | "maximizing"
 
 assignment_definition: symbol [conditional] "=" expression END
 
-expression: symbol
+?expression: symbol
 			| number
 			| compiler_variable
 			| quoted_string // This is for compiler expressions
@@ -50,7 +50,9 @@ number: NUMBER
 
 // Equation definition
 
-equation_definition: symbol[conditional] ".." expression equation_types expression END
+equation_definition: symbol[conditional] ".." lhs equation_types rhs END
+lhs: expression
+rhs: expression
 
 // Symbol Definitions
 
@@ -147,13 +149,13 @@ model_types: "LP" 		-> 	model_lp
 			| "MPSGE" 	-> 	model_mpsge
 
 // Equations
-equation_types: "=e=" -> equality
-				| "=g=" -> greater_than
-				| "=l=" -> less_than
-				| "=n=" -> no_relationship
-				| "=x=" -> external_program
-				| "=c=" -> conic_constraint
-				| "=b=" -> boolean_equation
+equation_types: "=e=" -> eqn_equality
+				| "=g=" -> eqn_greater_than
+				| "=l=" -> eqn_less_than
+				| "=n=" -> eqn_no_relationship
+				| "=x=" -> eqn_external_program
+				| "=c=" -> eqn_conic_constraint
+				| "=b=" -> eqn_boolean_equation
 
 
 operator_indexed: "sum"		-> summation
