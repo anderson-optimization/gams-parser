@@ -10,10 +10,16 @@ Interested in two directions.
 1. Gather rich data on model in a gams file.
 2. Inject custom defintions and data into gams files based upon a DSL.
 
-### Grammer
+## Grammer
 
 - The current grammer is focused on capturing all `GAMS` syntax as long as it is valid and less concerned about catching invalid syntax.
 - The current grammer is built to gather data related to symbol definitions.  As such, other parts of the grammer may be not accurate.
+
+### Difficulties
+
+- Gams operates on two passes through the input files.  Compiler statements are done before execution and are used to directly include gams code into a parent file or add/remove specific statements.
+- Lark parses the gams file in one pass and is a somewhat hybrid of compiler/execution syntax.  This leads to set values possibly containing only include statements, whereas `GAMS` would check to ensure these are actual set values at execution time as well.
+
 
 
 ## Tests
