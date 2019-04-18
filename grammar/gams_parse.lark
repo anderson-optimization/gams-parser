@@ -1,0 +1,127 @@
+?start: (statement | ao_macro)*
+
+ao_macro: "**ao" expression NEWLINE
+
+?statement: [conditional_macro] ( group_definition
+				| alias_definition
+				| include
+				| assignment  
+				| equation )
+//				| model_definition
+//				| solve ) 
+
+conditional_macro: "$if" (set_macro | eq_macro) 
+set_macro: ["not"] "set" env_variable
+eq_macro: (FLEX_ESCAPED_STRING | env_variable_expansion) "==" (FLEX_ESCAPED_STRING | env_variable_expansion)
+env_variable: WORD
+
+group_definition: command definition+  END
+definition: symbol [description] [values] [","]
+
+model_definition: "model" WORD "/" symbol+ "/" END
+solve: "solve" WORD "using" model_type sense WORD END
+model_type: "lp" | "mip"
+sense: "minimizing" | "maximizing"
+
+assignment: lhs "=" rhs END
+equation: symbol[conditional] ".." rhs compare rhs END
+lhs: symbol[conditional]
+rhs: expression
+compare: "=e=" | "=g=" | "=l="
+expression: symbol[conditional]
+			| number
+			| env_variable_expansion
+			| "sum(" id [conditional] "," expression ")"
+			| expression operator expression 
+			| "(" expression ")"
+
+operator: /[+*\/-]/
+conditional: "$" ["("] set_expression [")"]
+set_expression: symbol 
+				| set_expression set_operator set_expression
+				| NOT set_expression
+set_operator: AND | OR | EQ | NOT | GT | LT | GTEQ | LTEQ
+NOT: "not"
+AND: "and"
+OR: "or"
+EQ: "="
+GT: ">"
+LT: "<"
+GTEQ: ">="
+LTEQ: "<="
+
+env_variable_expansion: "%" WORD "%"
+		
+alias_definition: ("alias" | "Alias") dimensions END
+include: "$include" WORD_WITH_EXPANSION NEWLINE
+
+?command: SET -> set
+		| PARAMETER -> parameter
+		| TABLE
+		| VARIABLE
+		| SCALAR
+		| EQUATION
+
+symbol: id[suffix][dimensions]
+suffix: ".up" | ".lo"
+dimensions:"(" dimension_id ("," dimension_id)* ")" 
+
+// Dimensions can have expressions in macro functions
+// Eventually this may be a differnt concept ie. function arguments
+// I tried one thing but it was ambigous
+dimension_id: (id | id_instance | env_variable_expansion | expression) 
+id: WORD
+id_instance: FLEX_ESCAPED_STRING
+description: FLEX_ESCAPED_STRING
+?item: parameter_value | element | element_sequence | set_map | include
+element: WORD["." WORD]+
+element_sequence: WORD "*" WORD
+number: SIGNED_NUMBER
+parameter_value: element number
+set_map: symbol "." symbol
+
+
+
+values: "/" [item ((","|NEWLINE) item)*] "/"
+
+SET: ("Set" | "SET" | "set")
+PARAMETER: "Parameter" | "PARAMETER" | "parameter"
+TABLE: "Table"
+VARIABLE: "Variables" | "Positive variables"  | "Positive Variables"
+EQUATION: "Equations" | "equations" 
+SCALAR: "scalar" | "Scalar"
+
+WORD: /\w+/
+WORD_WITH_EXPANSION: /(\w|%|\.)+/
+NAMED_VALUE: WORD WORD
+END: ";"
+
+// ?value: object
+//         | array
+//         | string
+//         | SIGNED_NUMBER      -> number
+//         | "true"             -> true
+//         | "false"            -> false
+//         | "null"             -> null
+
+// array  : "[" [value ("," value)*] "]"
+// object : "{" [pair ("," pair)*] "}"
+// pair   : string ":" value
+
+string : ESCAPED_STRING
+FLEX_ESCAPED_STRING : /['"].*?(?<!\\)['"]/
+
+
+//COMMENT : /\*[^(*ao)]/ /[^\n]/*
+COMMENT : /\*[^\n]+/
+COMMENT_BLOCK: "$ontext" /(\S|\s)*?/ "$offtext"
+%ignore COMMENT_BLOCK
+
+
+%import common.ESCAPED_STRING
+%import common.SIGNED_NUMBER
+%import common.WS
+%import common.NEWLINE
+
+%ignore WS
+%ignore COMMENT

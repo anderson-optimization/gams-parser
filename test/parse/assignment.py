@@ -1,6 +1,6 @@
 from lark import Lark, Transformer
 
-with open('./grammer/gams.lark','r') as in_file:
+with open('./grammar/gams.lark','r') as in_file:
 	text=in_file.read()
 	l = Lark(text)
 

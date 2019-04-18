@@ -1,8 +1,3 @@
-from lark import Lark, Transformer
-
-with open('./grammar/gams_parse.lark','r') as in_file:
-	text=in_file.read()
-	l = Lark(text)
 
 
 class Set():
@@ -63,6 +58,8 @@ class Model():
 	def __repr__(self):
 		return "model: n_set={n_set} n_param={n_param}".format(n_set=len(self.sets),n_param=len(self.parameters))
 
+from lark import Lark, Transformer
+
 
 class TreeToModel(Transformer):
 	def start(self,args):
@@ -116,29 +113,3 @@ class TreeToModel(Transformer):
 	def ao_macro(self,args):
 		print("AO",args)
 		return args
-
-with open('./test/site-analysis.gms','r') as in_file:
-	text=in_file.read()
-	#print(text)
-
-	parse_tree=l.parse(text)
-	print(parse_tree)
-	print(parse_tree.pretty())
-	for inst in parse_tree.children:
-		line_type=inst.data
-		if line_type=='group_definition':
-			symbol_type=inst.children[0].data
-			print(line_type,symbol_type)
-			for define in inst.children[1:]:
-				try:
-					print(define.pretty())
-				except:
-					pass
-
-	model=TreeToModel().transform(parse_tree)
-
-	for s in model.sets:
-		print(s)
-
-	for p in model.parameters:
-		print(p)
