@@ -66,9 +66,9 @@ symbol_definition: SET definition+ END -> set_list
 definition: symbol [description] [data] [","]
 table_definition: symbol [description] [table_data]
 
-data			: _SLASH [data_element (sep data_element)*] _SLASH
+data			: _SLASH [data_element ((","|_NL) data_element)*] _SLASH
 table_data 		: (symbol_id | value)+
-data_element	: symbol_id
+?data_element	: symbol_id
 				| symbol_range
 				| symbol_id value -> data_value
 				| macro_include
@@ -82,7 +82,7 @@ symbol_range    : symbol_name "*" symbol_name
 symbol_id 		: symbol_name 
 				| symbol_id "." symbol_name 
 symbol_element  : /['"]/ symbol_name /['"]/
-symbol_index	: LPAR index_list RPAR
+?symbol_index	: "(" index_list ")"
 index_list		: index_item ("," index_item )*
 index_item		: symbol_name 
 				| symbol_element 
@@ -91,7 +91,7 @@ index_item		: symbol_name
 				| symbol_name "-" NUMBER -> lag
 				| symbol_name "++" NUMBER -> circular_lead
 				| symbol_name "--" NUMBER -> circular_lag
-symbol_name		: WORD_IDENTIFIER
+?symbol_name		: WORD_IDENTIFIER
 sep				: "," | _NL
 suffix			: ".up" | ".lo"
 
