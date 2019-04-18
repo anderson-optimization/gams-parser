@@ -117,7 +117,7 @@ class TreeToModel(Transformer):
 		print("AO",args)
 		return args
 
-with open('./test/example-ao-inject.gms','r') as in_file:
+with open('./test/site-analysis.gms','r') as in_file:
 	text=in_file.read()
 	#print(text)
 

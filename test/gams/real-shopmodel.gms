@@ -1,5 +1,5 @@
 Set       products  'Items produced' 
-              / Chairs, Tables, Dressers /;
+              / Chairs, Tables, Dressers /
           resources  'Resources limiting production'
               / RawWood, Labor, WarehouseSpace/
           hireterms  'Resource hiring terms'
