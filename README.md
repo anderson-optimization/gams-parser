@@ -32,13 +32,6 @@ make test
 make test FLAGS="--nocapture"
 ```
 
-# All tests
-python $( which nosetests ) -v --nocapture test/**/*.py
-
-# Parse tests
-python $( which nosetests ) -v --nocapture test/parse/*.py
-```
-
 ## TODO
 
 ### Gams Parser
