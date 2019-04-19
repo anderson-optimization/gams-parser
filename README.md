@@ -9,12 +9,13 @@ Interested in two directions.  Optional 3rd
 
 1. Gather rich data on structure of model in a gams file.
 2. Inject custom defintions and data into gams files based upon a DSL.
-3. Gather defined data from model using python api.
+3. [Optional] Gather defined data from model using python api.
+	- This is probably outside the scope of this library as it requires `GAMS` as a dependency.
 
 ## Grammer
 
-- The current grammer is focused on capturing all `GAMS` syntax as long as it is valid and less concerned about catching invalid syntax.
-- The current grammer is built to gather data related to symbol definitions.  As such, other parts of the grammer may be not accurate.
+- The current grammar is focused on capturing all `GAMS` syntax as long as it is valid and less concerned about catching invalid syntax.
+- The current grammar is built to gather data related to symbol definitions.  As such, other parts of the grammar may be not accurate.
 
 ### Difficulties
 
@@ -28,7 +29,7 @@ Interested in two directions.  Optional 3rd
 
 ## Tests
 
-The `test/gams` folder contains sample gams syntax that can be used to test a grammer file to ensure it captures `GAMS` fairly complex syntax.  
+The `test/gams` folder contains sample gams syntax that can be used to test a grammar file to ensure it captures `GAMS` fairly complex syntax.  
 
 ```
 make test
