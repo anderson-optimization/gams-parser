@@ -28,6 +28,10 @@ Interested in two directions.  Optional 3rd
 The `test/gams` folder contains sample gams syntax that can be used to test a grammer file to ensure it captures `GAMS` fairly complex syntax.  
 
 ```
+make test
+make test FLAGS="--nocapture"
+```
+
 # All tests
 python $( which nosetests ) -v --nocapture test/**/*.py
 
