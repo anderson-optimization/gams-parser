@@ -2,6 +2,9 @@
 from lark import Lark, Transformer
 import os
 
+import logging
+logger = logging.getLogger('gams_parser')
+
 
 dirname = os.path.dirname(__file__)
 grammar_gams = os.path.join(dirname, 'grammar_gams.lark')
@@ -35,9 +38,48 @@ class GamsParser():
 		model=TreeToModel().transform(parse_tree)
 		return model
 
-class TreeToModel(Transformer):
+class TreeToModel(Transformer):    
+	def string(self, args):
+		return "".join(args)
+
+	def symbol_name(self,args):
+		return "".join(args)
+
+	def data(self,args):
+		return Data(args)
+
 	def description(self,args):
 		return Description(args[0].value)
+
+	def definition(self,args):
+		return Definition(args)
+
+	def symbol(self,args):
+		logger.debug('Symbol {}'.format(args))
+		symb=Symbol(args[0])
+		return symb
+
+	def symbol_id(self,args):
+		logger.debug("SymbolID {}".format(args))
+
+		return SymbolId(".".join([str(a) for a in args]))
+
+	def index_list(self,args):
+		logger.debug("IndexList {}".format(args))
+
+	def set_list(self,args):
+		for set_def in args:
+			set_def.symbol_type='set'
+		return args
+
+	def start(self,args):
+		model = Model()
+		for def_list in args:
+			logger.debug("Build Statement: {}".format(def_list))
+			for symbol_def in def_list:
+				model.add(symbol_def)
+		return model
+
 
 class Description():
 	def __init__(self,text):
@@ -46,68 +88,102 @@ class Description():
 	def __repr__(self):
 		return '"' +self.text+'"'
 
-# class Set():
-# 	def __init__(self,definition):
-# 		print("Creating Set",definition)
-# 		self.definition=definition
 
-# 	def __repr__(self):
-# 		return 'set:{d}'.format(d=self.definition)
 
-# class Parameter():
-# 	def __init__(self,definition):
-# 		print("Creating Parameter",definition)
-# 		self.definition=definition
+class Model():
+	symbols={}
 
-# 	def __repr__(self):
-# 		return 'param:{d}'.format(d=self.definition)
+	def __init__(self):
+		self.symbols={
+			"set": [],
+			"parameter": [],
+			"variable": [],
+			"equation": [],
+			"scalar": [],
+			"table": []
+		}
 
-# class Definition():
-# 	def __init__(self,symbol=None,description=None):
-# 		self.symbol=symbol
-# 		self.description=description
+	def add(self,e):
+		if not e.symbol_type:
+			raise Exception('Symbol does not have a type!')
+		elif e.symbol_type not in self.symbols:
+			raise Exception('Symbol type not found')
+		self.symbols[e.symbol_type].append(e)
 
-# 	def __repr__(self):
-# 		return '{symbol} {description}'.format(symbol=self.symbol,description=self.description)
+	def set(self):
+		return self.symbols['set']
 
-# class Symbol():
-# 	def __init__(self,sid):
-# 		print("Creating Symbol",sid)
-# 		self.sid=str(sid)
+	def __repr__(self):
+		return "model: n_set={n_set} n_param={n_param}".format(n_set=len(self.symbols['set']),n_param=len(self.symbols['parameter']))
 
-# 	def __repr__(self):
-# 		return '__{sid}__'.format(sid=self.sid)
 
-# class Description():
-# 	def __init__(self,text):
-# 		self.text=str(text.strip('"'))
+class Data():
+	def __init__(self,args):
+		logger.debug("BUILD Data {}".format(args))
+		self.data=args
 
-# 	def __repr__(self):
-# 		return '"' +self.text+'"'
+	def __repr__(self):
+		return "<data block len={length}>".format(length=len(self.data))
+
+class Definition():
+	symbol_type=None
+	symbol=None
+	description=None
+	data=None
+
+	def __init__(self,args):
+		logger.debug("Build Definition: ".format(args))
+		for a in args:
+			if isinstance(a,Symbol):
+				self.symbol=a
+			elif isinstance(a,Description):
+				self.description=a
+			elif isinstance(a,Data):
+				self.data=a
+
+	def __repr__(self):
+		output=[]
+		if self.symbol_type:
+			output.append('[{}]'.format(self.symbol_type))
+		output.append('{}'.format(self.symbol))
+		if self.description:
+			output.append('{}'.format(self.description))
+		if self.data:
+			output.append('{}'.format(self.data))
+		return " ".join(output)
+
+
+## This should have index list
+class Symbol():
+	def __init__(self,symbol_name):
+		logger.debug("Creating Symbol: {}".format(symbol_name))
+		self.symbol_name=str(symbol_name)
+
+	def __repr__(self):
+		return '__{symbol_name}__'.format(symbol_name=self.symbol_name)
+
+
+class SymbolId():
+	def __init__(self,sid):
+		logger.debug("Creating Symbol ID {}".format(sid))
+		self.sid=str(sid)
+
+	def __str__(self):
+		return self.sid
+
+	def __repr__(self):
+		return '*{sid}*'.format(sid=self.sid)
+
 
 # class Expression():
 # 	pass
 
 
-# class Model():
-# 	sets=[]
-# 	parameters=[]
-
-# 	def add(self,e):
-# 		if isinstance(e,Set):
-# 			self.sets.append(e)
-# 		elif isinstance(e,Parameter):
-# 			self.parameters.append(e)
-# 		else:
-# 			print('Model : Uknown add',e)
-
-# 	def __repr__(self):
-# 		return "model: n_set={n_set} n_param={n_param}".format(n_set=len(self.sets),n_param=len(self.parameters))
 
 
 # class TreeToModel(Transformer):
 # 	def start(self,args):
-# 		print('Start',args)
+# 		logger.debug('Start',args)
 # 		model=Model()
 # 		for line in args:
 # 			try:
@@ -115,21 +191,21 @@ class Description():
 # 					model.add(item)
 					
 # 			except Exception as e:
-# 				print('exception ',e)
-# 		print('Model',model)
+# 				logger.debug('exception ',e)
+# 		logger.debug('Model',model)
 # 		return model
 
 # 	def id(self,args):
-# 		#print("ID Word",args)
+# 		#logger.debug("ID Word",args)
 # 		return str(args[0].value)
 
 # 	def dimension_id(self,args):
-# 		print("dimension id",args)
+# 		logger.debug("dimension id",args)
 # 		return args
 
 # 	def group_definition(self,args):
 # 		command=args[0]
-# 		print("Group Definition",args)
+# 		logger.debug("Group Definition",args)
 # 		items=[]
 # 		for define in args[1:-2]:
 # 			if command.data=='set':
@@ -138,48 +214,37 @@ class Description():
 # 				items.append(Parameter(define))
 # 		return items
 
-# 	def definition(self,args):
-# 		print("Definition",args)
-# 		return Definition(symbol=args[0],description=args[1])
-
-# 	def symbol(self,args):
-# 		print('Symbol',args)
-# 		symb=Symbol(args[0])
-# 		return symb
-
-# 	def description(self,args):
-# 		return Description(args[0].value)
 
 # 	def comment(self,args):
-# 		print("Comment",args)
+# 		logger.debug("Comment",args)
 # 		return args
 
 # 	def ao_macro(self,args):
-# 		print("AO",args)
+# 		logger.debug("AO",args)
 # 		return args
 
 # with open('./test/site-analysis.gms','r') as in_file:
 # 	text=in_file.read()
-# 	#print(text)
+# 	#logger.debug(text)
 
 # 	parse_tree=l.parse(text)
-# 	print(parse_tree)
-# 	print(parse_tree.pretty())
+# 	logger.debug(parse_tree)
+# 	logger.debug(parse_tree.pretty())
 # 	for inst in parse_tree.children:
 # 		line_type=inst.data
 # 		if line_type=='group_definition':
 # 			symbol_type=inst.children[0].data
-# 			print(line_type,symbol_type)
+# 			logger.debug(line_type,symbol_type)
 # 			for define in inst.children[1:]:
 # 				try:
-# 					print(define.pretty())
+# 					logger.debug(define.pretty())
 # 				except:
 # 					pass
 
 # 	model=TreeToModel().transform(parse_tree)
 
 # 	for s in model.sets:
-# 		print(s)
+# 		logger.debug(s)
 
 # 	for p in model.parameters:
-# 		print(p)
+# 		logger.debug(p)

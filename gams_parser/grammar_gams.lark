@@ -17,16 +17,15 @@ macro_include: "$include" filename _NL
 
 negate: "not"
 filename: (string | compiler_variable)+ ["." extension]
-quoted_string: /['"]/ WORD /['"]/
-string: WORD 
-compiler_variable: "%" WORD "%"
-extension: WORD
+quoted_string: /['"]/ string /['"]/
+compiler_variable: "%" string "%"
+extension: string
 
 // model_definition
-model_definition: _MODEL WORD "/" symbol_name+ "/" _END
+model_definition: _MODEL string "/" symbol_name+ "/" _END
 
 // solve_defintion
-solve_definition: _SOLVE WORD ( "using" model_types sense WORD | sense WORD "using" model_types) _END
+solve_definition: _SOLVE string ( "using" model_types sense string | sense string "using" model_types) _END
 sense: "minimizing" | "maximizing"
 
 // assignment
@@ -86,19 +85,19 @@ symbol_id 		: symbol_name
 symbol_element  : /['"]/ symbol_name /['"]/
 ?symbol_index	: "(" index_list ")"
 index_list		: index_item ("," index_item )*
-index_item		: symbol_name 
+?index_item		: symbol_name 
 				| symbol_element 
 				| compiler_variable
 				| symbol_name "+" NUMBER -> lead
 				| symbol_name "-" NUMBER -> lag
 				| symbol_name "++" NUMBER -> circular_lead
 				| symbol_name "--" NUMBER -> circular_lag
-?symbol_name		: WORD_IDENTIFIER
+symbol_name		: WORD_IDENTIFIER
 sep				: "," | _NL
 suffix			: ".up" | ".lo"
 
 // Keywords
-_SET: ("Set" | "SET" | "set")
+_SET: ("sets" | "Sets" | "Set" | "SET" | "set")
 _PARAMETER: "Parameter" | "PARAMETER" | "parameter"
 _TABLE: "Table"
 _VARIABLE: "Variables" | "Positive variables"  | "Positive Variables"
@@ -117,10 +116,14 @@ _SLASH: "/"
 %import common.NUMBER
 %import common.NEWLINE -> _NL
 
+
+string: WORD 
+
 NAME           	: /[^\W\d][\w]*/
+
+// This allows some more characters that can be used in a symbol name
 WORD_IDENTIFIER : /[a-zA-Z][\w-]*/
 WORD			: /[\w-]+/
-WORD_WITH_EXPANSION : /(\w|%|\.)+/
 FLEX_ESCAPED_STRING : /['"].*?(?<!\\)['"]/
 
 // Ignores/Comments
