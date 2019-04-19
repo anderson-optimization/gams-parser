@@ -42,8 +42,14 @@ class TreeToModel(Transformer):
 	def string(self, args):
 		return "".join(args)
 
+	def value(self,args):
+		return float(args[0])
+
 	def symbol_name(self,args):
 		return "".join(args)
+
+	def symbol_element(self,args):
+		return SymbolId("".join(args))
 
 	def data(self,args):
 		return Data(args)
@@ -56,7 +62,7 @@ class TreeToModel(Transformer):
 
 	def symbol(self,args):
 		logger.debug('Symbol {}'.format(args))
-		symb=Symbol(args[0])
+		symb=Symbol(args)
 		return symb
 
 	def symbol_id(self,args):
@@ -66,18 +72,52 @@ class TreeToModel(Transformer):
 
 	def index_list(self,args):
 		logger.debug("IndexList {}".format(args))
+		return args
 
 	def set_list(self,args):
 		for set_def in args:
 			set_def.symbol_type='set'
 		return args
 
+	def parameter_list(self,args):
+		for set_def in args:
+			set_def.symbol_type='parameter'
+		return args
+
+	def variable_list(self,args):
+		for set_def in args:
+			set_def.symbol_type='variable'
+		return args
+
+	def scalar_list(self,args):
+		for set_def in args:
+			set_def.symbol_type='scalar'
+		return args
+
+	def equation_list(self,args):
+		for set_def in args:
+			set_def.symbol_type='equation'
+		return args
+
+	def table_list(self,args):
+		for set_def in args:
+			set_def.symbol_type='table'
+		return args
+
+	def variable_list(self,args):
+		for set_def in args:
+			set_def.symbol_type='variable'
+		return args
+
 	def start(self,args):
 		model = Model()
 		for def_list in args:
-			logger.debug("Build Statement: {}".format(def_list))
-			for symbol_def in def_list:
-				model.add(symbol_def)
+			try:
+				logger.debug("Build Statement: {}".format(def_list))
+				for symbol_def in def_list:
+					model.add(symbol_def)
+			except Exception as e:
+				logger.error("Statement not processed, error: {}".format(e))
 		return model
 
 
@@ -113,8 +153,31 @@ class Model():
 	def set(self):
 		return self.symbols['set']
 
+	def parameter(self):
+		return self.symbols['parameter']
+
+	def equation(self):
+		return self.symbols['equation']
+
+	def variable(self):
+		return self.symbols['variable']
+
+	def scalar(self):
+		return self.symbols['scalar']
+
+	def symbol(self):
+		for i in self.symbols:
+			for j in self.symbols[i]:
+				yield j
+
 	def __repr__(self):
-		return "model: n_set={n_set} n_param={n_param}".format(n_set=len(self.symbols['set']),n_param=len(self.symbols['parameter']))
+		output=["model:"]
+
+		for i in self.symbols:
+			if len(self.symbols[i])>0:
+				output.append("n_{name}={num}".format(name=i,num=len(self.symbols[i])))
+
+		return " ".join(output)
 
 
 class Data():
@@ -155,12 +218,21 @@ class Definition():
 
 ## This should have index list
 class Symbol():
-	def __init__(self,symbol_name):
+	symbol_name=None
+	index_list=None
+
+	def __init__(self,args):
+		symbol_name=args[0]
 		logger.debug("Creating Symbol: {}".format(symbol_name))
 		self.symbol_name=str(symbol_name)
+		if len(args)>1:
+			self.index_list=args[1]
 
 	def __repr__(self):
-		return '__{symbol_name}__'.format(symbol_name=self.symbol_name)
+		if self.index_list: 
+			return '__{symbol_name}({index_list})__'.format(symbol_name=self.symbol_name,index_list=",".join(self.index_list))
+		else:
+			return '__{symbol_name}__'.format(symbol_name=self.symbol_name)
 
 
 class SymbolId():

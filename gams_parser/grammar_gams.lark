@@ -82,7 +82,7 @@ symbol 			: symbol_name[suffix][symbol_index]
 symbol_range    : symbol_name "*" symbol_name
 symbol_id 		: symbol_name 
 				| symbol_id "." symbol_name 
-symbol_element  : /['"]/ symbol_name /['"]/
+symbol_element  : _QUOTE symbol_name _QUOTE
 ?symbol_index	: "(" index_list ")"
 index_list		: index_item ("," index_item )*
 ?index_item		: symbol_name 
@@ -97,7 +97,7 @@ sep				: "," | _NL
 suffix			: ".up" | ".lo"
 
 // Keywords
-_SET: ("sets" | "Sets" | "Set" | "SET" | "set")
+_SET: "sets" | "Sets" | "Set" | "SET" | "set"
 _PARAMETER: "Parameter" | "PARAMETER" | "parameter"
 _TABLE: "Table"
 _VARIABLE: "Variables" | "Positive variables"  | "Positive Variables"
@@ -106,10 +106,17 @@ _MODEL: "Model" | "model"
 _SOLVE: "Solve" | "solve"
 _SCALAR: "scalar" | "Scalar"
 _ALIAS: ("alias" | "Alias")
+
+// Punctuation
+
 _END: ";"
 _LPAR: "("
 _RPAR: ")"
 _SLASH: "/"
+_QUOTE: "'" | "\""
+_SINGLEQUOTE: "'"
+_DOUBLEQUOTE: "\""
+
 
 // Imports / MISC
 %import common.WS
