@@ -44,7 +44,7 @@ The expression grammar doesn't obey order of operations for math.  use this calc
 
 ### Gams Parser
 
-- Add transformer to create structured representation of model in gams
+- Add transformer to create structured representation of model in python objects
 - Output information for pretty print in UI
 
 	- Symbol definitions ( sets, parameters, variables, equations )

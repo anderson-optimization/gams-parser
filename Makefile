@@ -18,7 +18,7 @@ inspect:
 
 
 
-test: test_parse test_inject test_transform	
+test: test_parse test_inject test_transform	test_gams_parser
 
 test_parse:
 	python  ${NOSETEST} -v ${FLAGS} test/parse/*.py
@@ -28,6 +28,15 @@ test_inject:
 
 test_transform:
 	python  ${NOSETEST} -v ${FLAGS} test/transform/*.py
+
+test_gams_parser:
+	python  ${NOSETEST} -v ${FLAGS} test/gams_parser/*.py
+
+test_set:
+	python  ${NOSETEST} -v ${FLAGS} test/parse/set.py
+
+
+
 
 test_verbose:
 	make FLAGS="--nocapture" test

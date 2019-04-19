@@ -23,15 +23,15 @@ compiler_variable: "%" WORD "%"
 extension: WORD
 
 // model_definition
-model_definition: MODEL WORD "/" symbol_name+ "/" END
+model_definition: _MODEL WORD "/" symbol_name+ "/" _END
 
 // solve_defintion
-solve_definition: SOLVE WORD ( "using" model_types sense WORD | sense WORD "using" model_types) END
+solve_definition: _SOLVE WORD ( "using" model_types sense WORD | sense WORD "using" model_types) _END
 sense: "minimizing" | "maximizing"
 
 // assignment
 
-assignment_definition: symbol [conditional] "=" expression END
+assignment_definition: symbol [conditional] "=" expression _END
 
 ?expression: symbol
 			| number
@@ -50,19 +50,19 @@ number: NUMBER
 
 // Equation definition
 
-equation_definition: symbol[conditional] ".." lhs equation_types rhs END
+equation_definition: symbol[conditional] ".." lhs equation_types rhs _END
 lhs: expression
 rhs: expression
 
 // Symbol Definitions
 
-symbol_definition: SET definition+ END -> set_list
-				| PARAMETER definition+ END -> parameter_list
-				| SCALAR definition+ END -> scalar_list
-				| VARIABLE definition+ END -> variable_list
-				| EQUATION definition+ END -> equation_list
-				| TABLE table_definition END -> table
-				| ALIAS "(" index_list ")" END -> alias_list
+symbol_definition: _SET 		definition+ 		_END -> set_list
+				| _PARAMETER 	definition+ 		_END -> parameter_list
+				| _SCALAR 		definition+ 		_END -> scalar_list
+				| _VARIABLE 	definition+ 		_END -> variable_list
+				| _EQUATION 	definition+ 		_END -> equation_list
+				| _TABLE 		table_definition 	_END -> table
+				| _ALIAS 		"(" index_list ")" 	_END -> alias_list
 
 // Definitions are seperated by newline or commas, ignore the comma if it exists
 definition: symbol [description] [data] [","]
@@ -98,18 +98,18 @@ sep				: "," | _NL
 suffix			: ".up" | ".lo"
 
 // Keywords
-SET: ("Set" | "SET" | "set")
-PARAMETER: "Parameter" | "PARAMETER" | "parameter"
-TABLE: "Table"
-VARIABLE: "Variables" | "Positive variables"  | "Positive Variables"
-EQUATION: "Equations" | "equations" 
-MODEL: "Model" | "model"
-SOLVE: "Solve" | "solve"
-SCALAR: "scalar" | "Scalar"
-ALIAS: ("alias" | "Alias")
-END: ";"
-LPAR: "("
-RPAR: ")"
+_SET: ("Set" | "SET" | "set")
+_PARAMETER: "Parameter" | "PARAMETER" | "parameter"
+_TABLE: "Table"
+_VARIABLE: "Variables" | "Positive variables"  | "Positive Variables"
+_EQUATION: "Equations" | "equations" 
+_MODEL: "Model" | "model"
+_SOLVE: "Solve" | "solve"
+_SCALAR: "scalar" | "Scalar"
+_ALIAS: ("alias" | "Alias")
+_END: ";"
+_LPAR: "("
+_RPAR: ")"
 _SLASH: "/"
 
 // Imports / MISC

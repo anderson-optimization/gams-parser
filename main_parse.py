@@ -1,8 +1,31 @@
 from lark import Lark, Transformer
 
-with open('./grammar/gams_parse.lark','r') as in_file:
+
+with open('../grammar_gams.lark','r') as in_file:
 	text=in_file.read()
-	l = Lark(text)
+	lark_gams = Lark(text)
+
+with open('../grammar_ao_inject.lark','r') as in_file:
+	text=in_file.read()
+	lark_ao_inject = Lark(text)
+
+
+
+class GamsParser():
+	def __init__(self,file):
+		if isinstance(file,str):
+			self.file = open(file,'r')
+		else:
+			self.file = file
+
+		print(self.file.read())
+
+	def parse(self):
+		text=self.file.read()
+		parse_tree=l.parse(text)
+		print(parse_tree.pretty())
+		return parse_tree
+
 
 
 class Set():
