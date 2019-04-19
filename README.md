@@ -12,7 +12,7 @@ Interested in two directions.  Optional 3rd
 3. [Optional] Gather defined data from model using python api.
 	- This is probably outside the scope of this library as it requires `GAMS` as a dependency.
 
-## Grammer
+## Grammar
 
 - The current grammar is focused on capturing all `GAMS` syntax as long as it is valid and less concerned about catching invalid syntax.
 - The current grammar is built to gather data related to symbol definitions.  As such, other parts of the grammar may be not accurate.
