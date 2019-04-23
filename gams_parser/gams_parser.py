@@ -1,6 +1,7 @@
 
 from lark import Lark, Transformer
 import os
+import json
 
 import logging
 logger = logging.getLogger('gams_parser')
@@ -13,11 +14,11 @@ grammar_ao_inject = os.path.join(dirname, 'grammar_ao_inject.lark')
 
 with open(grammar_gams,'r') as in_file:
 	text=in_file.read()
-	lark_gams = Lark(text,propagate_positions=True)
+	lark_gams = Lark(text)
 
 with open(grammar_ao_inject,'r') as in_file:
 	text=in_file.read()
-	lark_ao_inject = Lark(text,propagate_positions=True)
+	lark_ao_inject = Lark(text)
 
 
 
@@ -55,7 +56,7 @@ class TreeToModel(Transformer):
 		return Data(args)
 
 	def description(self,args):
-		return Description(args[0].value)
+		return Description(args[0].value.strip("'"))
 
 	def definition(self,args):
 		return Definition(args)
@@ -121,12 +122,8 @@ class TreeToModel(Transformer):
 		return model
 
 
-class Description():
-	def __init__(self,text):
-		self.text=str(text.strip('"'))
-
-	def __repr__(self):
-		return '"' +self.text+'"'
+class Description(str):
+	pass
 
 
 
@@ -170,6 +167,13 @@ class Model():
 			for j in self.symbols[i]:
 				yield j
 
+
+
+	def toJSON(self):
+		return json.dumps(self, default=lambda o: o.__dict__, 
+			sort_keys=True, indent=4)
+
+
 	def __repr__(self):
 		output=["model:"]
 
@@ -204,13 +208,18 @@ class Definition():
 			elif isinstance(a,Data):
 				self.data=a
 
+
+	def toJSON(self):
+		return json.dumps(self, default=lambda o: o.__dict__, 
+			sort_keys=True, indent=4)
+
 	def __repr__(self):
 		output=[]
 		if self.symbol_type:
 			output.append('[{}]'.format(self.symbol_type))
 		output.append('{}'.format(self.symbol))
 		if self.description:
-			output.append('{}'.format(self.description))
+			output.append('"{}"'.format(self.description))
 		if self.data:
 			output.append('{}'.format(self.data))
 		return " ".join(output)

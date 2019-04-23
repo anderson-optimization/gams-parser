@@ -29,6 +29,9 @@ test_inject:
 test_transform:
 	python  ${NOSETEST} -v ${FLAGS} test/transform/*.py
 
+test_to_json:
+	python  ${NOSETEST} -v ${FLAGS} test/transform/transform_dict.py
+
 test_gams_parser:
 	python  ${NOSETEST} -v ${FLAGS} test/gams_parser/*.py
 
