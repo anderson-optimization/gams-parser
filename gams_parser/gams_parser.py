@@ -130,7 +130,7 @@ class Description():
 
 
 
-class Model():
+class Model(object):
 	symbols={}
 
 	def __init__(self):
@@ -183,6 +183,9 @@ class Model():
 	def toJSON(self):
 		return json.dumps(self, default=lambda o: o.__dict__, 
 			sort_keys=True, indent=4)
+
+	def toDict(self):
+		return json.loads(self.toJSON())
 
 
 	def __repr__(self):

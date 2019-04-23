@@ -1,5 +1,5 @@
 from gams_parser import GamsParser
-
+import json 
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
@@ -36,3 +36,6 @@ def test_transform_model_json():
 
 		print("\nmodel.toJSON\n")
 		print(dm)
+
+		print("\nmodel.toDict Hack\n")
+		print(model.toDict())
