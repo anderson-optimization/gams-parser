@@ -54,6 +54,12 @@ The expression grammar doesn't obey order of operations for math.  use this calc
 
 - Wrap in task to interact with UI
 
+#### Meta
+
+Improve capture of meta data associated with the definitions.  
+
+- Most important is to capture the original text of the definition.
+
 ### AO Injector
 
 - Create inject syntax DSL
