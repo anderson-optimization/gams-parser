@@ -1,5 +1,6 @@
 
-from lark import Lark, Transformer
+from lark import Lark, Transformer, Tree, Token
+from lark.tree import Meta
 import os
 import json
 
@@ -14,7 +15,7 @@ grammar_ao_inject = os.path.join(dirname, 'grammar_ao_inject.lark')
 
 with open(grammar_gams,'r') as in_file:
 	text=in_file.read()
-	lark_gams = Lark(text)
+	lark_gams = Lark(text,propagate_positions=True)
 
 with open(grammar_ao_inject,'r') as in_file:
 	text=in_file.read()
@@ -37,6 +38,7 @@ class GamsParser():
 	def transform(self):
 		parse_tree=lark_gams.parse(self.text)
 		model=TreeToModel().transform(parse_tree)
+		model.reference_lines(self.text)
 		return model
 
 class TreeToModel(Transformer):    
@@ -46,17 +48,18 @@ class TreeToModel(Transformer):
 	def value(self,args):
 		return float(args[0])
 
-	def symbol_name(self,args):
-		return "".join(args)
-
 	def symbol_element(self,args):
 		return SymbolId("".join(args))
 
-	def data(self,args):
-		return Data(args)
+	def symbol_name(self,args):
+		if len(args)>1:
+			print("args",args)
+			raise Exception("Only a single identifier allowed for name")
+		return args[0]
 
-	def description(self,args):
-		return Description(args[0].value.strip("'"))
+
+	# def description(self,args):
+	# 	return Description(args[0].strip("'"))
 
 	def definition(self,args):
 		return Definition(args)
@@ -122,7 +125,7 @@ class TreeToModel(Transformer):
 		return model
 
 
-class Description(str):
+class Description():
 	pass
 
 
@@ -167,6 +170,14 @@ class Model():
 			for j in self.symbols[i]:
 				yield j
 
+	def reference_lines(self,text):
+		lines=text.splitlines()
+		for s in self.symbol():
+			print(s)
+			line=s.meta.line-1
+			end_line=s.meta.end_line
+			print(line,end_line,lines[line:end_line])
+			s.meta.text="\n".join(lines[line:end_line])
 
 
 	def toJSON(self):
@@ -198,15 +209,29 @@ class Definition():
 	description=None
 	data=None
 
-	def __init__(self,args):
-		logger.debug("Build Definition: ".format(args))
+	def __init__(self,args,meta=None):
+		logger.debug("Build Definition: {}".format(args))
+		self._meta=meta
 		for a in args:
 			if isinstance(a,Symbol):
 				self.symbol=a
-			elif isinstance(a,Description):
-				self.description=a
-			elif isinstance(a,Data):
+				self.meta.line=a.symbol_name.line
+				self.meta.end_line=a.symbol_name.end_line
+				self.meta.empty=False
+			elif isinstance(a,Tree) and a.data=="description":
+				print(a)
+				print(a.data)
+				self.description="".join(a.children).strip("'")
+				self.meta.end_line=a.end_line
+			elif isinstance(a,Tree) and a.data=="data":
 				self.data=a
+				self.meta.end_line=a.end_line
+
+	@property
+	def meta(self):
+		if self._meta is None:
+			self._meta = Meta()
+		return self._meta
 
 
 	def toJSON(self):
@@ -231,9 +256,8 @@ class Symbol():
 	index_list=None
 
 	def __init__(self,args):
-		symbol_name=args[0]
-		logger.debug("Creating Symbol: {}".format(symbol_name))
-		self.symbol_name=str(symbol_name)
+		self.symbol_name=args[0]
+		logger.debug("Creating Symbol: {}".format(self.symbol_name))
 		if len(args)>1:
 			self.index_list=args[1]
 

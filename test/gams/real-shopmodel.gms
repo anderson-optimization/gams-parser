@@ -1,4 +1,5 @@
-Set       products  'Items produced' 
+Set       products  
+      'Items produced' 
               / Chairs, Tables, Dressers /
           resources  'Resources limiting production'
               / RawWood, Labor, WarehouseSpace/

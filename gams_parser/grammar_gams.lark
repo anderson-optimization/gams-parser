@@ -79,10 +79,10 @@ description		: FLEX_ESCAPED_STRING
 
 // Symbol
 symbol 			: symbol_name[suffix][symbol_index]
-symbol_range    : symbol_name "*" symbol_name
-symbol_id 		: symbol_name 
-				| symbol_id "." symbol_name 
-symbol_element  : _QUOTE symbol_name _QUOTE
+symbol_range    : identifier "*" identifier
+symbol_id 		: identifier 
+				| symbol_id "." identifier
+symbol_element  : _QUOTE identifier _QUOTE
 ?symbol_index	: "(" index_list ")"
 index_list		: index_item ("," index_item )*
 ?index_item		: symbol_name 
@@ -92,7 +92,8 @@ index_list		: index_item ("," index_item )*
 				| symbol_name "-" NUMBER -> lag
 				| symbol_name "++" NUMBER -> circular_lead
 				| symbol_name "--" NUMBER -> circular_lag
-symbol_name		: WORD_IDENTIFIER
+?symbol_name		: identifier
+?identifier 		: WORD_IDENTIFIER
 sep				: "," | _NL
 suffix			: ".up" | ".lo"
 
