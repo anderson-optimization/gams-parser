@@ -64,6 +64,13 @@ class TreeToModel(Transformer):
 	def definition(self,args):
 		return Definition(args)
 
+	def equation_definition(self,args):
+		#print(args.data)
+		for a in args:
+			print(a)
+			print(a.__dict__)
+		return args
+
 	def symbol(self,args):
 		logger.debug('Symbol {}'.format(args))
 		symb=Symbol(args)
@@ -113,12 +120,12 @@ class TreeToModel(Transformer):
 			set_def.symbol_type='variable'
 		return args
 
+
 	def start(self,args):
 		model = Model()
-		for def_list in args:
-			try:
-				logger.debug("Build Statement: {}".format(def_list))
-				for symbol_def in def_list:
+		for statement in args:
+			try:				
+				for symbol_def in statement:
 					model.add(symbol_def)
 			except Exception as e:
 				logger.error("Statement not processed, error: {}".format(e))
@@ -144,6 +151,7 @@ class Model(object):
 		}
 
 	def add(self,e):
+		print("ADD",e)
 		if not e.symbol_type:
 			raise Exception('Symbol does not have a type!')
 		elif e.symbol_type not in self.symbols:

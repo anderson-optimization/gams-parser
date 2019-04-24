@@ -20,6 +20,8 @@ inspect:
 
 test: test_parse test_inject test_transform	test_gams_parser
 
+## Test categories
+
 test_parse:
 	python  ${NOSETEST} -v ${FLAGS} test/parse/*.py
 
@@ -29,11 +31,16 @@ test_inject:
 test_transform:
 	python  ${NOSETEST} -v ${FLAGS} test/transform/*.py
 
-test_to_json:
-	python  ${NOSETEST} -v ${FLAGS} test/transform/transform_dict.py
-
 test_gams_parser:
 	python  ${NOSETEST} -v ${FLAGS} test/gams_parser/*.py
+
+## Individuals
+
+test_equation:
+	python  ${NOSETEST} -v ${FLAGS} test/transform/transform_equation.py
+
+test_to_json:
+	python  ${NOSETEST} -v ${FLAGS} test/transform/transform_dict.py
 
 test_set:
 	python  ${NOSETEST} -v ${FLAGS} test/parse/set.py
