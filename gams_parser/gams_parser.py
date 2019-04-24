@@ -48,8 +48,8 @@ class TreeToModel(Transformer):
 	def value(self,args):
 		return float(args[0])
 
-	def symbol_element(self,args):
-		return SymbolId("".join(args))
+	# def symbol_element(self,args):
+	# 	return SymbolId("".join(args))
 
 	def symbol_name(self,args):
 		if len(args)>1:
@@ -71,21 +71,21 @@ class TreeToModel(Transformer):
 			print(a.__dict__)
 		return args
 
-	def symbol(self,args):
-		logger.debug('Symbol {}'.format(args))
-		symb=Symbol(args)
-		return symb
+	# def symbol(self,args):
+	# 	logger.debug('Symbol {}'.format(args))
+	# 	symb=Symbol(args)
+	# 	return symb
 
-	def symbol_id(self,args):
-		logger.debug("SymbolID {}".format(args))
+	# def symbol_id(self,args):
+	# 	logger.debug("SymbolID {}".format(args))
 
-		return SymbolId(".".join([str(a) for a in args]))
+	# 	return SymbolId(".".join([str(a) for a in args]))
 
 	def index_list(self,args):
 		logger.debug("IndexList {}".format(args))
 		return args
 
-	def set_list(self,args):
+	def set_list(self,args):		
 		for set_def in args:
 			set_def.symbol_type='set'
 		return args
@@ -106,6 +106,7 @@ class TreeToModel(Transformer):
 		return args
 
 	def equation_list(self,args):
+		print('args',args)
 		for set_def in args:
 			set_def.symbol_type='equation'
 		return args
@@ -222,12 +223,14 @@ class Definition():
 
 	def __init__(self,args,meta=None):
 		logger.debug("Build Definition: {}".format(args))
+		print('definition',args)
 		self._meta=meta
 		for a in args:
-			if isinstance(a,Symbol):
-				self.symbol=a
-				self.meta.line=a.symbol_name.line
-				self.meta.end_line=a.symbol_name.end_line
+			if isinstance(a,Tree) and a.data=='symbol':
+				print("Symbol",a)
+				self.symbol=Symbol(a)
+				self.meta.line=a.meta.line
+				self.meta.end_line=a.meta.end_line
 				self.meta.empty=False
 			elif isinstance(a,Tree) and a.data=="description":
 				print(a)
@@ -266,11 +269,15 @@ class Symbol():
 	symbol_name=None
 	index_list=None
 
-	def __init__(self,args):
-		self.symbol_name=args[0]
+	def __init__(self,tree):
+		if tree.data != 'symbol':
+			raise Exception("Not a symbol def")
+		print('symbol new',tree)
+		info=tree.children
+		self.symbol_name=info[0]
 		logger.debug("Creating Symbol: {}".format(self.symbol_name))
-		if len(args)>1:
-			self.index_list=args[1]
+		if len(info)>1:
+			self.index_list=info[1]
 
 	def __repr__(self):
 		if self.index_list: 
