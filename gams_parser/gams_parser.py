@@ -38,6 +38,7 @@ class GamsParser():
 	def transform(self):
 		parse_tree=lark_gams.parse(self.text)
 		model=TreeToModel().transform(parse_tree)
+		model.cross_reference()
 		model.reference_lines(self.text)
 		return model
 
@@ -64,12 +65,12 @@ class TreeToModel(Transformer):
 	def definition(self,args):
 		return Definition(args)
 
-	def equation_definition(self,args):
-		#print(args.data)
-		for a in args:
-			print(a)
-			print(a.__dict__)
-		return args
+	# def equation_definition(self,args):
+	# 	#print(args.data)
+	# 	for a in args:
+	# 		print(a)
+	# 		print(a.__dict__)
+	# 	return args
 
 	# def symbol(self,args):
 	# 	logger.debug('Symbol {}'.format(args))
@@ -106,7 +107,7 @@ class TreeToModel(Transformer):
 		return args
 
 	def equation_list(self,args):
-		print('args',args)
+		print('equation list args',args)
 		for set_def in args:
 			set_def.symbol_type='equation'
 		return args
@@ -124,10 +125,15 @@ class TreeToModel(Transformer):
 
 	def start(self,args):
 		model = Model()
+		print("Process Statements")
+		#print('Statements',args)
 		for statement in args:
-			try:				
-				for symbol_def in statement:
-					model.add(symbol_def)
+			try:			
+				if isinstance(statement,Tree) and statement.data=='equation_definition':
+					model.add_equation(statement)
+				else:
+					for symbol_def in statement:
+						model.add_symbol(symbol_def)
 			except Exception as e:
 				logger.error("Statement not processed, error: {}".format(e))
 		return model
@@ -137,6 +143,8 @@ class Description():
 	pass
 
 
+class EquationDefinition():
+	pass
 
 class Model(object):
 	symbols={}
@@ -150,9 +158,17 @@ class Model(object):
 			"scalar": [],
 			"table": []
 		}
+		self.equation_defs=[]
 
-	def add(self,e):
-		print("ADD",e)
+	def add_equation(self,e):
+		print('Model : Add equation',e.__dict__)
+		eqn_def=EquationDefinition()
+		eqn_def.symbol=Symbol(e.children[0])
+		eqn_def.meta=e.meta
+		self.equation_defs.append(eqn_def)
+
+	def add_symbol(self,e):
+		print("Model : Add symbol",e)
 		if not e.symbol_type:
 			raise Exception('Symbol does not have a type!')
 		elif e.symbol_type not in self.symbols:
@@ -179,14 +195,30 @@ class Model(object):
 			for j in self.symbols[i]:
 				yield j
 
+	def cross_reference(self):
+		print("CrossREFERENCE")
+		for i in self.symbols['equation']:
+			for j in self.equation_defs:
+				if i.symbol==j.symbol:
+					print('I',i)
+					print('J',j)
+					i.equation=j
+
 	def reference_lines(self,text):
 		lines=text.splitlines()
 		for s in self.symbol():
-			print(s)
+			print("Reference line for symbol {}".format(s))
 			line=s.meta.line-1
 			end_line=s.meta.end_line
-			print(line,end_line,lines[line:end_line])
-			s.meta.text="\n".join(lines[line:end_line])
+			text=["\n".join(lines[line:end_line])]
+			if s.equation:
+				text.append("\n\nEquation Definition:\n")
+				line=s.equation.meta.line-1
+				end_line=s.equation.meta.end_line
+				text.append("\n".join(lines[line:end_line]))
+			s.meta.text="".join(text)
+
+		#for s in 
 
 
 	def toJSON(self):
@@ -220,6 +252,7 @@ class Definition():
 	symbol=None
 	description=None
 	data=None
+	equation=None
 
 	def __init__(self,args,meta=None):
 		logger.debug("Build Definition: {}".format(args))
@@ -246,7 +279,6 @@ class Definition():
 		if self._meta is None:
 			self._meta = Meta()
 		return self._meta
-
 
 	def toJSON(self):
 		return json.dumps(self, default=lambda o: o.__dict__, 
@@ -278,6 +310,9 @@ class Symbol():
 		logger.debug("Creating Symbol: {}".format(self.symbol_name))
 		if len(info)>1:
 			self.index_list=info[1]
+
+	def __eq__(self,other):
+		return self.symbol_name == other.symbol_name
 
 	def __repr__(self):
 		if self.index_list: 
