@@ -111,7 +111,6 @@ class TreeToModel(Transformer):
 		return args
 
 	def equation_list(self,args,meta):
-		#print('equation list args',args)
 		for set_def in args:
 			set_def.symbol_type='equation'
 		return args
@@ -151,12 +150,11 @@ class TreeToModel(Transformer):
 						model.add_symbol(symbol_def)
 				else:
 					logger.debug('Unknown statement')
-					print("Statement",statement.data)
+					logger.debug("Statement data",statement.data)
 					raise Exception("Statement type not handled")
 				logger.debug("Finished statement.")
 			except Exception as e:
 				logger.error("Statement not processed, error: {}".format(e))
-				print(statement)
 		return model
 
 
@@ -178,7 +176,6 @@ class ModelDefinition(Tree):
 
 class SolveDefinition(Tree):
 	def __init__(self,data,children,meta=None):
-		print("Solve Model",children)
 		self.name=children[0]
 		for c in children:
 			if isinstance(c,Tree) and c.data == 'sense_min':
@@ -196,7 +193,6 @@ class SolveDefinition(Tree):
 
 class AssignmentDefinition(Tree):
 	def __init__(self,data,children,meta=None):
-		print("-----Assignment",children)
 		self.symbol_refs=[]
 		for s in children:
 			if isinstance(s,SymbolName):
@@ -247,7 +243,6 @@ class Model(object):
 		self.solve=[]
 
 	def add_equation(self,e):
-		print('Model : Add equation',e)
 		eqn_def=EquationDefinition()
 		eqn_def.symbol=Symbol(e.children[0])
 		eqn_def.meta=e.meta
@@ -258,9 +253,6 @@ class Model(object):
 		self.equation_defs.append(eqn_def)
 
 	def add_assignment(self,a):
-		print("Add assignemnet---------",a)
-		print(a.symbol_refs)
-		print(a.__dict__)
 		self.assignments.append(a)
 
 	def add_model(self,m):
@@ -298,20 +290,18 @@ class Model(object):
 				yield j
 
 	def cross_reference(self):
-		print("CrossREFERENCE")
+		logger.debug("CrossREFERENCEing")
 		for i in self.symbols['equation']:
 			for j in self.equation_defs:
 				if i.symbol==j.symbol:
-					print('I',i)
-					print('J',j)
+					logger.debug('CR Match')
 					i.equation=j
 					i.symbol_ref=j.symbol_ref
-					print("Refs",i.symbol_ref)
 
 	def reference_lines(self,text):
 		lines=text.splitlines()
 		for s in self.symbol():
-			print("Reference line for symbol {}".format(s))
+			logger.debug("Reference line for symbol {}".format(s))
 			line=s.meta.line-1
 			end_line=s.meta.end_line
 			text=["\n".join(lines[line:end_line])]
@@ -369,19 +359,14 @@ class Definition():
 
 	def __init__(self,args,meta):
 		#logger.debug("Build Definition: {}".format(args))
-		#print('definition',args)
 		self._meta=meta
 		for a in args:
-			print("Definition data: ",a.data)
 			if isinstance(a,Tree) and a.data=='symbol':
-				#print("Symbol",a)
 				self.symbol=Symbol(a)
 				self.meta.line=a.meta.line
 				self.meta.end_line=a.meta.end_line
 				self.meta.empty=False
 			elif isinstance(a,Tree) and a.data=="description":
-				print(a)
-				print(a.data)
 				self.description="".join(a.children).strip("'")
 				self.meta.end_line=a.end_line
 			elif isinstance(a,Tree) and a.data=="data":
@@ -418,7 +403,6 @@ class Symbol():
 	def __init__(self,tree):
 		if tree.data != 'symbol':
 			raise Exception("Not a symbol def")
-		print('symbol new')
 		info=tree.children
 		self.name=info[0].name
 		logger.debug("Creating Symbol: {}".format(self.name))
