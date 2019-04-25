@@ -21,6 +21,23 @@ with open(grammar_ao_inject,'r') as in_file:
 	text=in_file.read()
 	lark_ao_inject = Lark(text)
 
+def scrub(obj, bad=["_meta","meta"]):
+    if isinstance(obj, dict):
+        for k in obj.keys():
+            if k in bad:
+                del obj[k]
+            else:
+                scrub(obj[k], bad)
+    elif isinstance(obj, list):
+        for i in reversed(range(len(obj))):
+            if obj[i] in bad:
+                del obj[i]
+            else:
+                scrub(obj[i], bad)
+
+    else:
+        # neither a dict nor a list, do nothing
+        pass
 
 
 class GamsParser():
@@ -50,39 +67,21 @@ class TreeToModel(Transformer):
 	def value(self,args,meta):
 		return float(args[0])
 
-	# def symbol_element(self,args):
-	# 	return SymbolId("".join(args))
-
 	def symbol_name(self,children,meta):
-		print('Create symbol name',children)
 		if len(children)>1:
 			raise Exception("Only a single identifier allowed for name")
+		logger.debug('Create symbol name={}'.format(children[0]))
 		return SymbolName('symbol_name',children,meta=meta)
 
 
-	# def description(self,args):
-	# 	return Description(args[0].strip("'"))
-
 	def definition(self,children,meta):
-		print("Creating Definition")
 		return Definition(children,meta)
 
-	# def equation_definition(self,args):
-	# 	#print(args.data)
-	# 	for a in args:
-	# 		print(a)
-	# 		print(a.__dict__)
-	# 	return args
+	def model_definition(self,children,meta):
+		return ModelDefinition('model_definition',children,meta)
 
-	# def symbol(self,args):
-	# 	logger.debug('Symbol {}'.format(args))
-	# 	symb=Symbol(args)
-	# 	return symb
-
-	# def symbol_id(self,args):
-	# 	logger.debug("SymbolID {}".format(args))
-
-	# 	return SymbolId(".".join([str(a) for a in args]))
+	def solve_definition(self,children,meta):
+		return SolveDefinition('solve_definition',children,meta)
 
 	def index_list(self,chilren,meta):
 		logger.debug("IndexList {}".format(chilren))
@@ -125,21 +124,33 @@ class TreeToModel(Transformer):
 		return args
 
 
-	def start(self,args,meta):
+	def start(self,children,meta):
 		model = Model()
-		print("Process Statements")
-		#print('Statements',args)
-		for statement in args:
+		logger.debug("Process Statements")
+		for statement in children:
 			try:
-				print("Processing new statement.")	
+				logger.debug("Processing new statement.")	
 				if isinstance(statement,Tree) and statement.data=='equation_definition':
+					logger.debug('Have equation defintion')
 					model.add_equation(statement)
-				else:
+				elif isinstance(statement,Tree) and statement.data=='model_definition':
+					logger.debug('Have model definition')
+					model.add_model(statement)
+				elif isinstance(statement,Tree) and statement.data=='solve_definition':
+					logger.debug('Have solve statement')
+					model.add_solve(statement)
+				elif isinstance(statement,list):
+					logger.debug('Have symbol list')
 					for symbol_def in statement:
 						model.add_symbol(symbol_def)
-				print("Finished statement.")
+				else:
+					logger.debug('Unknown statement')
+					print("Statement",statement.data)
+					raise Exception("Statement type not handled")
+				logger.debug("Finished statement.")
 			except Exception as e:
 				logger.error("Statement not processed, error: {}".format(e))
+				print(statement)
 		return model
 
 
@@ -150,17 +161,49 @@ class Description():
 class EquationDefinition():
 	pass
 
-class SymbolName(Tree):
-	def name(self):
-		return "".join(self.children)
-
-	def __str__(self):
-		return self.name()
+class ModelDefinition(Tree):
+	def __init__(self,data,children,meta=None):
+		self.name=children[0]
+		self.equations=children[1:]
+		Tree.__init__(self,data,children,meta=meta)
 
 	def __repr__(self):
-		return "__{name}__".format(name=self.name())
+		return "<model={} eqn={}>".format(self.name,",".join([str(e) for e in self.equations]))
+
+class SolveDefinition(Tree):
+	def __init__(self,data,children,meta=None):
+		print("Solve Model",children)
+		self.name=children[0]
+		for c in children:
+			if isinstance(c,Tree) and c.data == 'sense_min':
+				self.sense='min'
+			elif isinstance(c,Tree) and c.data == 'sense_max':
+				self.sense='max'
+			elif isinstance(c,SymbolName):
+				self.obj=c
+			else:
+				 print("Dont recognize")
+		Tree.__init__(self,data,children,meta=meta)
+
+	def __repr__(self):
+		return "-> solve model={name} {sense} {obj}".format(name=self.name,sense=self.sense,obj=self.obj)
+
+
+class SymbolName(Tree):
+	def __init__(self,data,children,meta=None):
+		self.name=children[0]
+		Tree.__init__(self,data,children,meta=meta)
+
+	def __str__(self):
+		return self.name
+
+	def __repr__(self):
+		return "__{name}__".format(name=self.name)
 
 class IndexList(Tree):
+	def items(self):
+		return [s.name for s in self.children]
+
 	def __repr__(self):
 		return "({items})".format(items=",".join([str(c) for c in self.children]))
 
@@ -177,24 +220,34 @@ class Model(object):
 			"table": []
 		}
 		self.equation_defs=[]
+		self.assignments=[]
+		self.model_defs=[]
+		self.model_solve=[]
 
 	def add_equation(self,e):
 		print('Model : Add equation',e)
 		eqn_def=EquationDefinition()
 		eqn_def.symbol=Symbol(e.children[0])
 		eqn_def.meta=e.meta
+		eqn_def.symbol_ref=[]
 		for s in e.find_data('symbol_name'):
-			print('Found symbol refs',s)
+			logger.debug('Found symbol ref: {}'.format(s))
+			eqn_def.symbol_ref.append(s)
 		self.equation_defs.append(eqn_def)
 
+	def add_model(self,m):
+		self.model_defs.append(m)
+
+	def add_solve(self,s):
+		self.model_solve.append(s)
+
 	def add_symbol(self,e):
-		print("Model : Adding symbol")
 		if not e.symbol_type:
 			raise Exception('Symbol does not have a type!')
 		elif e.symbol_type not in self.symbols:
 			raise Exception('Symbol type not found')
 		self.symbols[e.symbol_type].append(e)
-		print("Symbol Added!")
+		logger.info("Symbol[{type}]={name} added to model".format(name=e.symbol.name,type=e.symbol_type))
 
 	def set(self):
 		return self.symbols['set']
@@ -224,6 +277,8 @@ class Model(object):
 					print('I',i)
 					print('J',j)
 					i.equation=j
+					i.symbol_ref=j.symbol_ref
+					print("Refs",i.symbol_ref)
 
 	def reference_lines(self,text):
 		lines=text.splitlines()
@@ -238,9 +293,7 @@ class Model(object):
 				line=s.equation.meta.line-1
 				end_line=s.equation.meta.end_line
 				text.append("\n".join(lines[line:end_line]))
-			s.meta.text="".join(text)
-
-		#for s in 
+			s.text="".join(text)
 
 
 	def toJSON(self):
@@ -257,6 +310,12 @@ class Model(object):
 		for i in self.symbols:
 			if len(self.symbols[i])>0:
 				output.append("n_{name}={num}".format(name=i,num=len(self.symbols[i])))
+
+		for m in self.model_defs:
+			output.append("\n{}".format(m))
+
+		for s in self.model_solve:
+			output.append("\n{}".format(s))
 
 		return " ".join(output)
 
@@ -330,11 +389,10 @@ class Symbol():
 			raise Exception("Not a symbol def")
 		print('symbol new')
 		info=tree.children
-		self.symbol_name=info[0]
-		self.name="".join(self.symbol_name.children)
-		logger.debug("Creating Symbol: {}".format(self.symbol_name))
+		self.name=info[0].name
+		logger.debug("Creating Symbol: {}".format(self.name))
 		if len(info)>1:
-			self.index_list=info[1]
+			self.index_list=info[1].items()
 
 	def __eq__(self,other):
 		return self.name == other.name

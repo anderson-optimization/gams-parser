@@ -1,9 +1,8 @@
-from gams_parser import GamsParser
+from gams_parser import GamsParser, scrub
 import json 
+import pprint
 import logging
 logging.basicConfig(level=logging.DEBUG)
-
-logging.debug("TEst")
 
 def test_transform_def_dict():
 	with open('./test/gams/real-shopmodel.gms','r') as in_file:
@@ -16,7 +15,7 @@ def test_transform_def_dict():
 		print("\nSymbols:\n")
 		for s in model.symbol():
 			print(s)
-			print(s.toJSON())
+			#print(s.toJSON())
 
 
 
@@ -34,8 +33,10 @@ def test_transform_model_json():
 
 		dm=model.toJSON()
 
-		print("\nmodel.toJSON\n")
-		print(dm)
+		#print("\nmodel.toJSON\n")
+		#print(dm)
 
 		print("\nmodel.toDict Hack\n")
-		print(model.toDict())
+		m=model.toDict()
+		scrub(m)
+		pprint.pprint(m)

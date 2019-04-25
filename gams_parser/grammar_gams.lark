@@ -25,8 +25,10 @@ extension: string
 model_definition: _MODEL string "/" symbol_name+ "/" _END
 
 // solve_defintion
-solve_definition: _SOLVE string ( "using" model_types sense string | sense string "using" model_types) _END
-sense: "minimizing" | "maximizing"
+solve_definition: _SOLVE string ( "using" model_types sense symbol_name | sense symbol_name "using" model_types) _END
+sense: "minimizing" -> sense_min
+	| "maximizing" 	-> sense_max
+
 
 // assignment
 
@@ -142,22 +144,22 @@ COMMENT_BLOCK: "$ontext" /(\S|\s)*?/ "$offtext"
 %ignore COMMENT
 
 // Model Types
-model_types: "LP" 		-> 	model_lp
-			| "NLP" 	-> 	model_nlp
-			| "QCP" 	-> 	model_qcp
-			| "DNLP" 	-> 	model_dnlp
-			| "MIP" 	-> 	model_mip
-			| "RMIP" 	-> 	model_rmip
-			| "RMINLP" 	-> 	model_rminlp
-			| "MINLP" 	-> 	model_minlp
-			| "MIQCP" 	-> 	model_miqcp
-			| "RMIQCP" 	-> 	model_rmiqcp
-			| "MCP" 	-> 	model_mcp
-			| "CNS" 	-> 	model_cns
-			| "MPEC" 	-> 	model_mpec
-			| "RMPEC" 	-> 	model_rmpec
-			| "EMP" 	-> 	model_emp
-			| "MPSGE" 	-> 	model_mpsge
+model_types: "LP" | "lp" 			-> 	model_lp
+			| "NLP" | "nlp" 		-> 	model_nlp
+			| "QCP" | "qlp" 		-> 	model_qcp
+			| "DNLP" | "dnlp" 		-> 	model_dnlp
+			| "MIP" | "mip"			-> 	model_mip
+			| "RMIP" | "rmip" 		-> 	model_rmip
+			| "RMINLP" | "rminlp" 	-> 	model_rminlp
+			| "MINLP" | "minlp"		-> 	model_minlp
+			| "MIQCP" | "miqcp"		-> 	model_miqcp
+			| "RMIQCP" | "rmiqcp"	-> 	model_rmiqcp
+			| "MCP" | "mcp"			-> 	model_mcp
+			| "CNS" | "cns"			-> 	model_cns
+			| "MPEC" | "mpec"		-> 	model_mpec
+			| "RMPEC" | "rmpec"		-> 	model_rmpec
+			| "EMP" | "emp"		 	-> 	model_emp
+			| "MPSGE" | "mpsge" 	-> 	model_mpsge
 
 // Equations
 equation_types: "=e=" -> eqn_equality

@@ -36,6 +36,9 @@ test_gams_parser:
 
 ## Individuals
 
+test_real:
+	python  ${NOSETEST} -v ${FLAGS} test/parse/real.py
+
 test_equation:
 	python  ${NOSETEST} -v ${FLAGS} test/transform/transform_equation.py
 

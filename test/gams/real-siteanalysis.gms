@@ -354,7 +354,7 @@ model site_analysis /
 	battery_operation
 /;
 
-*solve site_analysis using lp minimizing totalC;
+solve site_analysis using lp minimizing totalC;
 
 
 
