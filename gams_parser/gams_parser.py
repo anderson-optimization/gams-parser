@@ -83,6 +83,9 @@ class TreeToModel(Transformer):
 	def solve_definition(self,children,meta):
 		return SolveDefinition('solve_definition',children,meta)
 
+	def assignment_definition(self,children,meta):
+		return AssignmentDefinition('assignment_definition',children,meta)
+
 	def index_list(self,chilren,meta):
 		logger.debug("IndexList {}".format(chilren))
 		return IndexList('index_list',chilren,meta)
@@ -139,6 +142,9 @@ class TreeToModel(Transformer):
 				elif isinstance(statement,Tree) and statement.data=='solve_definition':
 					logger.debug('Have solve statement')
 					model.add_solve(statement)
+				elif isinstance(statement,Tree) and statement.data=='assignment_definition':
+					logger.debug('Have assignment statement')
+					model.add_assignment(statement)
 				elif isinstance(statement,list):
 					logger.debug('Have symbol list')
 					for symbol_def in statement:
@@ -182,11 +188,27 @@ class SolveDefinition(Tree):
 			elif isinstance(c,SymbolName):
 				self.obj=c
 			else:
-				 print("Dont recognize")
+				 logger.warning("Solve definition, dont recognize child")
 		Tree.__init__(self,data,children,meta=meta)
 
 	def __repr__(self):
 		return "-> solve model={name} {sense} {obj}".format(name=self.name,sense=self.sense,obj=self.obj)
+
+class AssignmentDefinition(Tree):
+	def __init__(self,data,children,meta=None):
+		print("-----Assignment",children)
+		self.symbol_refs=[]
+		for s in children:
+			if isinstance(s,SymbolName):
+				self.symbol_refs.append(s)
+			elif isinstance(s,Tree):
+				for s in s.find_data('symbol_name'):
+					self.symbol_refs.append(s)
+		Tree.__init__(self,data,children,meta=meta)
+
+	def __repr__(self):
+		return "<assignment n_symbols={num}>".format(num=len(self.symbol_refs))
+
 
 
 class SymbolName(Tree):
@@ -222,7 +244,7 @@ class Model(object):
 		self.equation_defs=[]
 		self.assignments=[]
 		self.model_defs=[]
-		self.model_solve=[]
+		self.solve=[]
 
 	def add_equation(self,e):
 		print('Model : Add equation',e)
@@ -235,11 +257,17 @@ class Model(object):
 			eqn_def.symbol_ref.append(s)
 		self.equation_defs.append(eqn_def)
 
+	def add_assignment(self,a):
+		print("Add assignemnet---------",a)
+		print(a.symbol_refs)
+		print(a.__dict__)
+		self.assignments.append(a)
+
 	def add_model(self,m):
 		self.model_defs.append(m)
 
 	def add_solve(self,s):
-		self.model_solve.append(s)
+		self.solve.append(s)
 
 	def add_symbol(self,e):
 		if not e.symbol_type:
@@ -305,18 +333,21 @@ class Model(object):
 
 
 	def __repr__(self):
-		output=["model:"]
-
+		output=["** model **","\nsymbols:"]
 		for i in self.symbols:
 			if len(self.symbols[i])>0:
 				output.append("n_{name}={num}".format(name=i,num=len(self.symbols[i])))
+		if len(self.assignments)>0:
+			output.append("\nn_assignments={num}".format(num=len(self.assignments)))
+
 
 		for m in self.model_defs:
 			output.append("\n{}".format(m))
 
-		for s in self.model_solve:
+		for s in self.solve:
 			output.append("\n{}".format(s))
 
+		output.append("\n** end model **")
 		return " ".join(output)
 
 

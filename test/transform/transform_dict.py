@@ -20,7 +20,7 @@ def test_transform_def_dict():
 
 
 def test_transform_model_json():
-	with open('./test/gams/real-shopmodel.gms','r') as in_file:
+	with open('./test/gams/real-shopmodel2.gms','r') as in_file:
 		gp = GamsParser(in_file)
 		model=gp.transform()
 
@@ -39,4 +39,4 @@ def test_transform_model_json():
 		print("\nmodel.toDict Hack\n")
 		m=model.toDict()
 		scrub(m)
-		pprint.pprint(m)
+		pprint.pprint(m['assignments'])
