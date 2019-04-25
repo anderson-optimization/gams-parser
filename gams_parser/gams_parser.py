@@ -196,10 +196,10 @@ class AssignmentDefinition(Tree):
 		self.symbol_refs=[]
 		for s in children:
 			if isinstance(s,SymbolName):
-				self.symbol_refs.append(s)
+				self.symbol_refs.append(s.name)
 			elif isinstance(s,Tree):
 				for s in s.find_data('symbol_name'):
-					self.symbol_refs.append(s)
+					self.symbol_refs.append(s.name)
 		Tree.__init__(self,data,children,meta=meta)
 
 	def __repr__(self):
@@ -312,6 +312,13 @@ class Model(object):
 				end_line=s.equation.meta.end_line
 				text.append("\n".join(lines[line:end_line]))
 			s.text="".join(text)
+		for a in self.assignments:
+			logger.debug("Reference line for assignment {}".format(a))
+			line=a.meta.line-1
+			end_line=a.meta.end_line
+			text=["\n".join(lines[line:end_line])]
+			a.text="".join(text)
+
 
 
 	def toJSON(self):
