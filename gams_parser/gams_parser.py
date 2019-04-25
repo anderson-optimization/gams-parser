@@ -194,13 +194,16 @@ class SolveDefinition(Tree):
 class AssignmentDefinition(Tree):
 	def __init__(self,data,children,meta=None):
 		self.symbol_refs=[]
+		refs=set()
 		for s in children:
 			if isinstance(s,SymbolName):
-				self.symbol_refs.append(s.name)
+				refs.add(s.name)
 			elif isinstance(s,Tree):
 				for s in s.find_data('symbol_name'):
-					self.symbol_refs.append(s.name)
+					refs.add(s.name)
+		self.symbol_refs=list(refs)
 		Tree.__init__(self,data,children,meta=meta)
+
 
 	def __repr__(self):
 		return "<assignment n_symbols={num}>".format(num=len(self.symbol_refs))
