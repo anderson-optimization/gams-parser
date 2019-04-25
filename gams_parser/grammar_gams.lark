@@ -93,7 +93,7 @@ index_list		: index_item ("," index_item )*
 				| symbol_name "++" NUMBER -> circular_lead
 				| symbol_name "--" NUMBER -> circular_lag
 symbol_name		: identifier
-?identifier 		: WORD_IDENTIFIER
+?identifier 	: WORD_IDENTIFIER
 sep				: "," | _NL
 suffix			: ".up" | ".lo"
 

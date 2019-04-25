@@ -1,5 +1,5 @@
 
-from lark import Lark, Transformer, Tree, Token
+from lark import Lark, Transformer, Tree, Token, v_args
 from lark.tree import Meta
 import os
 import json
@@ -42,28 +42,30 @@ class GamsParser():
 		model.reference_lines(self.text)
 		return model
 
+@v_args(meta=True)
 class TreeToModel(Transformer):    
-	def string(self, args):
+	def string(self,args,meta):
 		return "".join(args)
 
-	def value(self,args):
+	def value(self,args,meta):
 		return float(args[0])
 
 	# def symbol_element(self,args):
 	# 	return SymbolId("".join(args))
 
-	def symbol_name(self,args):
-		if len(args)>1:
-			print("args",args)
+	def symbol_name(self,children,meta):
+		print('Create symbol name',children)
+		if len(children)>1:
 			raise Exception("Only a single identifier allowed for name")
-		return args[0]
+		return SymbolName('symbol_name',children,meta=meta)
 
 
 	# def description(self,args):
 	# 	return Description(args[0].strip("'"))
 
-	def definition(self,args):
-		return Definition(args)
+	def definition(self,children,meta):
+		print("Creating Definition")
+		return Definition(children,meta)
 
 	# def equation_definition(self,args):
 	# 	#print(args.data)
@@ -82,58 +84,60 @@ class TreeToModel(Transformer):
 
 	# 	return SymbolId(".".join([str(a) for a in args]))
 
-	def index_list(self,args):
-		logger.debug("IndexList {}".format(args))
-		return args
+	def index_list(self,chilren,meta):
+		logger.debug("IndexList {}".format(chilren))
+		return IndexList('index_list',chilren,meta)
 
-	def set_list(self,args):		
+	def set_list(self,args,meta):		
 		for set_def in args:
 			set_def.symbol_type='set'
 		return args
 
-	def parameter_list(self,args):
+	def parameter_list(self,args,meta):
 		for set_def in args:
 			set_def.symbol_type='parameter'
 		return args
 
-	def variable_list(self,args):
+	def variable_list(self,args,meta):
 		for set_def in args:
 			set_def.symbol_type='variable'
 		return args
 
-	def scalar_list(self,args):
+	def scalar_list(self,args,meta):
 		for set_def in args:
 			set_def.symbol_type='scalar'
 		return args
 
-	def equation_list(self,args):
-		print('equation list args',args)
+	def equation_list(self,args,meta):
+		#print('equation list args',args)
 		for set_def in args:
 			set_def.symbol_type='equation'
 		return args
 
-	def table_list(self,args):
+	def table_list(self,args,meta):
 		for set_def in args:
 			set_def.symbol_type='table'
 		return args
 
-	def variable_list(self,args):
+	def variable_list(self,args,meta):
 		for set_def in args:
 			set_def.symbol_type='variable'
 		return args
 
 
-	def start(self,args):
+	def start(self,args,meta):
 		model = Model()
 		print("Process Statements")
 		#print('Statements',args)
 		for statement in args:
-			try:			
+			try:
+				print("Processing new statement.")	
 				if isinstance(statement,Tree) and statement.data=='equation_definition':
 					model.add_equation(statement)
 				else:
 					for symbol_def in statement:
 						model.add_symbol(symbol_def)
+				print("Finished statement.")
 			except Exception as e:
 				logger.error("Statement not processed, error: {}".format(e))
 		return model
@@ -145,6 +149,20 @@ class Description():
 
 class EquationDefinition():
 	pass
+
+class SymbolName(Tree):
+	def name(self):
+		return "".join(self.children)
+
+	def __str__(self):
+		return self.name()
+
+	def __repr__(self):
+		return "__{name}__".format(name=self.name())
+
+class IndexList(Tree):
+	def __repr__(self):
+		return "({items})".format(items=",".join([str(c) for c in self.children]))
 
 class Model(object):
 	symbols={}
@@ -161,19 +179,22 @@ class Model(object):
 		self.equation_defs=[]
 
 	def add_equation(self,e):
-		print('Model : Add equation',e.__dict__)
+		print('Model : Add equation',e)
 		eqn_def=EquationDefinition()
 		eqn_def.symbol=Symbol(e.children[0])
 		eqn_def.meta=e.meta
+		for s in e.find_data('symbol_name'):
+			print('Found symbol refs',s)
 		self.equation_defs.append(eqn_def)
 
 	def add_symbol(self,e):
-		print("Model : Add symbol",e)
+		print("Model : Adding symbol")
 		if not e.symbol_type:
 			raise Exception('Symbol does not have a type!')
 		elif e.symbol_type not in self.symbols:
 			raise Exception('Symbol type not found')
 		self.symbols[e.symbol_type].append(e)
+		print("Symbol Added!")
 
 	def set(self):
 		return self.symbols['set']
@@ -212,7 +233,8 @@ class Model(object):
 			end_line=s.meta.end_line
 			text=["\n".join(lines[line:end_line])]
 			if s.equation:
-				text.append("\n\nEquation Definition:\n")
+				text.insert(0,"*** Symbol Definition ***\n\n")
+				text.append("\n\n*** Equation Definition ***\n\n")
 				line=s.equation.meta.line-1
 				end_line=s.equation.meta.end_line
 				text.append("\n".join(lines[line:end_line]))
@@ -253,14 +275,16 @@ class Definition():
 	description=None
 	data=None
 	equation=None
+	symbol_ref=[]
 
-	def __init__(self,args,meta=None):
-		logger.debug("Build Definition: {}".format(args))
-		print('definition',args)
+	def __init__(self,args,meta):
+		#logger.debug("Build Definition: {}".format(args))
+		#print('definition',args)
 		self._meta=meta
 		for a in args:
+			print("Definition data: ",a.data)
 			if isinstance(a,Tree) and a.data=='symbol':
-				print("Symbol",a)
+				#print("Symbol",a)
 				self.symbol=Symbol(a)
 				self.meta.line=a.meta.line
 				self.meta.end_line=a.meta.end_line
@@ -304,21 +328,22 @@ class Symbol():
 	def __init__(self,tree):
 		if tree.data != 'symbol':
 			raise Exception("Not a symbol def")
-		print('symbol new',tree)
+		print('symbol new')
 		info=tree.children
 		self.symbol_name=info[0]
+		self.name="".join(self.symbol_name.children)
 		logger.debug("Creating Symbol: {}".format(self.symbol_name))
 		if len(info)>1:
 			self.index_list=info[1]
 
 	def __eq__(self,other):
-		return self.symbol_name == other.symbol_name
+		return self.name == other.name
 
 	def __repr__(self):
 		if self.index_list: 
-			return '__{symbol_name}({index_list})__'.format(symbol_name=self.symbol_name,index_list=",".join(self.index_list))
+			return '__{symbol_name}{index_list}__'.format(symbol_name=self.name,index_list=self.index_list)
 		else:
-			return '__{symbol_name}__'.format(symbol_name=self.symbol_name)
+			return '__{symbol_name}__'.format(symbol_name=self.name)
 
 
 class SymbolId():
@@ -331,78 +356,3 @@ class SymbolId():
 
 	def __repr__(self):
 		return '*{sid}*'.format(sid=self.sid)
-
-
-# class Expression():
-# 	pass
-
-
-
-
-# class TreeToModel(Transformer):
-# 	def start(self,args):
-# 		logger.debug('Start',args)
-# 		model=Model()
-# 		for line in args:
-# 			try:
-# 				for item in line:
-# 					model.add(item)
-					
-# 			except Exception as e:
-# 				logger.debug('exception ',e)
-# 		logger.debug('Model',model)
-# 		return model
-
-# 	def id(self,args):
-# 		#logger.debug("ID Word",args)
-# 		return str(args[0].value)
-
-# 	def dimension_id(self,args):
-# 		logger.debug("dimension id",args)
-# 		return args
-
-# 	def group_definition(self,args):
-# 		command=args[0]
-# 		logger.debug("Group Definition",args)
-# 		items=[]
-# 		for define in args[1:-2]:
-# 			if command.data=='set':
-# 				items.append(Set(define))
-# 			elif command.data=='parameter':
-# 				items.append(Parameter(define))
-# 		return items
-
-
-# 	def comment(self,args):
-# 		logger.debug("Comment",args)
-# 		return args
-
-# 	def ao_macro(self,args):
-# 		logger.debug("AO",args)
-# 		return args
-
-# with open('./test/site-analysis.gms','r') as in_file:
-# 	text=in_file.read()
-# 	#logger.debug(text)
-
-# 	parse_tree=l.parse(text)
-# 	logger.debug(parse_tree)
-# 	logger.debug(parse_tree.pretty())
-# 	for inst in parse_tree.children:
-# 		line_type=inst.data
-# 		if line_type=='group_definition':
-# 			symbol_type=inst.children[0].data
-# 			logger.debug(line_type,symbol_type)
-# 			for define in inst.children[1:]:
-# 				try:
-# 					logger.debug(define.pretty())
-# 				except:
-# 					pass
-
-# 	model=TreeToModel().transform(parse_tree)
-
-# 	for s in model.sets:
-# 		logger.debug(s)
-
-# 	for p in model.parameters:
-# 		logger.debug(p)
