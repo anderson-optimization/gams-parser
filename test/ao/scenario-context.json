@@ -1,0 +1,1174 @@
+{
+  "asset":
+  [
+    {
+      "groupKey": "primary",
+      "item": {
+        "created": 1548697434969,
+        "createdBy": "google-oauth2|104792385606727687265",
+        "id": "-LXKYrgyG5dKDDaY1QsM",
+        "modified": 1548697434969,
+        "modifiedBy": "google-oauth2|104792385606727687265",
+        "parameter": {
+          "location": {
+            "lat": 39.75018102494415,
+            "long": -105.42705307744916
+          },
+          "name": {
+            "name": "Site A Parcel",
+            "type": "parameter:name:basic"
+          }
+        },
+        "rn": "team/demo-site-analysis/asset/-LXKYrgyG5dKDDaY1QsM",
+        "tags": [
+          "mining site",
+          "land",
+          "asset"
+        ],
+        "type": "asset:land:mine"
+      },
+      "itemKey": "project",
+      "rn": "team/demo-site-analysis/asset/-LXKYrgyG5dKDDaY1QsM",
+      "stepKey": "primary",
+      "type": "asset:land:mine"
+    }
+  ],
+  "data":[
+    {
+      "groupKey": "demand",
+      "item": {
+        "body": {
+          "stringify": true
+        },
+        "columns": [
+          {
+            "format": "DateTime",
+            "name": "Date/Time",
+            "prop": "DateTime"
+          },
+          {
+            "format": "Float",
+            "name": "Net Load",
+            "prop": "NetLoad"
+          }
+        ],
+        "created": 1548695392003,
+        "createdBy": "google-oauth2|104792385606727687265",
+        "id": "-LXKR3vVaHl1b3lDunJL",
+        "modified": 1548695392003,
+        "modifiedBy": "google-oauth2|104792385606727687265",
+        "parameter": {
+          "name": {
+            "name": "Site A Load",
+            "type": "parameter:name:basic"
+          }
+        },
+        "rn": "team/demo-site-analysis/dataItem/-LXKR3vVaHl1b3lDunJL",
+        "tags": [
+          8760,
+          "timeseries",
+          "data"
+        ],
+        "type": "data:timeseries:8760"
+      },
+      "itemKey": "project",
+      "rn": "team/demo-site-analysis/dataItem/-LXKR3vVaHl1b3lDunJL",
+      "stepKey": "load",
+      "type": "data:timeseries:8760"
+    },
+    {
+      "groupKey": "tourate",
+      "item": {
+        "created": 1548693868759,
+        "createdBy": "google-oauth2|104792385606727687265",
+        "id": "-LXKLG1sepBvV6cTX0EN",
+        "modified": 1548693868759,
+        "modifiedBy": "google-oauth2|104792385606727687265",
+        "parameter": {
+          "name": {
+            "name": "Site A - TOU Rates",
+            "type": "parameter:name:basic"
+          }
+        },
+        "rn": "team/demo-site-analysis/dataItem/-LXKLG1sepBvV6cTX0EN",
+        "tags": [
+          "time of use rate",
+          "object",
+          "data"
+        ],
+        "type": "data:object:tourate"
+      },
+      "itemKey": "project",
+      "rn": "team/demo-site-analysis/dataItem/-LXKLG1sepBvV6cTX0EN",
+      "stepKey": "supply",
+      "type": "data:object:tourate"
+    }
+  ],
+  "overrides":
+  [
+    {
+      "before": 1,
+      "item": "project",
+      "name": "Duration",
+      "prop": "step.battery.parameter.batterysize.duration",
+      "value": 2
+    },
+    {
+      "before": 5,
+      "item": "project",
+      "name": "Power",
+      "prop": "step.battery.parameter.batterysize.power",
+      "value": "       4"
+    }
+  ],		
+  "project":{
+    "created": 1548697436802,
+    "createdBy": "google-oauth2|104792385606727687265",
+    "id": "-LXKYs8dbOoXeVsEEuuB",
+    "modified": 1548700576187,
+    "modifiedBy": "google-oauth2|104792385606727687265",
+    "parameter": {
+      "name": {
+        "name": "Site A Project"
+      }
+    },
+    "rn": "team/demo-site-analysis/project/-LXKYs8dbOoXeVsEEuuB",
+    "step": {
+      "battery": {
+        "key": "battery",
+        "parameter": {
+          "batterycapitalcost": {
+            "capacityCosts": 1500,
+            "energyCosts": 1500,
+            "type": "parameter:batterycapitalcost:default"
+          },
+          "batterycharacter": {
+            "chargeEfficiency": 0.95,
+            "dischargeEfficiency": 0.95,
+            "type": "parameter:batterycharacter:default"
+          },
+          "batterysize": {
+            "duration": 2,
+            "power": "       4",
+            "type": "parameter:batterysize:default"
+          }
+        },
+        "type": "project:siteanalysis:battery"
+      },
+      "financial": {
+        "key": "financial",
+        "parameter": {
+          "simplefinance": {
+            "discountRate": 0.08,
+            "federalTaxRate": 0.25,
+            "inflationRate": 0.03,
+            "omEscalationRate": 0.02,
+            "period": 25,
+            "stateTaxRate": 0.05,
+            "type": "parameter:simplefinance:default"
+          }
+        },
+        "type": "project:siteanalysis:financial"
+      },
+      "gens": {
+        "parameter": {
+          "search": {
+            "clat": 39.75018102494415,
+            "clng": -105.42705307744916
+          }
+        }
+      },
+      "land": {
+        "parameter": {
+          "search": {
+            "clat": 39.75018102494415,
+            "clng": -105.42705307744916
+          }
+        }
+      },
+      "line": {
+        "parameter": {
+          "search": {
+            "clat": 39.75018102494415,
+            "clng": -105.42705307744916
+          }
+        }
+      },
+      "load": {
+        "data": {
+          "demand": {
+            "team%2Fdemo-site-analysis%2FdataItem%2F-LXKR3vVaHl1b3lDunJL": {
+              "groupKey": "demand",
+              "item": {
+                "body": {
+                  "stringify": true
+                },
+                "columns": [
+                  {
+                    "format": "DateTime",
+                    "name": "Date/Time",
+                    "prop": "DateTime"
+                  },
+                  {
+                    "format": "Float",
+                    "name": "Net Load",
+                    "prop": "NetLoad"
+                  }
+                ],
+                "created": 1548695392003,
+                "createdBy": "google-oauth2|104792385606727687265",
+                "id": "-LXKR3vVaHl1b3lDunJL",
+                "modified": 1548695392003,
+                "modifiedBy": "google-oauth2|104792385606727687265",
+                "parameter": {
+                  "name": {
+                    "name": "Site A Load",
+                    "type": "parameter:name:basic"
+                  }
+                },
+                "rn": "team/demo-site-analysis/dataItem/-LXKR3vVaHl1b3lDunJL",
+                "tags": [
+                  8760,
+                  "timeseries",
+                  "data"
+                ],
+                "type": "data:timeseries:8760"
+              },
+              "itemKey": "project",
+              "rn": "team/demo-site-analysis/dataItem/-LXKR3vVaHl1b3lDunJL",
+              "stepKey": "load",
+              "type": "data:timeseries:8760"
+            }
+          }
+        },
+        "key": "load",
+        "type": "project:siteanalysis:load"
+      },
+      "primary": {
+        "asset": {
+          "primary": {
+            "-LXKYrgyG5dKDDaY1QsM": {
+              "groupKey": "primary",
+              "item": {
+                "created": 1548697434969,
+                "createdBy": "google-oauth2|104792385606727687265",
+                "id": "-LXKYrgyG5dKDDaY1QsM",
+                "modified": 1548697434969,
+                "modifiedBy": "google-oauth2|104792385606727687265",
+                "parameter": {
+                  "location": {
+                    "lat": 39.75018102494415,
+                    "long": -105.42705307744916
+                  },
+                  "name": {
+                    "name": "Site A Parcel",
+                    "type": "parameter:name:basic"
+                  }
+                },
+                "rn": "team/demo-site-analysis/asset/-LXKYrgyG5dKDDaY1QsM",
+                "tags": [
+                  "mining site",
+                  "land",
+                  "asset"
+                ],
+                "type": "asset:land:mine"
+              },
+              "itemKey": "project",
+              "rn": "team/demo-site-analysis/asset/-LXKYrgyG5dKDDaY1QsM",
+              "stepKey": "primary",
+              "type": "asset:land:mine"
+            }
+          }
+        },
+        "key": "primary",
+        "type": "project:greenfield:primary"
+      },
+      "solar": {
+        "key": "solar",
+        "parameter": {
+          "solar": {
+            "capacityCost": 1500,
+            "capacityPower": 5,
+            "capacityPower-units": "units:power:MW",
+            "degradationRate": 2,
+            "omCost": 2,
+            "type": "parameter:solar:default"
+          }
+        },
+        "type": "project:siteanalysis:solar"
+      },
+      "start": {
+        "parameter": {
+          "location": {
+            "lat": 39.75018102494415,
+            "long": -105.42705307744916
+          },
+          "name": {
+            "name": "Site A Project",
+            "type": "parameter:name:basic"
+          },
+          "project": {
+            "priority": "high",
+            "stage": "late",
+            "type": "parameter:project:basic"
+          }
+        }
+      },
+      "subs": {
+        "parameter": {
+          "search": {
+            "clat": 39.75018102494415,
+            "clng": -105.42705307744916
+          }
+        }
+      },
+      "supply": {
+        "data": {
+          "tourate": {
+            "team%2Fdemo-site-analysis%2FdataItem%2F-LXKLG1sepBvV6cTX0EN": {
+              "groupKey": "tourate",
+              "item": {
+                "created": 1548693868759,
+                "createdBy": "google-oauth2|104792385606727687265",
+                "id": "-LXKLG1sepBvV6cTX0EN",
+                "modified": 1548693868759,
+                "modifiedBy": "google-oauth2|104792385606727687265",
+                "parameter": {
+                  "name": {
+                    "name": "Site A - TOU Rates",
+                    "type": "parameter:name:basic"
+                  }
+                },
+                "rn": "team/demo-site-analysis/dataItem/-LXKLG1sepBvV6cTX0EN",
+                "tags": [
+                  "time of use rate",
+                  "object",
+                  "data"
+                ],
+                "type": "data:object:tourate"
+              },
+              "itemKey": "project",
+              "rn": "team/demo-site-analysis/dataItem/-LXKLG1sepBvV6cTX0EN",
+              "stepKey": "supply",
+              "type": "data:object:tourate"
+            }
+          }
+        },
+        "key": "supply",
+        "type": "project:siteanalysis:supply"
+      }
+    },
+    "tags": [
+      "mining site",
+      "project"
+    ],
+    "type": "project:mineanalysis"
+  },
+  "run":{
+    "created": 1556047838793,
+    "createdBy": "google-oauth2|104792385606727687265",
+    "description": "Duration=2, Power=       4",
+    "groupId": "kind-falcon-932-A",
+    "groupRef": {
+      "rn": "team/demo-site-analysis/scenarioRunGroupItem/-LdAfOQOYkSrhjZnWt0P"
+    },
+    "id": "-LdAfQscn2JziKQnQBei",
+    "message": "Setting Scenario Context.",
+    "modified": 1556047838793,
+    "modifiedBy": "google-oauth2|104792385606727687265",
+    "name": {
+      "asset": [
+        "Site A Parcel"
+      ],
+      "project": "Site A Project",
+      "run": "Site A Project/Solar, Battery, and Financials - 2 [kind-falcon-932-A-1]",
+      "runId": "kind-falcon-932-A-1",
+      "scenario": "Solar, Battery, and Financials - 2",
+      "scenarioInput": "Walkthrough"
+    },
+    "overrides": [
+      {
+        "before": 1,
+        "item": "project",
+        "name": "Duration",
+        "prop": "step.battery.parameter.batterysize.duration",
+        "value": 2
+      },
+      {
+        "before": 5,
+        "item": "project",
+        "name": "Power",
+        "prop": "step.battery.parameter.batterysize.power",
+        "value": "       4"
+      }
+    ],
+    "parameter": {
+      "name": {
+        "name": "Site A Project/Solar, Battery, and Financials - 2 [kind-falcon-932-A-1]"
+      }
+    },
+    "project": {
+      "step": {
+        "battery": {
+          "parameter": {
+            "batterysize": {
+              "duration": 2,
+              "power": "       4"
+            }
+          }
+        }
+      },
+      "type": "project:mineanalysis"
+    },
+    "resource": {
+      "asset": [
+        "team/demo-site-analysis/asset/-LXKYrgyG5dKDDaY1QsM"
+      ],
+      "data": [
+        "team/demo-site-analysis/dataItem/-LXKR3vVaHl1b3lDunJL",
+        "team/demo-site-analysis/dataItem/-LXKLG1sepBvV6cTX0EN"
+      ],
+      "project": "team/demo-site-analysis/project/-LXKYs8dbOoXeVsEEuuB",
+      "run": "team/demo-site-analysis/scenarioRunItem/-LdAfQscn2JziKQnQBei",
+      "scenario": "team/demo-site-analysis/scenarioItem/-LXKeRUBQLBxg_lyOjeA"
+    },
+    "rn": "team/demo-site-analysis/scenarioRunItem/-LdAfQscn2JziKQnQBei",
+    "scenario": {
+      "type": "scenario:sampypsaexcel"
+    },
+    "status": "Creating",
+    "step": {
+      "financial": {
+        "key": "financial",
+        "message": "Waiting for dependencies to be met.",
+        "parent": "power",
+        "status": "Waiting",
+        "task": {
+          "rn": "team/rmi-test-beta/task/-LWS8GW3Nl5jSFLCLEDb"
+        },
+        "type": "scenario:financial:excel"
+      },
+      "power": {
+        "key": "power",
+        "message": "Waiting for dependencies to be met.",
+        "parent": "sam",
+        "status": "Waiting",
+        "task": {
+          "rn": "team/rmi-test-beta/task/-LVocBenHf5hOoK494XS"
+        },
+        "type": "scenario:power:pypsa"
+      },
+      "sam": {
+        "key": "sam",
+        "message": "Waiting for dependencies to be met.",
+        "parent": "weather",
+        "status": "Waiting",
+        "task": {
+          "rn": "team/rmi-test-beta/task/-LVoc3eGei9pxd5AdMoG"
+        },
+        "type": "scenario:nrel:sam"
+      },
+      "weather": {
+        "key": "weather",
+        "message": "Waiting for dependencies to be met.",
+        "status": "Waiting",
+        "task": {
+          "rn": "team/demo-site-analysis/task/-LXKNQ1y1hH95UZNogKh"
+        },
+        "type": "scenario:nrel:weather"
+      }
+    },
+    "type": "run:scenario:sampypsaexcel"
+  },
+  "scenario":{
+    "created": 1548699158507,
+    "createdBy": "google-oauth2|104792385606727687265",
+    "id": "-LXKeRUBQLBxg_lyOjeA",
+    "modified": 1548699188263,
+    "modifiedBy": "google-oauth2|104792385606727687265",
+    "parameter": {
+      "name": {
+        "description": "A description",
+        "name": "Solar, Battery, and Financials - 2",
+        "type": "parameter:name:basic"
+      }
+    },
+    "rn": "team/demo-site-analysis/scenarioItem/-LXKeRUBQLBxg_lyOjeA",
+    "step": {
+      "financial": {
+        "key": "financial",
+        "parameter": {
+          "exceltemplate": {
+            "filename": "template-v2.xlsx",
+            "input": {
+              "map": [
+                {
+                  "ao_note": true,
+                  "cell": "C7",
+                  "item": "project",
+                  "prop": "step.solar.parameter.solar.capacityPower",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "A1",
+                  "filename": "{scenario_folder}/pcm-monthly-{run_id}.csv",
+                  "sheet": "AO Monthly",
+                  "type": "csv"
+                },
+                {
+                  "cell": "A1",
+                  "filename": "{scenario_folder}/pcm-hourly-{run_id}.csv",
+                  "sheet": "AO Hourly",
+                  "type": "csv"
+                },
+                {
+                  "cell": "C8",
+                  "fixed": "Fixed Tilt",
+                  "if": {
+                    "prop": "step.sam.parameter.panelorientation.tracker",
+                    "value": "1 Axis"
+                  },
+                  "item": "scenario",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C8",
+                  "fixed": "1-Axis Tracker",
+                  "if": {
+                    "prop": "step.sam.parameter.panelorientation.tracker",
+                    "value": "1 Axis"
+                  },
+                  "item": "scenario",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C16",
+                  "item": "project",
+                  "prop": "step.financial.parameter.simplefinance.inflationRate",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C17",
+                  "item": "project",
+                  "prop": "step.financial.parameter.simplefinance.discountRate",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C18",
+                  "item": "project",
+                  "prop": "step.financial.parameter.simplefinance.stateTaxRate",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C19",
+                  "item": "project",
+                  "prop": "step.financial.parameter.simplefinance.federalTaxRate",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C20",
+                  "item": "project",
+                  "prop": "step.financial.parameter.simplefinance.omEscalationRate",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C22",
+                  "item": "project",
+                  "prop": "step.solar.parameter.solar.capacityCost",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C23",
+                  "item": "project",
+                  "prop": "step.solar.parameter.solar.omCost",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C24",
+                  "item": "scenarioRun",
+                  "prop": "step.sam.output.kwh_per_kw",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C25",
+                  "item": "project",
+                  "prop": "step.solar.parameter.solar.degradationRate",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C27",
+                  "item": "project",
+                  "prop": "step.battery.parameter.batterysize.power",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C28",
+                  "item": "project",
+                  "prop": "step.battery.parameter.batterysize.duration",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C29",
+                  "item": "project",
+                  "prop": "step.battery.parameter.batterycharacter.chargeEfficiency",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C30",
+                  "item": "project",
+                  "prop": "step.battery.parameter.batterycharacter.dischargeEfficiency",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C31",
+                  "item": "project",
+                  "prop": "step.battery.parameter.batterycapitalcost.capacityCosts",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "C32",
+                  "item": "project",
+                  "prop": "step.battery.parameter.batterycapitalcost.energyCosts",
+                  "sheet": "Scenario Parameters"
+                },
+                {
+                  "cell": "B3",
+                  "fixed": "AO Inputs",
+                  "name": "Ao Inputs",
+                  "sheet": "AO Overview",
+                  "style": {
+                    "bold": false,
+                    "size": 17
+                  }
+                },
+                {
+                  "col": 2,
+                  "fixed": "Primary Mine",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "style": {
+                    "bold": true,
+                    "size": 14
+                  }
+                },
+                {
+                  "col": 2,
+                  "item": "primary",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Mine Asset",
+                  "step_path": "."
+                },
+                {
+                  "cell": "E5",
+                  "fixed": "Project",
+                  "pad_row": 4,
+                  "sheet": "AO Overview",
+                  "style": {
+                    "bold": true,
+                    "size": 14
+                  }
+                },
+                {
+                  "col": 5,
+                  "item": "project",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Primary Asset",
+                  "step_path": "step.primary"
+                },
+                {
+                  "col": 5,
+                  "item": "project",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Onsite Load",
+                  "step_path": "step.load"
+                },
+                {
+                  "col": 5,
+                  "item": "project",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Supply",
+                  "step_path": "step.supply"
+                },
+                {
+                  "col": 5,
+                  "item": "project",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Solar",
+                  "step_path": "step.solar"
+                },
+                {
+                  "col": 5,
+                  "item": "project",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Battery",
+                  "step_path": "step.battery"
+                },
+                {
+                  "col": 5,
+                  "item": "project",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Financial",
+                  "step_path": "step.financial"
+                },
+                {
+                  "cell": "H5",
+                  "fixed": "Scenario",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "style": {
+                    "bold": true,
+                    "size": 14
+                  }
+                },
+                {
+                  "col": 8,
+                  "item": "scenario",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "NREL Sam",
+                  "step_path": "step.sam"
+                },
+                {
+                  "col": 8,
+                  "item": "scenario",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "NSRDB Weather",
+                  "step_path": "step.weather"
+                },
+                {
+                  "col": 8,
+                  "ignore": true,
+                  "item": "scenario",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "AO Pypsa",
+                  "step_path": "step.power"
+                },
+                {
+                  "col": 8,
+                  "ignore": true,
+                  "item": "scenario",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "step_name": "Excel Cashflow",
+                  "step_path": "step.financial"
+                },
+                {
+                  "cell": "K3",
+                  "fixed": "AO Output",
+                  "sheet": "AO Overview",
+                  "style": {
+                    "bold": true,
+                    "size": 17
+                  }
+                },
+                {
+                  "col": 11,
+                  "fixed": "Scenario Run",
+                  "pad_row": 2,
+                  "sheet": "AO Overview",
+                  "style": {
+                    "bold": true,
+                    "size": 14
+                  }
+                },
+                {
+                  "col": 11,
+                  "group_name": "NREL Sam",
+                  "item": "scenarioRun",
+                  "pad_row": 2,
+                  "prop": "name.runId",
+                  "sheet": "AO Overview"
+                },
+                {
+                  "col": 11,
+                  "group_name": "NREL Sam",
+                  "item": "scenarioRun",
+                  "pad_row": 2,
+                  "prop": "groupRef.rn",
+                  "sheet": "AO Overview"
+                },
+                {
+                  "col": 11,
+                  "group_name": "NREL Sam",
+                  "item": "scenarioRun",
+                  "pad_row": 2,
+                  "parameter_group": "step.sam.output",
+                  "sheet": "AO Overview"
+                },
+                {
+                  "col": 11,
+                  "group_name": "NSRDB Weather",
+                  "item": "scenarioRun",
+                  "pad_row": 2,
+                  "parameter_group": "step.weather.output",
+                  "sheet": "AO Overview"
+                }
+              ]
+},
+"output": {
+  "map": [
+    {
+      "cell": "G9",
+      "item": "scenarioRun",
+      "name": "npv",
+      "prop": "step.financial.output.npv",
+      "sheet": "Calculations"
+    },
+    {
+      "columns": [
+        {
+          "col": "C",
+          "name": "name"
+        },
+        {
+          "col": "D",
+          "name": "value"
+        }
+      ],
+      "data": "keyvalue",
+      "item": "scenarioRun",
+      "name": "waterfall",
+      "rows": [
+        171,
+        178
+      ],
+      "sheet": "Calculations"
+    }
+  ]
+},
+"type": "parameter:exceltemplate:io"
+}
+},
+"task": {
+  "rn": "team/rmi-test-beta/task/-LWS8GW3Nl5jSFLCLEDb"
+},
+"type": "scenario:financial:excel"
+},
+"power": {
+  "key": "power",
+  "task": {
+    "rn": "team/rmi-test-beta/task/-LVocBenHf5hOoK494XS"
+  },
+  "type": "scenario:power:pypsa"
+},
+"sam": {
+  "key": "sam",
+  "parameter": {
+    "panelorientation": {
+      "tilt_eq_lat": true,
+      "tracker": "1 Axis",
+      "type": "parameter:panelorientation:standard"
+    },
+    "systemdesign": {
+      "dctoacratio": 1.2,
+      "inverters": 5,
+      "modulesperstring": 5,
+      "stringsinparallel": 5,
+      "type": "parameter:systemdesign:implicit"
+    }
+  },
+  "task": {
+    "rn": "team/rmi-test-beta/task/-LVoc3eGei9pxd5AdMoG"
+  },
+  "type": "scenario:nrel:sam"
+},
+"weather": {
+  "key": "weather",
+  "parameter": {
+    "nsrdbweather": {
+      "interval": "60",
+      "type": "parameter:nsrdbweather:latlng",
+      "weathertype": "PSM"
+    }
+  },
+  "task": {
+    "rn": "team/demo-site-analysis/task/-LXKNQ1y1hH95UZNogKh"
+  },
+  "type": "scenario:nrel:weather"
+}
+},
+"tags": [
+  "nrel sam",
+  "xlsx",
+  "pypsa"
+],
+"type": "scenario:sampypsaexcel"
+},
+"scenarioInput":{
+  "count": 8,
+  "created": 1551467260804,
+  "createdBy": "auth0|582d39b2378b72272e4496e8",
+  "id": "-LZuduh1I94pZ07vtWR4",
+  "modified": 1551469668303,
+  "modifiedBy": "auth0|582d39b2378b72272e4496e8",
+  "parameter": {
+    "name": {
+      "name": "Walkthrough",
+      "type": "parameter:name:basic"
+    }
+  },
+  "projectType": "project:mineanalysis",
+  "rn": "team/demo-site-analysis/scenarioInputItem/-LZuduh1I94pZ07vtWR4",
+  "scenarioType": "scenario:sampypsaexcel",
+  "sensitivity": [
+    {
+      "baseType": "project",
+      "datatype": "Float",
+      "floatDefineType": "linspace",
+      "name": "Duration",
+      "numsample": 4,
+      "prop": "step.battery.parameter.batterysize.duration",
+      "start": 2,
+      "stop": 8,
+      "values": [
+        2,
+        4,
+        6,
+        8
+      ]
+    },
+    {
+      "baseType": "project",
+      "datatype": "Float",
+      "floatDefineType": "samples",
+      "name": "Power",
+      "prop": "step.battery.parameter.batterysize.power",
+      "values": [
+        "1",
+        "       4"
+      ]
+    }
+  ],
+  "tags": [
+    "scenario-input"
+  ],
+  "type": "scenario-input"
+},
+"task":[
+  {
+    "item": {
+      "created": 1547750938726,
+      "createdBy": "google-oauth2|104792385606727687265",
+      "id": "-LWS8GW3Nl5jSFLCLEDb",
+      "modified": 1551297631954,
+      "modifiedBy": "google-oauth2|104792385606727687265",
+      "parameter": {
+        "event": {
+          "data": {
+            "key": "test "
+          },
+          "type": "parameter:event:basic"
+        },
+        "file": {
+          "data": "import subprocess\nfrom shutil import copyfile\nfrom openpyxl import load_workbook\nfrom openpyxl.utils import coordinate_from_string, column_index_from_string\nfrom xlsx_calc import get_file_item,get_path,set_path\nfrom openpyxl.styles import Font, Fill\n\nimport sys\nimport os\nimport json\nimport csv\nimport pprint\n\n\nprint(\"FetchWeather\")\nprint(\"Arguments %s\",sys.argv[:-2])\nscenario_run=sys.argv[1]\nscenario_info=sys.argv[2]\nprint \"scenario run\",scenario_run\n\nitems={\n    \"scenarioRun\":json.loads(scenario_info)\n}\n\nrun_id=items['scenarioRun']['name']['runId']\n\nenv_info={\n    \"run_id\": run_id,\n    \"scenario_run\": scenario_run\n}\n\nif scenario_run:\n    scenario_folder='/'.join(['s_run',scenario_run])\n    context_file='/'.join([scenario_folder,'context.json'])\n    env_info['scenario_folder']=scenario_folder\n    with open(context_file) as infile:\n        data = json.load(infile)\n    \tprimaries=[itemRef['item'] for itemRef in data['asset'] if itemRef['groupKey']=='primary']\n    \tprimary=primaries[0]\n        items['scenario']=data['scenario']\n        items['project']=data['project']\n        items['primary']=primary\n        input_template=get_path(data['scenario'],'step.financial.parameter.exceltemplate.input')\n        output_template=get_path(data['scenario'],'step.financial.parameter.exceltemplate.output')\n        template_file=get_path(data['scenario'],'step.financial.parameter.exceltemplate.filename')\n        #desired_capacity=get_path(data,'scenario.step.sam.parameter.systemdesign.capacity')*1000\n        print \"\"\n        print \"templates\"\n        print 'input',input_template\n        print \"\"\n        print 'output',output_template\nelse:\n    desired_capacity=50\n    scenario_run=\"test3\"\n    scenario_folder=\"s_run/\"+scenario_run\n    template_file='/var/task/finance-with-ao-waterfall.xlsx'\n    input_template={\n        \"map\":[\n            {\n                \"cell\":\"B37\",\n                \"group_name\":\"parameters\",\n                \"parameter_group\":\"step.financial\",\n                \"sheet\":\"Cover\"\n            }    \n        ]\n    }\n    output_template={\n        \"map\":[\n            {\n                \"item\": \"scenarioRun\",\n                \"name\": \"waterfall\",\n                \"sheet\": \"Scenario 3\",\n                \"rows\": [144,151],\n                \"columns\": [\n                    {\n                        \"name\": \"name\",\n                        \"col\": \"C\"\n                    },\n                    {\n                        \"name\": \"value\",\n                        \"col\": \"D\"\n                    }\n                ],\n                \"data\": \"keyvalue\"}\n            ]\n    }\n\nfilename=\"financial-{rid}.xlsx\".format(rid=run_id)\nmodified_file=\"/tmp/{fn}\".format(fn=filename)\ncalc_folder='/tmp/calc'\ncalc_file='/tmp/calc/{fn}'.format(fn=filename)\noutput_file='{sf}/output.xlsx'.format(sf=scenario_folder)\n\n# Make Paths\npaths=['tmp','tmp/calc']\n# https://stackoverflow.com/questions/273192/how-can-i-create-a-directory-if-it-does-not-exist/14364249#14364249\nfor path in paths:\n\ttry: \n\t    dir_path=scenario_folder+'/'+path\n\t    print 'MakeDirs',dir_path\n\t    os.makedirs(dir_path)\n\texcept OSError as e:\n\t    print \"Except error\",e\n#\t    if not os.path.isdir(path):\n#\t        raise\n\n\n## Change Parameters\nwb = load_workbook(filename = template_file)\n\ndef get_col_row(cell):\n    xy = coordinate_from_string(cell) # returns ('A',4)\n    col = column_index_from_string(xy[0]) # returns 1\n    row = xy[1]\n    return col,row\n\ndef write_parameter_group(start_cell,name,parameters):\n    print 'Write parameter groups',start_cell,name,parameters\n    start_cell.value=name\n    start_cell.font = Font(bold=True)\n    row=0\n    for i in parameters:\n        if i=='type':\n            continue\n        row+=1\n        val = parameters[i]\n        label_cell=start_cell.offset(row,0)\n        value_cell=start_cell.offset(row,1)\n        print \"Setting\",i,val,name\n        label_cell.value=i\n        value_cell.value=val\n        if isinstance(val,float):\n            print 'hAve float'\n            value_cell.number_format = '0.00'\n    return row\n\ndef write_step(start_cell,name,step):\n    print \"WriteStep\",name,step\n    start_cell.value=name\n    start_cell.font = Font(bold=True,underline=\"single\",size=13)\n    row=0\n    if 'parameter' not in step:\n        return row\n    for p in step['parameter']:\n        row+=1\n        params=step['parameter'][p]\n        print \"params\",row,p,params\n        cell=start_cell.offset(row,0)\n        rows_consumed=write_parameter_group(cell,p,params)\n        row+=rows_consumed\n    return row\n\ni_map=input_template['map']\ncurrent_row=None\nfor i in i_map:\n    print \"InputMap\",i\n    if 'ignore' in i:\n        continue\n    if i['sheet'] not in wb.sheetnames:\n        wb.create_sheet(i['sheet'])\n    sheet= wb[i['sheet']]\n    cell=None\n    if 'cell' in i:\n        col,row=get_col_row(i['cell'])\n        print \"Start at \",col,row\n        cell=sheet.cell(row,col)\n    elif 'col' in i and current_row:\n        if 'pad_row' in i:\n            current_row += i['pad_row']\n        cell=sheet.cell(current_row,i['col'])\n    if not cell:\n        print 'No starting cell'\n        continue\n    \n    font=None\n    if 'style' in i:\n        print 'HaveStyle',i['style']\n        font=Font(**i['style'])\n    \n    # Have starting cell\n    print 'Start Cell:',cell.col_idx,cell.column,cell.coordinate,cell.row\n    item = None\n    if 'item' in i:\n        item=items[i['item']]\n    elif 'fixed' in i:\n        value=i['fixed']\n        print 'Value',value\n        cell.value=value\n        if font:\n            cell.font = font\n        current_row=cell.row\n        continue\n    elif 'filename' in i and 'type' in i:\n        fn_raw=i['filename']\n        print('EnvInfo',env_info)\n        fn=fn_raw.format(**env_info)\n        print 'Filename',fn\n        if i['type']!='csv':\n            print \"Can only handle CSV!\"\n            continue\n        with open('./'+fn) as f:\n            reader = csv.reader(f)\n            for row in reader:\n                sheet.append(row)\n        continue\n    else:\n        continue\n    \n    # Have item, check for conditional\n    item=items[i['item']]\n    if 'if' in i:\n        value=get_path(item,i['if']['prop'])\n        if value != i['if']['value']:\n            continue\n    \n    # Write\n    if 'prop' in i:\n        item=items[i['item']]\n        print 'Prop value: ',i['item'],i['prop']\n        value=get_path(item,i['prop'])\n        print 'Value',value\n        cell.value=value\n        current_row=cell.row\n    elif 'fixed' in i:\n        cell.value=i['fixed']\n        current_row=cell.row\n    elif 'parameter_group' in i and 'group_name' in i:\n        print \"Write Parameter group\"\n        parameters=get_path(item,i['parameter_group'])\n        if parameters:\n            rows_consumed=write_parameter_group(cell,i['group_name'],parameters)\n            current_row=cell.row+rows_consumed\n            print 'CurrentRow',current_row\n    elif 'step_path' in i and 'step_name' in i:\n        print \"Write Step\"\n        step=None\n        if i['step_path']=='.':\n            step = item\n        else:\n            step=get_path(item,i['step_path'])\n        if step:\n            rows_consumed=write_step(cell,i['step_name'],step)\n            current_row=cell.row+rows_consumed\n            print 'CurrentRow',current_row\n\n\nwb.save(filename=modified_file)\n\ndef list_files(startpath):\n    for root, dirs, files in os.walk(startpath):\n        level = root.replace(startpath, '').count(os.sep)\n        indent = ' ' * 4 * (level)\n        print('{}{}/'.format(indent, os.path.basename(root)))\n        subindent = ' ' * 4 * (level + 1)\n        for f in files:\n            print('{}{}'.format(subindent, f))\nlist_files(scenario_folder)\n\n## Run Model\n#\ncommand=\"libreoffice --headless --invisible --nodefault --nofirststartwizard --nolockcheck --nologo --norestore --convert-to xlsx --outdir {calc_folder}\".format(calc_folder=calc_folder).split(' ')\ncommand = command + [modified_file]\nprint \"Run Libreoffice:\",command\nsubprocess.call(command)\n\n## Get Ouptut\nprint(os.getcwd())\nwb_out = load_workbook(filename =calc_file,data_only=True)\n\nresults = wb_out['Results']\n\nprint('Results:',results['D5'].value)\n\ncopyfile(calc_file, output_file)\n\nitemid=\"financial-{rid}-xlsx\".format(rid=run_id)\nname=\"Financials [{rid}].xlsx\".format(rid=run_id)\nao_item = get_file_item(output_file,itemid,name,filename)\nfile_output={\n\t\"path\":output_file,\n\t\"item\":ao_item,\n\t\"tid\":\"rmi-test-beta-system\",\n\t\"overwrite\":False\t\n}\n\ndef readRowsAndCols(sheet,rows,cols):\n    out=[]\n    start=rows[0]\n    end=rows[1]+1\n    for i in range(start,end):\n        r={}\n        for j in cols:\n            name=j['name']\n            col=j['col']\n            value=sheet[col+str(i)].value\n            r[name]=value\n        if 'key' not in r and 'name' in r and r['name']:\n            r['key']=r['name'].replace(' ','_').lower()\n        else:\n            print 'No key for output'\n            r['key']='unknown'\n            #unknown_count=unknown_count+1\n            #r['key']='unknown_key_'+str(unknown_count)\n        out.append(r)\n    return out\n\ndef get_data_item(name,did):\n    obj={\n        \"id\":did,\n    \t\"type\": \"data:keyvalue\",\n    \t\"tags\":[\n    \t\t\"data\",\n    \t\t\"keyvalue\"\n    \t],\n    \t\"parameter\":{\n    \t\t\"name\": {\n    \t\t\t\"name\": name\n    \t\t}\n    \t},\n    \t\"columns\":[\n    \t\t{\n    \t\t\"format\": \"String\",\n    \t\t\"name\": \"Key\",\n    \t\t\"prop\": \"key\"\n    \t\t},{\n    \t\t\"format\": \"String\",\n    \t\t\"name\": \"Name\",\n    \t\t\"prop\": \"name\"\n    \t\t},{\n    \t\t\"format\": \"Float\",\n    \t\t\"name\": \"Value\",\n    \t\t\"prop\": \"value\"\n    \t\t}\n    \t]\n    }\n    return obj\n    \ndataitemname=\"Financial Waterfall [{rid}]\".format(rid=run_id)\ndataitemid=\"financial-waterfall-{rid}-json\".format(rid=run_id)\ndata_upload_file=scenario_folder+'/financial-waterfall-{rid}.json'.format(rid=run_id)\n\nout_data={\n\t\"NPV\": results['D5'].value\n}\no_map=output_template['map']\nfor i in o_map:\n    print \"OutputMap\",i\n    if i['sheet'] not in wb_out.sheetnames:\n        print 'Sheet does not exist, ignore'\n        continue\n    sheet= wb_out[i['sheet']]\n    if 'cell' in i:\n        value=sheet[i['cell']].value\n    elif 'rows' in i and 'columns' in i:\n        value=readRowsAndCols(sheet,i['rows'],i['columns'])\n        print \"ROWS\",value\n    print 'Value',value\n    item=items[i['item']]\n    print 'Set',i['item'],i['name']\n    if 'data' not in i:\n        set_path(out_data,i['name'],value)\n    else:\n        ## create data object\n        print \"Data\",value\n        with open(data_upload_file,'w') as outfile:\n        \tjson.dump(value,outfile)\n        waterfall_data={\n            \"body\":data_upload_file,\n            \"item\":get_data_item(dataitemname,dataitemid),\n\t        \"tid\":\"rmi-test-beta-system\",\n            \"overwrite\":True\n        }\n    \noutput = {\n\t\"data\": out_data,\n\t\"output\": \"Test\",\n\t\"dataitem\":[\n\t    waterfall_data\n\t],\n\t\"file\":[\n\t\tfile_output\n\t]\n}\nstring = json.dumps(output)\nsys.stdout.flush()\nprint string\n",
+            "name": "task-run-excel.py",
+            "type": "parameter:file:python"
+          },
+          "name": {
+            "description": "test",
+            "name": "Excel Cash Flow Analysis v2",
+            "type": "parameter:name:basic"
+          },
+          "runtime": {
+            "args": "task-run-excel.py $scenarioRun",
+            "entry": "python",
+            "image": "andersonopt/task-openpyxl",
+            "type": "parameter:runtime:basic"
+          },
+          "taskselector": {
+            "queue": "task-dev",
+            "type": "parameter:taskselector:basic",
+            "typefilter": "scenario:financial:excel"
+          },
+          "workspace": {
+            "type": "parameter:workspace:basic",
+            "workspace": "kickass_blackwell"
+          }
+        },
+        "queue": "ao-task-dev",
+        "rn": "team/rmi-test-beta/task/-LWS8GW3Nl5jSFLCLEDb",
+        "tags": [
+          "docker",
+          "task"
+        ],
+        "type": "task:docker",
+        "version": 1
+      },
+      "itemKey": "scenario",
+      "rn": "team/rmi-test-beta/task/-LWS8GW3Nl5jSFLCLEDb",
+      "stepKey": "financial"
+    },
+    {
+      "item": {
+        "created": 1547071179718,
+        "createdBy": "google-oauth2|104792385606727687265",
+        "id": "-LVocBenHf5hOoK494XS",
+        "modified": 1551297623969,
+        "modifiedBy": "google-oauth2|104792385606727687265",
+        "parameter": {
+          "event": {
+            "data": {
+              "key": "test"
+            },
+            "type": "parameter:event:basic"
+          },
+          "file": {
+            "data": "import pandas as pd\nimport itertools\nimport sys\nimport json\nimport os\n\nfrom powopt import TouRate,create_time_map,run_pcm,get_path\nfrom powopt import Output, DataOutput, FileOutput\nprint \"Running AO Pypsa\"\n\n#scenarioRun=os.environ['scenarioRun']\nif 'scenarioRun' in os.environ:\n    scenario_run=os.environ['scenarioRun']\nelse:\n    scenario_run=\"-LLHyhX9As1TDCOv4cGF\"\nprint \"Scenario run:\",scenario_run\n\noutput_team=\"rmi-test-beta-system\"\n\nscenario_run_item=json.loads(sys.argv[2])\nrun_id=scenario_run_item['name']['runId']\nprint \"scenario run item\",run_id,scenario_run_item\n\nload_file=None\ntou_file=None\nif scenario_run:\n    scenario_folder='/'.join(['s_run',scenario_run])\n    context_file='/'.join([scenario_folder,'context.json'])\n    with open(context_file) as infile:\n        data = json.load(infile)\n        try:\n            p_nom=float(get_path(data,'project.step.battery.parameter.batterysize.power'))\n            duration=float(get_path(data,'project.step.battery.parameter.batterysize.duration'))\n            charge_eff=float(get_path(data,'project.step.battery.parameter.batterycharacter.chargeEfficiency'))\n            discharge_eff=float(get_path(data,'project.step.battery.parameter.batterycharacter.dischargeEfficiency'))\n            data_files=get_path(scenario_run_item,'resource.data')\n            print 'DataFiles: ',data_files\n            load_files=[itemRef['rn'] for itemRef in data['data'] if itemRef['groupKey']=='demand']\n            tou_files=[itemRef['rn'] for itemRef in data['data'] if itemRef['groupKey']=='tourate']\n            print 'Load Files:',load_files\n            print 'TOU Files:',tou_files\n            f_load_id = load_files[0].split('/')[-1]\n            f_tou_id = tou_files[0].split('/')[-1]\n            load_file='dataItem/{file}.json'.format(file=f_load_id)\n            tou_file='dataItem/{file}.json'.format(file=f_tou_id)\n    \n        except Exception as e:\n            print \"ERROR Loading scenario values for battery size\"\n            print \"Error:\",e\n            p_nom=5\n            duration=1\n            #load_file='sierrita_load.json'\n            #tou_file='sierrita_tou.json'\nelse:\n    p_nom=5\n    duration=1\n###  Load and Time Map ######\n\n\nprint \"demand file\",load_file\ndata = pd.read_json(load_file)\ndt_index=data['DateTime']\ndf_time=create_time_map(dt_index)\nprint data.columns\ntry:\n    df_time['Load']=data['AvgHourlyLoad(kW)']\nexcept:\n    df_time['Load']=data['AverageLoad(kW)']\ndata=df_time\ndata['load']=data['Load']/1000\n\n\n\n#### Tou Rates\nprint \"Load TOU Rates\",tou_file\nwith open(tou_file) as infile:\n\ttourate = json.load(infile)\n\ntou = TouRate()\ntou.load_open_ei_data(tourate)\n\ndef get_period(row):\n\tif row['dt_WEEKDAY']:\n\t\treturn tou.demand.get_weekday_period(row['dt_M']-1,row['dt_H'])\n\telse:\n\t\treturn tou.demand.get_weekend_period(row['dt_M']-1,row['dt_H'])\n\n\ndef get_rate(row):\n\tif row['dt_WEEKDAY']:\n\t\treturn tou.energy.get_weekday_rate(row['dt_M']-1,row['dt_H'])*1000\n\telse:\n\t\treturn tou.energy.get_weekend_rate(row['dt_M']-1,row['dt_H'])*1000\n\ndata['total_rate']=data.apply(get_rate,axis=1)\ndata['demand_period']=data.apply(get_period,axis=1)\n\n\n\n## Buy / Sell\n\ngens = [\n\t{\n\t\t\"name\":\"buy\",\n\t\t\"p_nom\":1000,\n\t\t\"marginal_costs\":data['total_rate']\n\t}\n]\n\n### Solar Gen\n\n\ndef prep_solar_data(data,solar_file):\n\tsolar=pd.read_json(solar_file)\n\tmin_solar=-solar.min()['gen']\n\tdata['solar_load']=min_solar/1000\n\tsolar_gen=(solar['gen']+min_solar)\n\tsolar_p_nom_kw=solar_gen.max()\n\tdata['solar_gen']=solar_gen/solar_p_nom_kw\n\tkwh_kw= solar.sum()/solar_p_nom_kw\n\treturn solar_p_nom_kw/1000\n\n#\tprint 'Solar Yield (kwh/kw):',kwh_kw\n\n#data=data.head(240)\n\ninfo={}\n\t\n## Solar\n\n## Inputs\n\n#solar_p_nom_kw=size*1000\n#solar_file=\"data/{}_{}.json\".format(track,size)\nsolar_file=\"s_run/{sr}/nrel-sam-gen-{rid}.json\".format(sr=scenario_run,rid=run_id)\n\n#info['solar_tracking']=track\n#info['solar_size']=size\ninfo['solar_file']=solar_file\n\nsolar_p_nom=prep_solar_data(data,solar_file)\nsolar= [{\n\t\"name\": \"solar\",\n\t\"p_nom\": solar_p_nom,\n\t\"p_max_pu\": data['solar_gen'],\n\t\"marginal_costs\": 0\n}]\n\n## Battery\n\n\nstorage=[{\n\t\"name\":\"storage\",\n\t\"p_nom\":p_nom,\n\t\"max_hours\":duration,\n\t\"efficiency_store\":charge_eff,\n\t\"efficiency_dispatch\":discharge_eff\n}]\n\ninfo['battery_nom']=p_nom\ninfo['battery_duration']=duration\n\nresults=run_pcm(data,tou,gens,solar,storage)\n\nmonthly= results.get('month')\nhourly=results.get('hour')\nmonth_period=results.get('month_period')\n\nprint('Hourly Keys',hourly.columns)\n\nenergy_nom=p_nom*duration\nif energy_nom==0:\n    energy_nom=1\nhourly['movement']=hourly['dispatch'].abs()/energy_nom\nhourly['cycles']=hourly['movement'].cumsum()/2\n    \nmonthly['solar']=hourly.groupby('month').sum()['solar']\nmonthly['load']=hourly.groupby('month').sum()['load']\nmonthly['cycles']=hourly.groupby('month').sum()['movement']/2\nmonthly['buy']=hourly.groupby('month').sum()['buy']\nmonthly['buy_cost']=hourly.groupby('month').sum()['buy_cost']\nmonthly['avg_buy_cost']=monthly['buy_cost']/monthly['buy']\n\n\nmonthly.to_csv('maxgen.csv')\nhourly.to_csv('out_data.csv')\nmonth_period.to_csv('month_cost.csv')\n\n\n\nmonth_file_path=\"s_run/{sr}/pcm-monthly-{rid}.csv\".format(sr=scenario_run,rid=run_id)\nhour_file_path=\"s_run/{sr}/pcm-hourly-{rid}.csv\".format(sr=scenario_run,rid=run_id)\nmonth_period_file_path=\"s_run/{sr}/pcm-monthperiod-{rid}.csv\".format(sr=scenario_run,rid=run_id)\n\nmonthly.to_csv(month_file_path)\nhourly.to_csv(hour_file_path)\nmonth_period.to_csv(month_period_file_path)\n\nmonth_file=FileOutput(\n\t\tname=\"PCM monthly [{rid}].csv\".format(rid=run_id),\n\t\titem_id=\"pcm-monthly-{rid}-csv\".format(rid=run_id),\n\t\tfile_path=month_file_path,\n\t\ttid=output_team\n\t)\nhour_file=FileOutput(\n\t\tname=\"PCM hourly [{rid}].csv\".format(rid=run_id),\n\t\titem_id=\"pcm-hourly-{rid}-csv\".format(rid=run_id),\n\t\tfile_path=hour_file_path,\n\t\ttid=output_team\n\t)\nmonthperiod_file=FileOutput(\n\t\tname=\"PCM month-period [{rid}].csv\".format(rid=run_id),\n\t\titem_id=\"pcm-monthperiod-{rid}-csv\".format(rid=run_id),\n\t\tfile_path=month_period_file_path,\n\t\ttid=output_team\n\t)\n\t\nmonth_file.set_meta_data()\nhour_file.set_meta_data()\nmonthperiod_file.set_meta_data()\n\nhour_data_item={\n    \"body\":{\n        \"file\": \"team/{tid}/file/{fid}\".format(tid=output_team,fid='ao_'+hour_file.item_id)\n    },\n    \"columns\": [\n        {\n          \"name\": \"Time Index\",\n          \"prop\": \"\",\n          \"visible\": \"legendonly\"\n        },\n        {\n          \"name\": \"State of Charge\",\n          \"prop\": \"state_of_charge\"\n        },\n        {\n          \"name\": \"Battery Dispatch\",\n          \"prop\": \"dispatch\"\n        },\n        {\n          \"name\": \"Solar Gen\",\n          \"prop\": \"solar\"\n        },\n        {\n          \"name\": \"Load\",\n          \"prop\": \"load\"\n        },\n        {\n          \"name\": \"Buy\",\n          \"prop\": \"buy\"\n        },\n        {\n          \"name\": \"Buy Cost\",\n          \"prop\": \"buy_cost\",\n          \"visible\": \"legendonly\"\n        },\n        {\n          \"name\": \"Demand Period\",\n          \"prop\": \"demand_period\"\n        },\n        {\n          \"name\": \"Energy Rate\",\n          \"prop\": \"energy_rate\"\n        },\n        {\n          \"name\": \"Date\",\n          \"prop\": \"date\",\n          \"timeIndex\": True,\n          \"visible\": \"legendonly\"\n        },\n        {\n          \"name\": \"Month\",\n          \"prop\": \"month\",\n          \"visible\": \"legendonly\"\n        },\n        {\n          \"name\": \"Hour\",\n          \"prop\": \"hour\",\n          \"visible\": \"legendonly\"\n        },\n        {\n          \"name\": \"Weekday\",\n          \"prop\": \"weekday\"\n        },\n        {\n          \"name\": \"Movement\",\n          \"prop\": \"movement\"\n        },\n        {\n          \"name\": \"Cycles\",\n          \"prop\": \"cycles\",\n          \"visible\": \"legendonly\"\n        }\n   ],\n  \"parameter\": {\n    \"name\": {\n      \"name\": \"Hourly [{rid}]\".format(rid=run_id),\n    }\n  },\n  \"tags\": [\n    \"timeseries\",\n    \"data\"\n  ],\n  \"type\": \"data:timeseries\"\n}\n\nmonth_data_item={\n  \"body\": {\n        \"file\": \"team/{tid}/file/{fid}\".format(tid=output_team,fid='ao_'+month_file.item_id)\n  },\n  \"columns\": [\n    {\n      \"name\": \"month\",\n      \"prop\": \"month\",\n      \"timeIndex\": True\n    },\n    {\n      \"name\": \"Energy Cost\",\n      \"prop\": \"energy\"\n    },\n    {\n      \"name\": \"Demand Charge\",\n      \"prop\": \"demand\"\n    },\n    {\n      \"name\": \"Total Cost\",\n      \"prop\": \"total\"\n    },\n    {\n      \"name\": \"Solar Gen\",\n      \"prop\": \"solar\"\n    },\n    {\n      \"name\": \"Load\",\n      \"prop\": \"load\"\n    },\n    {\n      \"name\": \"Buy\",\n      \"prop\": \"buy\"\n    },\n    {\n      \"name\": \"Mean Energy Cost\",\n      \"prop\": \"avg_buy_cost\"\n    },\n    {\n      \"name\": \"Cycles\",\n      \"prop\": \"cycles\"\n    },\n  ],\n  \"parameter\": {\n    \"name\": {\n      \"name\": \"Monthly [{rid}]\".format(rid=run_id),\n      \"type\": \"parameter:name:basic\"\n    }\n  },\n  \"tags\": [\n    \"timeseries\",\n    \"data\"\n  ],\n  \"type\": \"data:timeseries\"\n}\n\nannual=monthly.sum()\nprint annual\n\ntask_output=Output()\ntask_output.set_data({\n\t\"annual_electricity_cost\":annual['total'],\n\t\"annual_demand_charge\":annual['demand'],\n\t\"annual_energy_charge\":annual['energy'],\n\t\"annual_cycles\":hourly['movement'].sum()/2,\n\t\"battery_power\":p_nom,\n\t\"battery_duration\": duration,\n\t\"battery_energy\": p_nom*duration\n})\ntask_output.add_file(month_file.get_file_ref())\ntask_output.add_file(hour_file.get_file_ref())\ntask_output.add_file(monthperiod_file.get_file_ref())\ntask_output.add_data_item({\n    \"item\":hour_data_item,\n    \"tid\":output_team\n    })\ntask_output.add_data_item({\n    \"item\":month_data_item,\n    \"tid\":output_team\n    })\nobj=task_output.get_output_obj()\nprint obj\n\n",
+              "name": "task-run-pypsa.py",
+              "type": "parameter:file:python"
+            },
+            "name": {
+              "description": "test",
+              "name": "AO PyPSA v1",
+              "type": "parameter:name:basic"
+            },
+            "runtime": {
+              "args": "task-run-pypsa.py $scenarioRun",
+              "entry": "python",
+              "image": "133579274133.dkr.ecr.us-west-2.amazonaws.com/andersonopt/task-pypsa",
+              "type": "parameter:runtime:basic"
+            },
+            "taskselector": {
+              "queue": "task-dev",
+              "type": "parameter:taskselector:basic",
+              "typefilter": "scenario:power:pypsa"
+            },
+            "workspace": {
+              "type": "parameter:workspace:basic",
+              "workspace": "kickass_blackwell"
+            }
+          },
+          "queue": "ao-task-dev",
+          "rn": "team/rmi-test-beta/task/-LVocBenHf5hOoK494XS",
+          "tags": [
+            "docker",
+            "task"
+          ],
+          "type": "task:docker",
+          "version": 1
+        },
+        "itemKey": "scenario",
+        "rn": "team/rmi-test-beta/task/-LVocBenHf5hOoK494XS",
+        "stepKey": "power"
+      },
+      {
+        "item": {
+          "created": 1547071146917,
+          "createdBy": "google-oauth2|104792385606727687265",
+          "id": "-LVoc3eGei9pxd5AdMoG",
+          "modified": 1551297614749,
+          "modifiedBy": "google-oauth2|104792385606727687265",
+          "parameter": {
+            "event": {
+              "data": {
+                "key": "test"
+              },
+              "type": "parameter:event:basic"
+            },
+            "file": {
+              "data": "\nfrom sam import Sam, get_path, get_file_item\nimport pprint\nimport sys\nimport json\nimport pandas as pd\nimport datetime\nfrom datetime import timedelta\npp = pprint.PrettyPrinter(indent=4)\n\n## Load Context\nscenario_run=sys.argv[1]\nprint \"scenario run\",scenario_run\n\n\nscenario_run_item=json.loads(sys.argv[2])\nrun_id=scenario_run_item['name']['runId']\nprint \"scenario run item\",run_id,scenario_run_item\n\ntilt=None\ntrackmode=None\ntilt_eq_lat=None\n\nif scenario_run:\n\tscenario_folder='/'.join(['s_run',scenario_run])\n\tcontext_file='/'.join([scenario_folder,'context.json'])\n\twith open(context_file) as infile:\n\t\tdata = json.load(infile)\n\t\tprimaries=[itemRef['item'] for itemRef in data['asset'] if itemRef['groupKey']=='primary']\n\t\tprimary=primaries[0]\n\t\tlat=primary['parameter']['location']['lat']\n\t\tlng=primary['parameter']['location']['long']\n\t\twkt=get_path(scenario_run_item,'step.weather.output.weather_tag')\n\t\t#desired_capacity=data['overrides'][0]['value']*1000\n\t\tdesired_capacity=float(get_path(data,'project.step.solar.parameter.solar.capacityPower'))*1000\n\t\tdctoacratio=get_path(data,'scenario.step.sam.parameter.systemdesign.dctoacratio')\n\t\ttilt=get_path(data,'scenario.step.sam.parameter.panelorientation.tilt')\n\t\ttrackmode=get_path(data,'scenario.step.sam.parameter.panelorientation.tracker')\n\t\ttilt_eq_lat=get_path(data,'scenario.step.sam.parameter.panelorientation.tilt_eq_lat')\nelse:\n\tscenario_run='test'\n\tscenario_folder='/'.join(['s_run',scenario_run])\n\tdesired_capacity=10000\n\tlat=41.8\n\tlng=-97.4\n\twkt=\"POINT({lng}%20{lat})\".format(lat=lat, lng=lng)\n\tdctoacratio=1.2\n\nprint \"Register SAM\"\ns = Sam()\n\n\nparam = {\n\t\"weather_file\": 'weather/data/{wkt}.csv'.format(wkt=wkt),\n\t\"system\":{\n\t\t\"modules_per_string\": 6,\n\t\t\"strings_in_parallel\": 497,\n\t\t\"inverter_count\": 219\n\t},\n\t\"orientation\":{\n\t\t\"tilt\": 41,\n\t\t\"tilt_eq_lat\": 0,\n\t\t\"azimuth\": 180,\n\t\t\"ground_coverage_ratio\": 0.3,\n\t\t\"rotation_limit\": 45\n\t}\n}\t\n\nif tilt:\n    param['orientation']['tilt']=tilt\n\nif trackmode == '1 Axis':\n\tparam['orientation']['track_mode']=1\n\nif tilt_eq_lat:\n\tparam['orientation']['tilt_eq_lat']=1\n\n## Fixed panel and inverter settings\npanel_kw=335.205/1000\ninverter_ac_cap_kw=3800/1000\ninverter_dc_cap_kw=3928/1000\n\n## Adjust system for desired capacity\nkwh_per_string=panel_kw*param['system']['modules_per_string']\nstrings = desired_capacity/kwh_per_string\nparam[\"system\"][\"strings_in_parallel\"]=int(round(strings))\nprint \"Strings\",strings,round(strings)\n\n## Calcs for system design\nnumber_of_modules=param['system']['modules_per_string']*param['system']['strings_in_parallel']\n\nsystem_nameplate_capacity=number_of_modules*panel_kw\n\ninverters=system_nameplate_capacity/dctoacratio/inverter_ac_cap_kw\nparam['system']['inverter_count']=int(round(inverters))\n\nprint \"Inverters\",inverters,round(inverters)\n\n\n\nsystem_ac_capacity=param['system']['inverter_count']*inverter_ac_cap_kw\nsystem_dc_capacity=param['system']['inverter_count']*inverter_dc_cap_kw\n\nif system_ac_capacity:\n    dc_to_ac_ratio=system_nameplate_capacity/system_ac_capacity\nelse:\n    dc_to_ac_ratio=0\n\nparam[\"system\"][\"system_capacity\"]=system_nameplate_capacity\n\nprint \"\"\nprint \"SystemDesign\"\nprint \"Number of Modules:\",number_of_modules\nprint \"Nameplate Capacity:\",system_nameplate_capacity\nprint \"Inverters AC Capacity:\",system_ac_capacity\nprint \"DC to AC Ratio:\",dc_to_ac_ratio\n\n\nprint \"\"\nprint \"Params\"\n#pp.pprint(param)\n\nout_data=s.run(param)\nout_data['solar_capacity']=desired_capacity/1000\n#print s.output\ngen=get_path(s.output,'pvsamv1.output.time series.gen')\n#print gen\n\ndf = pd.DataFrame(gen,columns=['gen'])\nstart=datetime.datetime(2020,1,1)\ndef create_datetime(x):\n\treturn str(start + timedelta(hours=x.name))\ndf['datetime'] = df.apply(create_datetime,axis=1)\ndf = df[['datetime','gen']]\nprint start\nprint df.head()\n\n#s.dump('test.json')\nprint \"\"\nprint \"Output\"\n#pp.pprint(out_data)\nprint \"Run complete\"\n\nfile_data={\n\t'annual': get_path(s.output,'pvsamv1.output.annual'),\n\t'annual_year_1': get_path(s.output,'pvsamv1.output.annual (year 1)'),\n\t'loss': get_path(s.output,'pvsamv1.output.loss'),\n\t'monthly': get_path(s.output,'pvsamv1.output.monthly'),\n\t'misc': get_path(s.output,'pvsamv1.output.miscellaneous')\n}\n\nname=\"NREL Sam Output [{rid}]\".format(rid=run_id)\nitemid=\"nrel-sam-output-{rid}-json\".format(rid=run_id)\ndata_file=scenario_folder + '/nrel-sam-output-{rid}.json'.format(rid=run_id)\nfilename='nrel-sam-output-{rid}.json'.format(rid=run_id)\n\nwith open(data_file,'w') as outfiledata:\n\tjson.dump(file_data,outfiledata,indent=4)\n\nao_item = get_file_item(data_file,itemid,name,filename)\nprint \"AO Item to create\",ao_item\n\n\nfile_output={\n\t\"path\":data_file,\n\t\"item\":ao_item,\n\t\"tid\":\"rmi-test-beta-system\",\n\t\"overwrite\":False\t\n}\n\ndataitemname=\"NREL Sam Gen [{rid}]\".format(rid=run_id)\ndataitemid=\"nrel-sam-gen-{rid}-json\".format(rid=run_id)\ndata_upload_file=scenario_folder+'/nrel-sam-gen-{rid}.json'.format(rid=run_id)\n\ndata_out=df.to_dict('records')\nwith open(data_upload_file,'w') as outfile:\n\tjson.dump(data_out,outfile)\n\ndata_item={\n\t\"id\":dataitemid,\n\t\"type\": \"data:timeseries:8760\",\n\t\"tags\":[\n\t\t\"data\",\n\t\t\"timeseries\",\n\t\t8760\n\t],\n\t\"parameter\":{\n\t\t\"name\": {\n\t\t\t\"name\": dataitemname\n\t\t}\n\t},\n\t\"columns\":[\n\t\t{\n\t\t\"format\": \"DateTime\",\n\t\t\"name\": \"DateTime\",\n\t\t\"prop\": \"datetime\"\n\t\t},{\n\t\t\"format\": \"Float\",\n\t\t\"name\": \"Gen\",\n\t\t\"prop\": \"gen\"\n\t\t}\n\t],\n\t\"body\":{\n\t    \"stringify\":True\n\t}\n}\n\ndata_output={\n\t\"body\": data_upload_file,\n\t\"item\":data_item,\n\t\"tid\":\"rmi-test-beta-system\",\n\t\"overwrite\": True\n}\n\nloss_dataitemname=\"NREL Sam Loss [{rid}]\".format(rid=run_id)\nloss_dataitemid=\"nrel-sam-loss-{rid}-json\".format(rid=run_id)\nloss_data_upload_file=scenario_folder+'/nrel-sam-loss-{rid}.json'.format(rid=run_id)\n\nloss_path='pvsamv1.output.loss'\nloss_map=[\n    [\"annual_poa_shading_loss_percent\", \"POA shading loss\"], \n    [\"annual_poa_soiling_loss_percent\", \"POA soiling loss\"], \n    [\"annual_dc_module_loss_percent\", \"DC module modeled\"], \n    [\"annual_dc_diodes_loss_percent\", \"DC diodes and connections\"], \n    [\"annual_dc_wiring_loss_percent\", \"DC wiring\"], \n    [\"annual_dc_optimizer_loss_percent\", \"DC power optimizer\"], \n    [\"annual_dc_perf_adj_loss_percent\", \"DC performance adjustment\"], \n    [\"annual_dc_nameplate_loss_percent\", \"DC nameplate\"], \n    [\"annual_dc_tracking_loss_percent\", \"DC tracking\"], \n    [\"annual_dc_mismatch_loss_percent\", \"DC mismatch\"], \n    [\"annual_dc_mppt_clip_loss_percent\", \"DC inverter MPPT clipping\"], \n    [\"annual_ac_inv_pnt_loss_percent\", \"AC inverter pnt\"], \n    [\"annual_ac_inv_pso_loss_percent\", \"AC inverfter pso\"], \n    [\"annual_ac_inv_clip_loss_percent\", \"AC inverter power clipping\"], \n    [\"annual_ac_inv_eff_loss_percent\", \"AC inverter efficiency\"], \n    [\"annual_ac_wiring_loss_percent\", \"AC wiring\"], \n    [\"annual_ac_perf_adj_loss_percent\", \"AC performance adjustment\"], \n    [\"annual_xfmr_loss_percent\", \"Transformer\"]\n]\n\n#\"annual_ac_battery_loss_percent\": \"\", \n#\"annual_dc_lifetime_loss_percent\": \"\", \n#\"annual_dc_battery_loss_percent\": \"\", \n#\"annual_dc_snow_loss_percent\": \"\", \n#\"annual_ac_lifetime_loss_percent\": \"\", \n\nloss_data_out=[]\nfor key,name in loss_map:\n    value=get_path(s.output,loss_path+'.'+key)\n    loss_data_out.append({\n        \"key\":key,\n        \"name\":name,\n        \"value\":value\n    })\n\nprint loss_data_out    \n\nwith open(loss_data_upload_file,'w') as outfile:\n\tjson.dump(loss_data_out,outfile)\n\nloss_data_item={\n\t\"id\":loss_dataitemid,\n\t\"type\": \"data:keyvalue\",\n\t\"tags\":[\n\t\t\"data\",\n\t\t\"keyvalue\"\n\t],\n\t\"parameter\":{\n\t\t\"name\": {\n\t\t\t\"name\": loss_dataitemname\n\t\t}\n\t},\n\t\"columns\":[\n\t\t{\n\t\t\"format\": \"String\",\n\t\t\"name\": \"Key\",\n\t\t\"prop\": \"key\"\n\t\t},{\n\t\t\"format\": \"String\",\n\t\t\"name\": \"Name\",\n\t\t\"prop\": \"name\"\n\t\t},{\n\t\t\"format\": \"Float\",\n\t\t\"name\": \"Value\",\n\t\t\"prop\": \"value\"\n\t\t}\n\t]\n}\n\nloss_data_output={\n\t\"body\": loss_data_upload_file,\n\t\"item\":loss_data_item,\n\t\"tid\":\"rmi-test-beta-system\",\n\t\"overwrite\": True\n}\n\noutput = {\n\t\"data\": out_data,\n\t\"dataitem\":[\n\t\tdata_output,\n\t\tloss_data_output\n\t],\n\t\"file\":[\n\t\tfile_output\n\t],\n\t\"output\": \"Test\"\n}\nstring = json.dumps(output)\nprint \"\"\nprint \"\"\nprint \"\"\nsys.stdout.flush()\nprint string\nsys.stdout.flush()",
+                "name": "task-nrel-sam.py",
+                "type": "parameter:file:python"
+              },
+              "name": {
+                "description": "test",
+                "name": "NREL Sam Analysis v1",
+                "type": "parameter:name:basic"
+              },
+              "runtime": {
+                "args": "task-nrel-sam.py $scenarioRun",
+                "entry": "python",
+                "image": "andersonopt/ao-nrel-sam:latest",
+                "type": "parameter:runtime:basic"
+              },
+              "taskselector": {
+                "queue": "task-dev",
+                "type": "parameter:taskselector:basic",
+                "typefilter": "scenario:nrel:sam"
+              },
+              "workspace": {
+                "type": "parameter:workspace:basic",
+                "workspace": "kickass_blackwell"
+              }
+            },
+            "queue": "ao-task-dev",
+            "rn": "team/rmi-test-beta/task/-LVoc3eGei9pxd5AdMoG",
+            "tags": [
+              "docker",
+              "task"
+            ],
+            "type": "task:docker",
+            "version": 1
+          },
+          "itemKey": "scenario",
+          "rn": "team/rmi-test-beta/task/-LVoc3eGei9pxd5AdMoG",
+          "stepKey": "sam"
+        },
+        {
+          "item": {
+            "created": 1548694434019,
+            "createdBy": "google-oauth2|104792385606727687265",
+            "id": "-LXKNQ1y1hH95UZNogKh",
+            "modified": 1551483420457,
+            "modifiedBy": "google-oauth2|104792385606727687265",
+            "parameter": {
+              "event": {
+                "data": {
+                  "key": "test"
+                },
+                "type": "parameter:event:basic"
+              },
+              "file": {
+                "data": "import sys, os\nimport os.path\nimport time\nfrom sam.weather import get_url,grab_data\nfrom sam import get_file_item\nimport pandas as pd\nimport csv\nimport json\n\n\nprint(\"FetchWeather\")\nprint(\"Arguments %s\",sys.argv[:-2])\nscenario_run=sys.argv[1]\nprint \"scenario run\",scenario_run\n\nif scenario_run:\n    scenario_folder='/'.join(['s_run',scenario_run])\n    context_file='/'.join([scenario_folder,'context.json'])\n    with open(context_file) as infile:\n    \tdata = json.load(infile)\n    \tprimaries=[itemRef['item'] for itemRef in data['asset'] if itemRef['groupKey']=='primary']\n    \tprimary=primaries[0]\n    \tlat=primary['parameter']['location']['lat']\n    \tlng=primary['parameter']['location']['long']\n    \tprint \"Data\",data.keys()\nelse:\n    lat=41.9\n    lng=-97.4\n\nrequest_dir='weather/request'\ndata_dir='weather/data'\n\n\n#wkt,url = get_url(41.8,-97.4)\nwkt,url = get_url(lat,lng)\nprint \"latlng\",lat,lng\nprint \"Location:\",wkt\nprint \"Weather URL: \",url\n\ndef user_format(num):\n    return str(round(float(num),3))\n    \nwkt_no_dot=wkt.replace('.','_').replace('%20','__')\nwkt_user='({lat},{lng})'.format(lat=user_format(lat),lng=user_format(lng))\n\nrequest_file=request_dir+'/{wkt}.csv'.format(wkt=wkt)\ndata_file=data_dir+'/{wkt}.csv'.format(wkt=wkt)\ndata_upload_file=data_dir+'/{wkt}.json'.format(wkt=wkt)\n\nfilename=\"nsrdb-weather-{wkt}.csv\".format(wkt=wkt_no_dot)\ndataitemname=\"NSRDB Weather {wkt} Data\".format(wkt=wkt_user)\ndataitemid=\"nsrdb-weather-{wkt}-json\".format(wkt=wkt_no_dot)\nitemid=\"nsrdb-weather-{wkt}-csv\".format(wkt=wkt_no_dot)\nname=\"NSRDB Weather {wkt}\".format(wkt=wkt_user)\n\ndef ensure_data_upload(data_file,data_upload_file):\n\tif os.path.isfile(data_upload_file):\n\t\twith open(data_upload_file,'r') as infile:\n\t\t\tdata = json.load(infile)\n\t\t\tdf = pd.DataFrame(data)\n\t\t\treturn df\n\n\tdf = pd.read_csv(data_file,skiprows=2)\n\tdf['datetime']=pd.to_datetime(df[['Year','Month','Day','Hour','Minute']])\n\tdf['datetime']=df['datetime'].apply(lambda dt: str(dt.replace(year=2020)))\n\tdf_data=df[['datetime','GHI','Temperature','Wind Speed']]\n\tdf_data.columns = df_data.columns.str.replace(' ','')\n\tdata_out=df_data.dropna().to_dict('records')\n\twith open(data_upload_file,'w') as outfile:\n\t\tjson.dump(data_out,outfile)\n\treturn df_data\n\n\ndef finished():\n\tprint \"Finished\"\n\tprint \"\"\n\tprint \"metadata\"\n\twith open(data_file, 'r+') as afile:\n\t\tcsvReader1 = csv.reader(afile)\n\t\tfor i in range(2):\n\t\t\tprint csvReader1.next()\n\tdf = pd.read_csv(data_file,skiprows=2)\n\n\tprint \"\"\n\tprint \"data\"\n\tprint \"shape\",df.shape\n\tprint \"columns\",df.columns.values\n\tprint df.head()\n\tout={}\n\tout['annual_dni']=df['DNI'].sum()\n\tout['annual_dhi']=df['DHI'].sum()\n\tout['annual_ghi']=df['GHI'].sum()\n\tout['avg_temp']=df['Temperature'].mean()\n\tout['avg_windspeed']=df['Wind Speed'].mean()\n\t\n\n\tprint \"\"\n\tprint \"Ensure data upload\"\n\tdf_data=ensure_data_upload(data_file,data_upload_file)\n\tprint df_data.head()\n\n\tdata_item={\n\t\t\"id\":dataitemid,\n\t\t\"type\": \"data:timeseries:8760\",\n\t\t\"tags\":[\n\t\t\t\"data\",\n\t\t\t\"timeseries\",\n\t\t\t8760\n\t\t],\n\t\t\"parameter\":{\n\t\t\t\"name\": {\n\t\t\t\t\"name\": dataitemname\n\t\t\t}\n\t\t},\n\t\t\"columns\":[\n\t\t\t{\n\t\t\t\"format\": \"DateTime\",\n\t\t\t\"name\": \"DateTime\",\n\t\t\t\"prop\": \"datetime\"\n\t\t\t},{\n\t\t\t\"format\": \"Float\",\n\t\t\t\"name\": \"GHI\",\n\t\t\t\"prop\": \"GHI\"\n\t\t\t},{\n\t\t\t\"format\": \"Float\",\n\t\t\t\"name\": \"Temperature\",\n\t\t\t\"prop\": \"Temperature\"\n\t\t\t},{\n\t\t\t\"format\": \"Float\",\n\t\t\t\"name\": \"Wind Speed\",\n\t\t\t\"prop\": \"WindSpeed\"\n\t\t\t}\n\t\t]\n\t}\n\n\tdata_output={\n\t\t\"body\": data_upload_file,\n\t\t\"item\":data_item,\n\t    \"tid\":\"demo-sa-system\",\n\t\t\"overwrite\": False\n\t}\n\n\tao_item = get_file_item(data_file,itemid,name,filename)\n\tprint \"AO Item to create\",ao_item\n\t\n\t\n\tfile_output={\n\t\t\"path\":data_file,\n\t\t\"item\":ao_item,\n\t    \"tid\":\"demo-sa-system\",\n\t\t\"overwrite\":False\t\n\t}\n\toutput = {\n\t\t\"data\": out,\n\t\t\"output\": \"Test\",\n\t\t\"file\":[\n\t\t\tfile_output\n\t\t],\n\t\t\"dataitem\":[\n\t\t\tdata_output\n\t\t]\n\t}\n\tstring = json.dumps(output)\n\tprint string\n\tsys.exit()\n\n\t\n## Check for existing file\n\nif os.path.isfile(data_file):\n\tprint \"Data file exists\" \n\tfinished()\n\n## Check for outstanding request\n\nelif os.path.isfile(request_file):\n\tprint \"Request exists, poll for file\"\n\tfor i in [1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,25,30,35,40,45,50,55,60]:\n\t\tprint \"Wait: \"+str(i)\n\t\tif os.path.isfile(data_file):\n\t\t\tprint \"Data file exists\"\n\t\t\tfinished()\n\t\telse:\n\t\t\ttime.sleep(i)\n\t## Attempt to grab data if poll fails\n\tgrab_data(request_file,data_file,url)\n\tcreate_data_upload(data_file,data_upload_file)\n\tfinished()\n\n## Else grab data\n\nelse:\n\tprint \"File does not exist and has not been requested\"\n\tprint \"Request file:\",data_file\n\tif not os.path.exists(request_dir):\n\t    os.makedirs(request_dir)\n\tif not os.path.exists(data_dir):\n\t    os.makedirs(data_dir)\n\tgrab_data(request_file,data_file,url)\n\tcreate_data_upload(data_file,data_upload_file)\n\tfinished()",
+                  "name": "task-fetch-weather.py",
+                  "type": "parameter:file:python"
+                },
+                "name": {
+                  "description": "Grab weather data and store in workspace",
+                  "name": "NSRDB - Grab Weather v1",
+                  "type": "parameter:name:basic"
+                },
+                "notes": {
+                  "data": " ",
+                  "type": "parameter:notes:asset"
+                },
+                "runtime": {
+                  "args": "task-fetch-weather.py $scenarioRun",
+                  "entry": "python",
+                  "image": "andersonopt/ao-nrel-sam",
+                  "type": "parameter:runtime:basic"
+                },
+                "taskselector": {
+                  "queue": "task-dev",
+                  "type": "parameter:taskselector:basic",
+                  "typefilter": "scenario:nrel:weather"
+                },
+                "workspace": {
+                  "type": "parameter:workspace:basic",
+                  "workspace": "kickass_blackwell"
+                }
+              },
+              "queue": "task-nsrdb",
+              "rn": "team/demo-site-analysis/task/-LXKNQ1y1hH95UZNogKh",
+              "tags": [
+                "docker",
+                "task"
+              ],
+              "type": "task:docker",
+              "version": 1
+            },
+            "itemKey": "scenario",
+            "rn": "team/demo-site-analysis/task/-LXKNQ1y1hH95UZNogKh",
+            "stepKey": "weather"
+          }
+        ]
+}

@@ -1,0 +1,176 @@
+{
+  "created": 1556047838793,
+  "createdBy": "google-oauth2|104792385606727687265",
+  "description": "Duration=2, Power=       4",
+  "groupId": "kind-falcon-932-A",
+  "groupRef": {
+    "rn": "team/demo-site-analysis/scenarioRunGroupItem/-LdAfOQOYkSrhjZnWt0P"
+  },
+  "id": "-LdAfQscn2JziKQnQBei",
+  "message": "Scenario run failed on step power",
+  "meta": {
+    "failures": [
+      {
+        "message": "Scenario run failed on step power",
+        "status": "Failed",
+        "stepKey": "power"
+      },
+      {
+        "message": "Scenario run failed on step power",
+        "status": "Failed",
+        "stepKey": "power"
+      }
+    ]
+  },
+  "modified": 1556047859385,
+  "modifiedBy": "google-oauth2|104792385606727687265",
+  "name": {
+    "asset": [
+      "Site A Parcel"
+    ],
+    "project": "Site A Project",
+    "run": "Site A Project/Solar, Battery, and Financials - 2 [kind-falcon-932-A-1]",
+    "runId": "kind-falcon-932-A-1",
+    "scenario": "Solar, Battery, and Financials - 2",
+    "scenarioInput": "Walkthrough"
+  },
+  "overrides": [
+    {
+      "before": 1,
+      "item": "project",
+      "name": "Duration",
+      "prop": "step.battery.parameter.batterysize.duration",
+      "value": 2
+    },
+    {
+      "before": 5,
+      "item": "project",
+      "name": "Power",
+      "prop": "step.battery.parameter.batterysize.power",
+      "value": "       4"
+    }
+  ],
+  "parameter": {
+    "name": {
+      "name": "Site A Project/Solar, Battery, and Financials - 2 [kind-falcon-932-A-1]"
+    }
+  },
+  "project": {
+    "step": {
+      "battery": {
+        "parameter": {
+          "batterysize": {
+            "duration": 2,
+            "power": "       4"
+          }
+        }
+      }
+    },
+    "type": "project:mineanalysis"
+  },
+  "resource": {
+    "asset": [
+      "team/demo-site-analysis/asset/-LXKYrgyG5dKDDaY1QsM"
+    ],
+    "data": [
+      "team/demo-site-analysis/dataItem/-LXKR3vVaHl1b3lDunJL",
+      "team/demo-site-analysis/dataItem/-LXKLG1sepBvV6cTX0EN"
+    ],
+    "project": "team/demo-site-analysis/project/-LXKYs8dbOoXeVsEEuuB",
+    "run": "team/demo-site-analysis/scenarioRunItem/-LdAfQscn2JziKQnQBei",
+    "scenario": "team/demo-site-analysis/scenarioItem/-LXKeRUBQLBxg_lyOjeA"
+  },
+  "rn": "team/demo-site-analysis/scenarioRunItem/-LdAfQscn2JziKQnQBei",
+  "scenario": {
+    "type": "scenario:sampypsaexcel"
+  },
+  "status": "Failed",
+  "step": {
+    "financial": {
+      "key": "financial",
+      "message": "Waiting for dependencies to be met.",
+      "parent": "power",
+      "status": "Waiting",
+      "task": {
+        "rn": "team/rmi-test-beta/task/-LWS8GW3Nl5jSFLCLEDb"
+      },
+      "type": "scenario:financial:excel"
+    },
+    "power": {
+      "key": "power",
+      "message": "Task has been scheduled in the queue.",
+      "parent": "sam",
+      "status": "Failed",
+      "task": {
+        "rn": "team/rmi-test-beta/task/-LVocBenHf5hOoK494XS"
+      },
+      "taskRunId": "-LdAfUlT0omMV0_CxQ_5",
+      "type": "scenario:power:pypsa"
+    },
+    "sam": {
+      "data": [
+        {
+          "rn": "team/rmi-test-beta-system/dataItem/ao_nrel-sam-gen-kind-falcon-932-A-1-json",
+          "type": "data:timeseries:8760"
+        },
+        {
+          "rn": "team/rmi-test-beta-system/dataItem/ao_nrel-sam-loss-kind-falcon-932-A-1-json",
+          "type": "data:keyvalue"
+        }
+      ],
+      "file": [
+        {
+          "rn": "team/rmi-test-beta-system/file/ao_nrel-sam-output-kind-falcon-932-A-1-json",
+          "type": "file:data:csv"
+        }
+      ],
+      "key": "sam",
+      "message": "Task completed successfully",
+      "output": {
+        "annual_energy": 0,
+        "capacity_factor": 0,
+        "kwh_per_kw": 0,
+        "performance_ratio": 0,
+        "solar_capacity": 5
+      },
+      "parent": "weather",
+      "status": "Finished",
+      "task": {
+        "rn": "team/rmi-test-beta/task/-LVoc3eGei9pxd5AdMoG"
+      },
+      "taskRunId": "-LdAfSowmyVlNNMY9NQd",
+      "type": "scenario:nrel:sam"
+    },
+    "weather": {
+      "data": [
+        {
+          "rn": "team/demo-sa-system/dataItem/ao_nsrdb-weather-POINT(-105_427053077__39_7501810249)-json",
+          "type": "data:timeseries:8760"
+        }
+      ],
+      "file": [
+        {
+          "rn": "team/demo-sa-system/file/ao_nsrdb-weather-POINT(-105_427053077__39_7501810249)-csv",
+          "type": "file:data:csv"
+        }
+      ],
+      "key": "weather",
+      "message": "Task completed successfully",
+      "output": {
+        "annual_dhi": 597874,
+        "annual_dni": 2062845,
+        "annual_ghi": 1681088,
+        "avg_temp": 4.9430365296803656,
+        "avg_windspeed": 1.4215639269406393
+      },
+      "status": "Finished",
+      "task": {
+        "rn": "team/demo-site-analysis/task/-LXKNQ1y1hH95UZNogKh"
+      },
+      "taskRunId": "-LdAfQxwWaI_0x3MLcfy",
+      "type": "scenario:nrel:weather"
+    }
+  },
+  "stepKey": "power",
+  "type": "run:scenario:sampypsaexcel"
+}

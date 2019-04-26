@@ -1,17 +1,36 @@
-?start: (statement | white_space | ao_macro)*
+?start: (statement | WS | ao_macro)*
 
-statement: NOT_AO_MACRO newline
+statement: NOT_AO_MACRO NL
 
-ao_macro: AO_MACRO ANY newline
+ao_macro: _AO_MACRO  command NL
 
-white_space: WS
-newline: NEWLINE
+command: "list"  item 	-> cmd_list
+		| "map" 			-> cmd_map
+		| "param" 			-> cmd_param
 
-NOT_AO_MACRO: /(?!\*\*ao).+/
-AO_MACRO: "**ao"
-ANY: /.+/
+item: "asset" 	filter~0..2 	-> asset
+	| "project" filter~0..2 	-> project
+	| "data" 	filter~0..2 	-> data
 
-//%ignore WS
+filter: "\"" get_param op  value "\""
+op: "==" -> op_eq
+	| "startswith" -> op_sw
+?get_param: WORD
+?value: WORD_AO
+
+
+_WS 			: WS
+_NL 			: NEWLINE
+NL  			: NEWLINE
+
+NOT_AO_MACRO	: /(?!\*\*ao).+/
+_AO_MACRO		: "**ao"
+ANY				: /.+/
+WORD			: /[\w-]+/
+WORD_AO 		: /[a-zA-Z][\w:]*/
+
+%ignore WS
 
 %import common.WS
 %import common.NEWLINE
+

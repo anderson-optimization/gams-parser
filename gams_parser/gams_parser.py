@@ -49,6 +49,17 @@ class GamsParser():
 
 		self.text=self.file.read()
 
+	def inject(self,context=None,run=None,data=None):
+		logger.debug("GamsParser : Inject : 1. Parse")
+		self.text+="\n"
+		pt= lark_ao_inject.parse(self.text)
+		print("Parse Tree")
+		print(pt.pretty())
+		logger.debug("GamsParser : Inject : 2. Transform")
+		TI=TreeInject(context)
+		new_model=TI.transform(pt)
+		return new_model
+
 	def parse(self):
 		return lark_gams.parse(self.text)
 
@@ -58,6 +69,72 @@ class GamsParser():
 		model.cross_reference()
 		model.reference_lines(self.text)
 		return model
+
+class TreeInject(Transformer):
+	def __init__(self,context):
+		self.context=context
+
+	def start(self,args):
+		print("Start",args)
+		return "".join(args)
+
+ 	def statement(self,args):
+		print('Statement',args)
+		return "".join(args)
+
+ 	def white_space(self,args):
+		print("White space",args)
+		return args[0].value
+
+ 	def newline(self,args):
+		return args[0].value
+
+	def filter(self,args):
+		print("Filter")
+		print(args)
+		def filter_fn(item):
+			if args[1].data=='op_eq':
+				return item[args[0]]==args[2]
+			elif args[1].data=='op_sw':
+				return item[args[0]].startswith(args[2])
+			else:
+				raise Exception("Unknown operator")
+		return filter_fn
+
+	def project(self,args):
+		print("Project")
+		print(args)
+		items=[self.context['project']]
+		return items
+
+	def data(self,args):
+		print("Data")
+		print(args)
+		items=self.context['data']
+		return items
+
+	def asset(self,args):
+		print("Asset")
+		items=self.context['asset']
+		if len(args)>0:
+			items=[i for i in items if args[0](i)]
+		return items
+
+ 	def ao_macro(self,args):
+		print("Ao Macro")
+		command=args[0].data
+		items=args[0].children[0]
+
+		out_items=[]
+		for item in items:
+			if item and 'id' in item:
+				out_items.append(item['id'])
+			elif item and 'item' in item and 'id' in item['item']:
+				out_items.append(item['item']['id'])
+			else:
+				out_items.append(item)
+		return "{command}{args}".format(command=", ".join(out_items),args="".join(args[1:]))
+		#return "<-- AO {} - {} -->".format(command,", ".join(out_items))
 
 @v_args(meta=True)
 class TreeToModel(Transformer):    
