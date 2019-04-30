@@ -1,7 +1,10 @@
 
 from lark import Transformer
 from .util import get_path
+import logging
 
+logger = logging.getLogger('gams_injector')
+logger.setLevel('DEBUG')
 def get_id(item):
 	if isinstance(item,str):
 		return item
@@ -18,23 +21,22 @@ class TreeInject(Transformer):
 		self.context=context
 
 	def start(self,args):
-		print("Start",args)
+		logger.debug("Start")
 		return "".join(args)
 
  	def statement(self,args):
-		print('Statement',args)
+		logger.debug('Statement')
 		return "".join(args)
 
  	def white_space(self,args):
-		print("White space",args)
+		logger.debug("White space")
 		return args[0].value
 
  	def newline(self,args):
 		return args[0].value
 
 	def filter(self,args):
-		print("Filter")
-		print(args)
+		logger.debug("Filter")
 		def filter_fn(item):
 			if args[1].data=='op_eq':
 				return item[args[0]]==args[2]
@@ -45,26 +47,24 @@ class TreeInject(Transformer):
 		return filter_fn
 
 	def project(self,args):
-		print("Project")
-		print(args)
+		logger.debug("Project")
 		items=[self.context['project']]
 		return items
 
 	def data(self,args):
-		print("Data")
-		print(args)
+		logger.debug("Data")
 		items=self.context['data']
 		return items
 
 	def asset(self,args):
-		print("Asset")
+		logger.debug("Asset")
 		items=self.context['asset']
 		if len(args)>0:
 			items=[i for i in items if args[0](i)]
 		return items
 		
 	def item_exp(self,args):
-		print("Item Expr",args)
+		logger.debug("Item Expr")
 		items=args[0]
 		
 		# If Children, filter
@@ -75,7 +75,7 @@ class TreeInject(Transformer):
 		return items
 
 	def cmd_param(self,args):
-		print("Command Map : Args",args)
+		logger.debug("cmd Param")
 		items=args[0]
 		## ASSUME SELECTORS
 		selector=args[1]
@@ -85,37 +85,38 @@ class TreeInject(Transformer):
 
 		out_items=[]
 		for item in items:
-			print("item",item)
-			print("Selector",selector)
+			logger.debug("Item")
+			logger.debug("Selector {}".format(selector))
 			if 'item' in item:
 				value=get_path(item['item'],selector)
 			else:
 				value=get_path(item,selector)
-			print("value",value)
+			logger.debug("Value {}".format(value))
 
 			if not value:
 				continue
 
-			if isinstance(value,float):
-				out_items.append(item['id']+" "+value)
+			if isinstance(value,float) or isinstance(value,int):
+				out_items.append(item['item']['id']+" "+str(value))
 			elif isinstance(value,dict):
+				logger.debug("Value is a dictionary, nest values")
 				for key in value:
 					val=value[key]
 					if isinstance(val,float) or isinstance(val,int):
-						print("Adding {key}={val}".format(key=key,val=val))
+						logger.debug("Adding {key}={val}".format(key=key,val=val))
 						out_items.append(item['id']+'.'+key+" "+str(val))
 					elif isinstance(val,str):
-						print("Ignoring {key}={val}".format(key=key,val=val))
+						logger.debug("Ignoring {key}={val}".format(key=key,val=val))
 					else:
-						print("Unknown {key}={val}".format(key=key,val=val))
+						logger.debug("Unknown {key}={val}".format(key=key,val=val))
 			if isinstance(value,str):
 				raise Exception("Parameters can not be strings")
 
-		print("Out items",out_items)
+		logger.debug("Out items {}".format(len(out_items)))
 		return "{command}{args}".format(command="\n".join(out_items),args="".join(args[2:]))
 
 	def cmd_map(self,args):
-		print("Command Map : Args",args)
+		logger.debug("cmd Map")
 		project=args[0]
 		## ASSSUME ONLY 1 PROJECT
 		project_id=project[0]['id']
@@ -125,11 +126,11 @@ class TreeInject(Transformer):
 		for item in items:
 			item_name=get_id(item)
 			out_items.append(project_id+'.'+item_name)
-		print("Out items",out_items)
+		logger.debug("Out items {}".format(len(out_items)))
 		return "{command}{args}".format(command="\n".join(out_items),args="".join(args[2:]))
 
 	def cmd_list(self,args):
-		print("Command List : Args",args)
+		logger.debug("cmd List")
 		items=args[0]
 
 		out_items=[]
@@ -139,6 +140,6 @@ class TreeInject(Transformer):
 		return "{command}{args}".format(command=", ".join(out_items),args="".join(args[1:]))
 
  	def ao_macro(self,args):
-		print("Ao Macro ",args)
+		logger.debug("AO Macro - Inject Info")
 		return "".join(args)
 		#return "<-- AO {} - {} -->".format(command,", ".join(out_items))

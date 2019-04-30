@@ -1,5 +1,7 @@
 from gams_parser import GamsParser
 import json
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 def test_inject_list():
 	gp = GamsParser('./test/gams/inject-basic.gms')

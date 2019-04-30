@@ -9,3 +9,8 @@ parameter param_battery(project,battery_field) /
 **ao param project 'step.battery.parameter.batterycharacter'
 **ao param project 'step.battery.parameter.batterysize'
 /;
+
+
+parameter p_nom(gen) /
+**ao param asset 'parameter.capacity.capacity'
+/;
