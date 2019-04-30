@@ -145,10 +145,17 @@ class TreeInject(Transformer):
 		tariff_type=args[0].data
 		out_items=[]
 		supply_id='supply1'
-		if tariff_type=="tariff_weekend":
-			print("Weekend")
-		elif tariff_type=="tariff_weekday":
-			print("Weekday")
+		elif tariff_type.startswith("tariff_sched"):
+			if tariff_type=='tariff_sched_weekend':
+				schedule_type_key="Weekend"
+			elif tariff_type=='tariff_sched_weekday':
+				schedule_type_key=='Weekday'
+			else:
+				raise Exception("Dont understand tariff sched param")
+			logger.debug("Generating Tariff Sched")
+			for product in ['demand','energy']:
+				schedule_key="{product}{type}Sched".format(product=product,type=schedule_type_key)
+				schedule=self._data[schedule_key]
 		elif tariff_type.startswith("tariff_rate"):
 			if tariff_type=='tariff_rate':
 				value_key='rate'
