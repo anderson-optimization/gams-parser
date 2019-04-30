@@ -58,7 +58,7 @@ class GamsParser():
 		print("Parse Tree")
 		print(pt.pretty())
 		logger.debug("GamsParser : Inject : 2. Transform")
-		TI=TreeInject(context)
+		TI=TreeInject(context,data=data)
 		new_model=TI.transform(pt)
 		return new_model
 

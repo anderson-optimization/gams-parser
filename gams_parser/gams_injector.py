@@ -17,8 +17,9 @@ def get_id(item):
 	return item_name
 
 class TreeInject(Transformer):
-	def __init__(self,context):
-		self.context=context
+	def __init__(self,context,data=None):
+		self._context=context
+		self._data=data
 
 	def start(self,args):
 		logger.debug("Start")
@@ -48,17 +49,17 @@ class TreeInject(Transformer):
 
 	def project(self,args):
 		logger.debug("Project")
-		items=[self.context['project']]
+		items=[self._context['project']]
 		return items
 
 	def data(self,args):
 		logger.debug("Data")
-		items=self.context['data']
+		items=self._context['data']
 		return items
 
 	def asset(self,args):
 		logger.debug("Asset")
-		items=self.context['asset']
+		items=self._context['asset']
 		if len(args)>0:
 			items=[i for i in items if args[0](i)]
 		return items
@@ -138,6 +139,45 @@ class TreeInject(Transformer):
 			item_name=get_id(item)
 			out_items.append(item_name)
 		return "{command}{args}".format(command=", ".join(out_items),args="".join(args[1:]))
+
+	def cmd_tariff(self,args):
+		logger.debug('cmd Tariff')
+		tariff_type=args[0].data
+		out_items=[]
+		supply_id='supply1'
+		if tariff_type=="tariff_weekend":
+			print("Weekend")
+		elif tariff_type=="tariff_weekday":
+			print("Weekday")
+		elif tariff_type.startswith("tariff_rate"):
+			if tariff_type=='tariff_rate':
+				value_key='rate'
+			elif tariff_type=='tariff_rate_adj':
+				value_key='adj'
+			else:
+				raise Exception("Dont understand tariff rate param")
+			logger.debug("Generating Tariff Rate")
+			for product in ['demand','energy']:
+				data=self._data[product+'RateStrux']
+				print("hello")
+				for period in range(len(data)):
+					print("period",period)
+					period_key='period{}'.format(str(period+1))
+					tier_name='{}RateTiers'.format(product)
+					for tier in range(len(data[period][tier_name])):
+						print("tier",tier)
+						tier_key='tier{}'.format(str(tier+1))
+						key=".".join([supply_id,product,period_key,tier_key])
+						value=data[period][tier_name][tier][value_key]
+						out_items.append("{} {}".format(key,value))
+		else:
+			raise Excpetion("Only know about 3 tariff types")
+		d=self._data
+		for k in d.keys():
+			print k
+			print d[k]
+		print("cmd tariff",args)
+		return "\n".join(out_items)
 
  	def ao_macro(self,args):
 		logger.debug("AO Macro - Inject Info")
