@@ -31,6 +31,76 @@
       "rn": "team/demo-site-analysis/asset/-LXKYrgyG5dKDDaY1QsM",
       "stepKey": "primary",
       "type": "asset:land:mine"
+    },{
+       "groupKey":"gen",
+       "item": {
+          "created": 1530050234332,
+          "createdBy": "google-oauth2|108437856006995528186",
+          "id": "eia_gen_10398-GENC",
+          "modified": 1556655981718,
+          "modifiedBy": "google-oauth2|104792385606727687265",
+          "parameter": {
+            "capacity": {
+              "aoSets": [
+                "parameter:capacity:basic"
+              ],
+              "capacity": 23,
+              "capacity-units": "units:power:MW",
+              "minload": 3,
+              "minload-units": "units:power:MW",
+              "powerfactor": 0.9,
+              "summercapacity": 23,
+              "summercapacity-units": "units:power:MW",
+              "type": "parameter:capacity:basic",
+              "wintercapacity": 23,
+              "wintercapacity-units": "units:power:MW"
+            },
+            "general": {
+              "aoSets": [
+                "parameter:general:basic"
+              ],
+              "owner": "eia_utility_9454",
+              "state": "OH",
+              "status": "OP",
+              "type": "parameter:general:basic",
+              "year": "2010.0",
+              "zip": "44105"
+            },
+            "location": {
+              "aoSets": [
+                "parameter:location:latlng"
+              ],
+              "lat": 41.4739,
+              "long": -81.6728,
+              "type": "parameter:location:latlng"
+            },
+            "name": {
+              "aoSets": [
+                "parameter:name:basic"
+              ],
+              "description": "Other Gases - Steam Turbine, including nuclear, geothermal and solar steam (does not include combined cycle)",
+              "name": "Arcelormittal Cleveland Inc - GENC",
+              "type": "parameter:name:basic"
+            },
+            "parentplant": {
+              "aoSets": [
+                "parameter:parentplant:plant"
+              ],
+              "plant": "eia_plant_10398",
+              "type": "parameter:parentplant:plant"
+            }
+          },
+          "rn": "team/demo-alpha/asset/eia_gen_10398-GENC",
+          "tags": [
+            "asset",
+            "gen"
+          ],
+          "type": "asset:gen"
+        },
+      "itemKey": "project",
+      "rn": "team/demo-alpha/asset/eia_gen_10398-GENC",
+      "stepKey": "gen",
+      "type": "asset:gen"
     }
   ],
   "data":[
