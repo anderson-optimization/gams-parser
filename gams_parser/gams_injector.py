@@ -145,7 +145,7 @@ class TreeInject(Transformer):
 		tariff_type=args[0].data
 		out_items=[]
 		supply_id='supply1'
-		elif tariff_type.startswith("tariff_sched"):
+		if tariff_type.startswith("tariff_sched"):
 			if tariff_type=='tariff_sched_weekend':
 				schedule_type_key="Weekend"
 			elif tariff_type=='tariff_sched_weekday':
@@ -156,6 +156,14 @@ class TreeInject(Transformer):
 			for product in ['demand','energy']:
 				schedule_key="{product}{type}Sched".format(product=product,type=schedule_type_key)
 				schedule=self._data[schedule_key]
+				print("schedule",schedule)
+				for month in range(len(schedule)):
+					month_key="m{}".format(month+1)
+					for hour in range(len(schedule[month])):
+						hour_key="h{}".format(hour+1)
+						period_key="period{}".format(schedule[month][hour])
+						map_item=".".join([supply_id,product,month_key,hour_key,period_key])
+						out_items.append(map_item)
 		elif tariff_type.startswith("tariff_rate"):
 			if tariff_type=='tariff_rate':
 				value_key='rate'
@@ -178,7 +186,7 @@ class TreeInject(Transformer):
 						value=data[period][tier_name][tier][value_key]
 						out_items.append("{} {}".format(key,value))
 		else:
-			raise Excpetion("Only know about 3 tariff types")
+			raise Exception("Only know about 2 tariff types")
 		d=self._data
 		for k in d.keys():
 			print k

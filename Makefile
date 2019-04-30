@@ -18,7 +18,7 @@ inspect:
 
 
 
-test: test_parse test_inject test_transform	test_gams_parser
+test: test_parse test_inject test_transform	test_gams_parser test_inject
 
 ## Test categories
 
@@ -26,7 +26,7 @@ test_parse:
 	python  ${NOSETEST} -v ${FLAGS} test/parse/*.py
 
 test_inject:
-	python  ${NOSETEST} -v ${FLAGS} test/inject/inject-tariff.py
+	python  ${NOSETEST} -v ${FLAGS} test/inject/*.py
 
 test_transform:
 	python  ${NOSETEST} -v ${FLAGS} test/transform/*.py

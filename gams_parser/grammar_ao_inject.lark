@@ -11,8 +11,8 @@ command: "list"  item_exp 				-> cmd_list
 
 item_exp: item [filter]
 
-tariff_type: "weekend_schedule" 	-> tariff_weekend
-			| "weekday_schedule"	-> tariff_weekday
+tariff_type: "weekend_schedule" 	-> tariff_sched_weekend
+			| "weekday_schedule"	-> tariff_sched_weekday
 			| "product_rate"		-> tariff_rate
 			| "product_adj"			-> tariff_rate_adj
 
