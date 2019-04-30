@@ -20,3 +20,24 @@ def test_inject_filtered():
 		new_model=gp.inject(context=data)
 		print("Output")
 		print(new_model)
+
+def test_inject_map():
+	gp = GamsParser('./test/gams/inject-map.gms')
+	with open('./test/ao/scenario-context.json') as in_file:
+		data=json.load(in_file)
+		#print(data)
+		print("Inject data")
+		new_model=gp.inject(context=data)
+		print("Output")
+		print(new_model)
+
+
+def test_inject_param():
+	gp = GamsParser('./test/gams/inject-param.gms')
+	with open('./test/ao/scenario-context.json') as in_file:
+		data=json.load(in_file)
+		#print(data)
+		print("Inject data")
+		new_model=gp.inject(context=data)
+		print("Output")
+		print(new_model)

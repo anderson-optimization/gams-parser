@@ -4,14 +4,27 @@ statement: NOT_AO_MACRO NL
 
 ao_macro: _AO_MACRO  command NL
 
-command: "list"  item 	-> cmd_list
-		| "map" 			-> cmd_map
-		| "param" 			-> cmd_param
+command: "list"  item_exp 				-> cmd_list
+		| "map" project item_exp		-> cmd_map
+		| "param" item selector			-> cmd_param
 
-item: "asset" 	filter~0..2 	-> asset
-	| "project" filter~0..2 	-> project
-	| "data" 	filter~0..2 	-> data
+item_exp: item [filter]
 
+
+?item: asset
+	| project
+	| data
+
+asset: _ASSET
+project: _PROJECT
+data: _DATA
+
+_PROJECT: 	"project"
+_ASSET: 	"asset"
+_DATA: 		"data"
+
+
+selector: "'" WORD_SELECTOR "'"
 filter: "\"" get_param op  value "\""
 op: "==" -> op_eq
 	| "startswith" -> op_sw
@@ -28,6 +41,7 @@ _AO_MACRO		: "**ao"
 ANY				: /.+/
 WORD			: /[\w-]+/
 WORD_AO 		: /[a-zA-Z][\w:]*/
+WORD_SELECTOR	: /[a-zA-Z][\w:\.]*/
 
 %ignore WS
 
