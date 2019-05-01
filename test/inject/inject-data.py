@@ -26,7 +26,7 @@ def test_inject_data_gen():
 		} for item in inject_map]
 		pprint.pprint(inject_simple)
 
-		with open('output-gen.gms','w') as out_file:
+		with open('tmp/output-gen.gms','w') as out_file:
 			out_file.write(new_model)
 
 def test_inject_data_demand():
@@ -49,5 +49,5 @@ def test_inject_data_demand():
 		} for item in inject_map]
 		pprint.pprint(inject_simple)
 
-		with open('output-demand.gms','w') as out_file:
+		with open('tmp/output-demand.gms','w') as out_file:
 			out_file.write(new_model)
