@@ -20,9 +20,10 @@ def test_inject_tariff():
 		inject_simple=[{
 			"id": item['item_id'],
 			"name": item['item_name'],
-			"type": item['item']['type']
+			"type": item['item']['type'],
+			"rn": item['item']['rn']
 		} for item in inject_map]
 		pprint.pprint(inject_simple)
 
-		with open('output-siteanalysis.gms','w') as out_file:
+		with open('tmp/output-siteanalysis.gms','w') as out_file:
 			out_file.write(new_model)

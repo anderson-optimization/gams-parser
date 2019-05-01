@@ -3,6 +3,12 @@ from lark import Transformer, Tree
 from .util import get_path
 import logging
 import re
+import json
+
+class AttrDict(dict):
+    def __init__(self, *args, **kwargs):
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
 
 logger = logging.getLogger('gams_parser.injector')
 logger.setLevel('DEBUG')
@@ -122,6 +128,33 @@ class TreeInjector(Transformer):
 			items=[i for i in items if filter_fn(i)]
 
 		return items
+
+	def cmd_jsondata(self,args):
+		logger.debug("cmd JsonData")
+
+		data = self._data
+
+		columns=[]
+		for a in args:
+			for c in a.children:
+				columns.append(c)
+
+		out_items=[]
+		for r in range(len(data)):
+			print(r)
+			print(columns)
+			row_template="".join(columns)
+			print(row_template)
+			row_data=AttrDict(data[r])
+			print("data",row_data)
+			row_str=row_template.format(_index=r,row=row_data)
+			print('string',row_str)
+
+			out_items.append(row_str)
+
+
+		return "\n".join(out_items)
+
 
 	def cmd_param(self,args):
 		logger.debug("cmd Param")
