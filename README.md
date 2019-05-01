@@ -17,10 +17,13 @@ Interested in two directions.  Optional 3rd
 
 This accomplishes goal 1.
 
+Create structure model from GAMS code.
 
-## GAMS Injector 
+## AO Injector 
 
 This accomplishes goal 2.
+
+Inject GAMS code into gams file using AO context item.
 
 ### Examples
 
@@ -262,28 +265,3 @@ make test FLAGS="--nocapture"
 ### Grammar
 
 The expression grammar doesn't obey order of operations for math.  use this calculater as reference for parsing structure. [https://github.com/lark-parser/lark/blob/master/examples/calc.py](https://github.com/lark-parser/lark/blob/master/examples/calc.py)
-
-### Gams Parser
-
-- Add transformer to create structured representation of model in python objects
-- Output information for pretty print in UI
-
-	- Symbol definitions ( sets, parameters, variables, equations )
-	- line of statement - the actual string
-	- Index list
-	- Description
-
-- Wrap in task to interact with UI
-
-#### Meta
-
-Improve capture of meta data associated with the definitions.  
-
-- Most important is to capture the original text of the definition.
-
-### AO Injector
-
-- Create inject syntax DSL
-- Wrap in task system, get project/asset information from event
-- Use input information to inject based on inject DSL mapping
-
