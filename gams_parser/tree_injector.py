@@ -134,6 +134,8 @@ class TreeInjector(Transformer):
 
 		out_items=[]
 		for item in items:
+			item_id,item_name=get_id(item)
+			self._add_to_map(item_id=item_id,item_name=item_name,item=item)
 			logger.debug("Item")
 			logger.debug("Selector {}".format(selector))
 			if 'item' in item:
@@ -146,14 +148,14 @@ class TreeInjector(Transformer):
 				continue
 
 			if isinstance(value,float) or isinstance(value,int):
-				out_items.append(item['item']['id']+" "+str(value))
+				out_items.append(item_name+" "+str(value))
 			elif isinstance(value,dict):
 				logger.debug("Value is a dictionary, nest values")
 				for key in value:
 					val=value[key]
 					if isinstance(val,float) or isinstance(val,int):
 						logger.debug("Adding {key}={val}".format(key=key,val=val))
-						out_items.append(item['id']+'.'+key+" "+str(val))
+						out_items.append(item_name+'.'+key+" "+str(val))
 					elif isinstance(val,str):
 						logger.debug("Ignoring {key}={val}".format(key=key,val=val))
 					else:
