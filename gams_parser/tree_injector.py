@@ -48,7 +48,7 @@ def get_id(item):
 
 	return item_id,item_name
 
-class TreeInject(Transformer):
+class TreeInjector(Transformer):
 	def __init__(self,context,data=None):
 		self._context=context
 		self._data=data

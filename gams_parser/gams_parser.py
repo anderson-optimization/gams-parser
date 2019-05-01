@@ -2,16 +2,16 @@
 from lark import Lark
 import os
 
-from .gams_injector import TreeInject
-from .gams_model import TreeToModel
+from .tree_injector import TreeInjector
+from .tree_to_model import TreeToModel
 
 import logging
 logger = logging.getLogger('gams_parser')
 
 
 dirname = os.path.dirname(__file__)
-grammar_gams = os.path.join(dirname, 'grammar_gams.lark')
-grammar_ao_inject = os.path.join(dirname, 'grammar_ao_inject.lark')
+grammar_gams = os.path.join(dirname, 'grammar/gams.lark')
+grammar_ao_inject = os.path.join(dirname, 'grammar/ao_inject.lark')
 
 
 with open(grammar_gams,'r') as in_file:
@@ -57,7 +57,7 @@ class GamsParser():
 		print("Parse Tree")
 		print(pt.pretty())
 		logger.debug("GamsParser : Inject : 2. Transform")
-		TI=TreeInject(context,data=data)
+		TI=TreeInjector(context,data=data)
 		new_model,inject_map=TI.transform(pt)
 		return new_model,inject_map
 
