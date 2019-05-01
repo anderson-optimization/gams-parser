@@ -25,7 +25,7 @@ This accomplishes goal 2.
 ### Examples
 
 
-#### List items
+#### List and map items
 
 Template file
 
@@ -46,6 +46,15 @@ set gen(asset) /
 **ao list asset "type startswith asset:battery"
 new_solar
 new_battery
+/;
+
+
+set project2asset(project,asset) /
+**ao map project asset
+/;
+
+set project2data(project,data) /
+**ao map project data
 /;
 ```
 
@@ -68,6 +77,18 @@ set gen(asset) /
 ArcelormittalClevelandInc_GENC
 new_solar
 new_battery
+/;
+
+set project2asset(project,asset) /
+SiteAProject.SiteA_Parcel
+SiteAProject.ArcelormittalClevelandInc_GENC
+SiteAProject.new_battery
+SiteAProject.new_solar
+/;
+
+set project2data(project,data) /
+SiteAProject.SiteALoad
+SiteAProject.SiteA_TOURates
 /;
 ```
 
