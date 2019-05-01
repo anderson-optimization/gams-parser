@@ -19,11 +19,24 @@ This accomplishes goal 1.
 
 Create structure model from GAMS code.
 
+
+SHORT PARAGRAPH ON THIS FUNCTIONALITY
+
+HOW TO USE HERE
+
+### Examples
+
+EXAMPLES HERE
+
 ## AO Injector 
 
 This accomplishes goal 2.
 
 Inject GAMS code into gams file using AO context item.
+
+SHORT PARAGRAPH ON THIS FUNCTIONALITY
+
+HOW TO USE HERE
 
 ### Examples
 
