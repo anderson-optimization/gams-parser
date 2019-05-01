@@ -1,4 +1,4 @@
-from gams_parser import GamsParser, scrub
+from gams_parser import GamsParser, scrub_meta
 import json 
 import pprint
 import logging
@@ -38,7 +38,7 @@ def test_transform_model_json():
 
 		print("\nmodel.toDict Hack\n")
 		m=model.toDict()
-		scrub(m)
+		scrub_meta(m)
 		pprint.pprint(m['assignments'])
 
 def test_transform_model_siteanalysis():
@@ -60,5 +60,5 @@ def test_transform_model_siteanalysis():
 
 		print("\nmodel.toDict Hack\n")
 		m=model.toDict()
-		scrub(m)
+		scrub_meta(m)
 		pprint.pprint(m)

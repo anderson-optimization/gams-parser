@@ -22,19 +22,19 @@ with open(grammar_ao_inject,'r') as in_file:
 	text=in_file.read()
 	lark_ao_inject = Lark(text)
 
-def scrub(obj, bad=["_meta","meta"]):
+def scrub_meta(obj, bad=["_meta","meta"]):
     if isinstance(obj, dict):
         for k in obj.keys():
             if k in bad:
                 del obj[k]
             else:
-                scrub(obj[k], bad)
+                scrub_meta(obj[k], bad)
     elif isinstance(obj, list):
         for i in reversed(range(len(obj))):
             if obj[i] in bad:
                 del obj[i]
             else:
-                scrub(obj[i], bad)
+                scrub_meta(obj[i], bad)
 
     else:
         # neither a dict nor a list, do nothing
