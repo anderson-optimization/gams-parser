@@ -1,32 +1,80 @@
 
-from lark import Transformer
+from lark import Transformer, Tree
 from .util import get_path
 import logging
+import re
 
 logger = logging.getLogger('gams_injector')
 logger.setLevel('DEBUG')
 def get_id(item):
+	ao_item=None
+	item_name=None
+	item_id=None
 	if isinstance(item,str):
-		return item
+		logger.debug('Getting id from string')
+		item_name=item
+		item_id=item
 	elif item and 'id' in item:
-		item_name=item['id']
+		logger.debug('Getting id from item')
+		ao_item = item
 	elif item and 'item' in item and 'id' in item['item']:
-		item_name=item['item']['id']
+		logger.debug('Getting id from nested item ref')
+		ao_item=item['item']
 	else:
 		raise Exception("Unknown id format")
-	return item_name
+
+	if ao_item:
+		item_id=ao_item['id']
+		# Try to get name
+		name=get_path(ao_item,'parameter.name.name')
+		# Attempt project name
+		if not name:
+			name=get_path(ao_item,'step.start.parameter.name.name')
+
+		if name:
+			item_name=name
+		else:
+			item_name=item_id
+
+	item_name=item_name.replace(" ",'').replace("-","_")
+	# Hopefully this removes everything but a-zA-Z_
+	item_name = re.sub(
+			r"[^\w]",
+			"",
+			item_name
+		)
+
+	print("item_name",item_id,item_name)
+
+	return item_id,item_name
 
 class TreeInject(Transformer):
 	def __init__(self,context,data=None):
 		self._context=context
 		self._data=data
+		self._map=[]
+		self._mapped=set()
+
+	def _add_to_map(self,item_id=None,item_name=None,item=None):
+		if not item_id:
+			raise Exception("Need item id")
+		if not item_name:
+			raise Exception("Need item name")
+		
+		if item_id not in self._mapped:
+			self._map.append({
+					"item_id": item_id,
+					"item_name": item_name,
+					"item": item
+				})
+			self._mapped.add(item_id)
 
 	def start(self,args):
 		logger.debug("Start")
-		return "".join(args)
+		return "".join(args),self._map
 
  	def statement(self,args):
-		logger.debug('Statement')
+		#logger.debug('Statement')
 		return "".join(args)
 
  	def white_space(self,args):
@@ -120,15 +168,22 @@ class TreeInject(Transformer):
 		logger.debug("cmd Map")
 		project=args[0]
 		## ASSSUME ONLY 1 PROJECT
-		project_id=project[0]['id']
+		project_id,project_name=get_id(project[0])
+		self._add_to_map(item_id=project_id,item_name=project_name,item=project[0])
 		items=args[1]
-
 		out_items=[]
-		for item in items:
-			item_name=get_id(item)
-			out_items.append(project_id+'.'+item_name)
+		if isinstance(items,Tree) and items.data=='selector':
+			out_items.append(project_name+"."+"".join(items.children))
+		else:
+			for item in items:
+				item_id,item_name=get_id(item)
+				self._add_to_map(item_id=item_id,item_name=item_name,item=item)
+				out_items.append(project_id+'.'+item_name)
 		logger.debug("Out items {}".format(len(out_items)))
-		return "{command}{args}".format(command="\n".join(out_items),args="".join(args[2:]))
+		if len(out_items)>0:
+			return "{command}{args}".format(command="\n".join(out_items),args="".join(args[2:]))
+		else:
+			return ""
 
 	def cmd_list(self,args):
 		logger.debug("cmd List")
@@ -136,9 +191,13 @@ class TreeInject(Transformer):
 
 		out_items=[]
 		for item in items:
-			item_name=get_id(item)
+			item_id,item_name=get_id(item)
+			self._add_to_map(item_id=item_id,item_name=item_name,item=item)
 			out_items.append(item_name)
-		return "{command}{args}".format(command=", ".join(out_items),args="".join(args[1:]))
+		if len(out_items)>0:
+			return "{command}{args}".format(command=", ".join(out_items),args="".join(args[1:]))
+		else:
+			return ""
 
 	def cmd_tariff(self,args):
 		logger.debug('cmd Tariff')
@@ -156,7 +215,6 @@ class TreeInject(Transformer):
 			for product in ['demand','energy']:
 				schedule_key="{product}{type}Sched".format(product=product,type=schedule_type_key)
 				schedule=self._data[schedule_key]
-				print("schedule",schedule)
 				for month in range(len(schedule)):
 					month_key="m{}".format(month+1)
 					for hour in range(len(schedule[month])):
@@ -174,27 +232,25 @@ class TreeInject(Transformer):
 			logger.debug("Generating Tariff Rate")
 			for product in ['demand','energy']:
 				data=self._data[product+'RateStrux']
-				print("hello")
 				for period in range(len(data)):
-					print("period",period)
 					period_key='period{}'.format(str(period+1))
 					tier_name='{}RateTiers'.format(product)
 					for tier in range(len(data[period][tier_name])):
-						print("tier",tier)
 						tier_key='tier{}'.format(str(tier+1))
 						key=".".join([supply_id,product,period_key,tier_key])
 						value=data[period][tier_name][tier][value_key]
 						out_items.append("{} {}".format(key,value))
 		else:
 			raise Exception("Only know about 2 tariff types")
-		d=self._data
-		for k in d.keys():
-			print k
-			print d[k]
-		print("cmd tariff",args)
 		return "\n".join(out_items)
 
  	def ao_macro(self,args):
 		logger.debug("AO Macro - Inject Info")
-		return "".join(args)
+		args = [a for a in args if a != '']
+		if len(args)==1 and args[0].type=="NL":
+			# Empty macro
+			logger.debug("Empty macro")
+			return ""
+		else:
+			return "".join(args)
 		#return "<-- AO {} - {} -->".format(command,", ".join(out_items))

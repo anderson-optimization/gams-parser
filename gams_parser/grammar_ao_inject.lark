@@ -4,10 +4,10 @@ statement: NOT_AO_MACRO NL
 
 ao_macro: _AO_MACRO  command NL
 
-command: "list"  item_exp 				-> cmd_list
-		| "map" project item_exp		-> cmd_map
-		| "param" item selector			-> cmd_param
-		| "tariff" tariff_type			-> cmd_tariff
+command: "list"  item_exp 							-> cmd_list
+		| "map" project ( item_exp | selector )		-> cmd_map
+		| "param" item selector						-> cmd_param
+		| "tariff" tariff_type						-> cmd_tariff
 
 item_exp: item [filter]
 

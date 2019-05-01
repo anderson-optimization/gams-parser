@@ -26,7 +26,7 @@ test_parse:
 	python  ${NOSETEST} -v ${FLAGS} test/parse/*.py
 
 test_inject:
-	python  ${NOSETEST} -v ${FLAGS} test/inject/*.py
+	python  ${NOSETEST} -v ${FLAGS} test/inject/inject-real.py
 
 test_transform:
 	python  ${NOSETEST} -v ${FLAGS} test/transform/*.py

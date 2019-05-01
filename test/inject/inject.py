@@ -9,7 +9,7 @@ def test_inject_list():
 		data=json.load(in_file)
 		#print(data)
 		print("Inject data")
-		new_model=gp.inject(context=data)
+		new_model,inject_map=gp.inject(context=data)
 		print("Output")
 		print(new_model)
 
@@ -19,7 +19,7 @@ def test_inject_filtered():
 		data=json.load(in_file)
 		#print(data)
 		print("Inject data")
-		new_model=gp.inject(context=data)
+		new_model,inject_map=gp.inject(context=data)
 		print("Output")
 		print(new_model)
 
@@ -29,7 +29,7 @@ def test_inject_map():
 		data=json.load(in_file)
 		#print(data)
 		print("Inject data")
-		new_model=gp.inject(context=data)
+		new_model,inject_map=gp.inject(context=data)
 		print("Output")
 		print(new_model)
 
@@ -40,6 +40,6 @@ def test_inject_param():
 		data=json.load(in_file)
 		#print(data)
 		print("Inject data")
-		new_model=gp.inject(context=data)
+		new_model,inject_map=gp.inject(context=data)
 		print("Output")
 		print(new_model)

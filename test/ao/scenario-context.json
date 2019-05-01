@@ -15,7 +15,7 @@
             "long": -105.42705307744916
           },
           "name": {
-            "name": "Site A Parcel",
+            "name": "Site A - Parcel ://",
             "type": "parameter:name:basic"
           }
         },
@@ -331,7 +331,7 @@
                     "long": -105.42705307744916
                   },
                   "name": {
-                    "name": "Site A Parcel",
+                    "name": "Site A - Parcel ://",
                     "type": "parameter:name:basic"
                   }
                 },
