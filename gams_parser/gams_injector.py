@@ -4,7 +4,7 @@ from .util import get_path
 import logging
 import re
 
-logger = logging.getLogger('gams_injector')
+logger = logging.getLogger('gams_parser.injector')
 logger.setLevel('DEBUG')
 def get_id(item):
 	ao_item=None
@@ -178,7 +178,7 @@ class TreeInject(Transformer):
 			for item in items:
 				item_id,item_name=get_id(item)
 				self._add_to_map(item_id=item_id,item_name=item_name,item=item)
-				out_items.append(project_id+'.'+item_name)
+				out_items.append(project_name+'.'+item_name)
 		logger.debug("Out items {}".format(len(out_items)))
 		if len(out_items)>0:
 			return "{command}{args}".format(command="\n".join(out_items),args="".join(args[2:]))
