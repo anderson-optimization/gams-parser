@@ -251,17 +251,17 @@ supply1.demand.m1.h17.period1
 
 [https://www.gams.com/latest/docs/UG_SetDefinition.html](https://www.gams.com/latest/docs/UG_SetDefinition.html)
 
+### ISSUES
+
+
+The expression grammar doesn't obey order of operations for math.  use this calculater as reference for parsing structure. [https://github.com/lark-parser/lark/blob/master/examples/calc.py](https://github.com/lark-parser/lark/blob/master/examples/calc.py)
+
+
 ## Tests
 
 The `test/gams` folder contains sample gams syntax that can be used to test a grammar file to ensure it captures `GAMS` fairly complex syntax.  
 
 ```
 make test
-make test FLAGS="--nocapture"
+make test FLAGS="--nocapture --nologcapture"
 ```
-
-## TODO
-
-### Grammar
-
-The expression grammar doesn't obey order of operations for math.  use this calculater as reference for parsing structure. [https://github.com/lark-parser/lark/blob/master/examples/calc.py](https://github.com/lark-parser/lark/blob/master/examples/calc.py)
