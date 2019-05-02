@@ -1,5 +1,7 @@
 
 
+$onempty
+
 *****************
 *** Overrides ***
 *****************
@@ -22,123 +24,225 @@ alias (time,t);
 
 set time /t1*t8760/;
 
-set month /m1*m12/;
-set hour /h1*h24/;
-set day_of_week /dow1*dow7/;
+set
+    datetime_comp         	"Datetime components used to map a time index to a real datetime." 
+                            									/year,month,day,hour,minute,second/
+    year                  	"Years possible in the simulation" 	/y2000*y2040/
+    month                 	"Months of the year" 				/m1*m12/
+    m2t(month,time)       	"Map month to time"
+	hour 				  	"Hour of the data" 					/h1*h24/
+	day_of_week 		  	"Day of week" 						/dow1*dow7/
+	weekend(day_of_week) 	"Weekend days" 						/dow1,dow7/
+	weekday(day_of_week) 	"Week days"							/dow2*dow6/
 
-set weekend(day_of_week) /dow1,dow7/;
-set weekday(day_of_week) /dow2*dow6/;
+    ch(time)              	"These time elements are included in the current solve."
+    chm(month)				"These months are included in the current solve."
+;
 
-set ch(time) "Time to check" /t1*t8760/;
-set chm(month) "Months to check" /m1*m12/;
-set m2t(month,time) "Month to time map" /
+ch(time)=1;
+chm(month)=1;
+set m2t(month,time) /
 	m1.t1*t744
 /;
+
+** Probably should inject some time structures here
 
 ** AO Items
 
 * Project
-set project /project_a/;
+set project "Projects are grouping of assets, data, and parameters" /
+**ao list project
+/;
 
 * Asset
-set asset /site_a,diesel_gen,solar_step,battery_step/;
+set asset "Assets are physical objects used in analysis" /
+**ao list asset
+new_solar
+new_battery
+/;
 
-set site(asset) /site_a/;
+set site(asset) "A site with a corresponding load" /
+**ao list asset "type startswith asset:land"
+/;
 
-set gen(asset) /solar_step,battery_step,diesel_gen/;
+set gen(asset) "Generators attach to a single bus and can feed in power" /
+**ao list asset "type startswith asset:gen"
+**ao list asset "type startswith asset:battery"
+new_solar
+new_battery
+/;
 
-set control_gen(gen) / diesel_gen / ;
-set variable_gen(gen) / solar_step /;
-set battery(gen) / battery_step /;
+set control_gen(gen) "Operational generators can be controlled and used to respond to variations in demand" / 
+**ao list asset "type startswith asset:gen:combined"
+**ao list asset "type startswith asset:gen:combustion"
+**ao list asset "type startswith asset:gen:hydro"
+**ao list asset "type startswith asset:gen:steam"
+/;
+
+set renewable(gen) "Renewable generators are not controllable, have max gen according to a resource, and can be curtailed" / 
+**ao list asset "type startswith asset:gen:renewable"
+new_solar
+/;
+
+set solar(gen) "Solar generators have a max generation corresponding to a solar resource and can be curtailed" / 
+**ao list asset "type startswith asset:gen:renewable:solar"
+new_solar
+/;
+
+set wind(gen) "Wind generators have a max generation corresponding to a wind resource and can be curtailed" / 
+**ao list asset "type startswith asset:gen:renewable:wind"
+/;
+
+
+set battery(gen)  "Batteries can be charged, discharged, and have a state of charge" / 
+**ao list asset "type startswith asset:battery"
+new_battery
+/;
 
 * Data
-set data /supply1/;
-set supply(data) /supply1/;
+set data "AO Data objects" /
+**ao list data
+/;
+set supply(data) "Electrical supply data, currently only TOU Rates"/
+**ao list data "groupKey == tourate"
+/;
+
 
 ** Maps
 
-set project2asset(project,asset) /
-	project_a.site_a
-	project_a.diesel_gen
-	project_a.solar_step
-	project_a.battery_step
+set project2asset(project,asset) "Map associating projects with data" /
+**ao map project asset
+**ao map project 'new_battery'
+**ao map project 'new_solar'
 /;
 
-set project2data(project,data) /
-	project_a.supply1
+set project2data(project,data) "Map associating projects with data" /
+**ao map project data
 /;
 
 ** Parameters
 
 * Fields
 
-set financial_field / 
-	discount_rate
-	federal_tax_rate
-	state_tax_rate
-	inflation_rate
-	o_and_m_esclation
+set financial_field "Financial parameter fields" / 
+	discountRate
+	federalTaxRate
+	stateTaxRate
+	inflationRate
+	omEscalationRate
+	period
 /;
 
-set solar_field /capacity_cost,capacity,degradation_rate,o_and_m/;
-set battery_field / capacity_cost,energy_cost,power,duration,charge_efficiency,discharge_efficiency/;
+set solar_field "Solar parameter fields" /
+	capacityCost
+	capacityPower
+	degradationRate
+	omCost
+/;
+set battery_field "Battery parameter fields" / 
+	capacityCosts
+	energyCosts
+	power
+	duration
+	chargeEfficiency
+	dischargeEfficiency
+/;
 
-parameter param_solar(project,solar_field) /
-	project_a.capacity_cost 12
-	project_a.capacity 5
+parameter param_financial(project,financial_field) "Parameters for project of financial step" /
+**ao param project 'step.financial.parameter.simplefinance'
+/;
+
+parameter param_solar(project,solar_field) "Parameters for project of solar step" /
+**ao param project 'step.solar.parameter.solar'
 /;
 
 ** SOC min/max????
-parameter param_battery(project,battery_field) /
-	project_a.power 10
-	project_a.duration 1
+parameter param_battery(project,battery_field) "Parameters for project of battery step" /
+**ao param project 'step.battery.parameter.batterycapitalcost'
+**ao param project 'step.battery.parameter.batterycharacter'
+**ao param project 'step.battery.parameter.batterysize'
 /;
 
 
-parameter efficiency_store(gen),efficiency_dispatch(gen),
-		soc_min(gen),soc_max(gen)
-		p_nom(gen), marginal_cost(gen);
+* Generator parameters
+parameter 	
+			p_nom(gen)					"Nominal power of generator (MW)"
+			marginal_cost(gen)			"Marginal cost of generation ($/MWh)"
 
-efficiency_dispatch('battery_step')=param_battery('project_a','discharge_efficiency');
-efficiency_store('battery_step')=param_battery('project_a','charge_efficiency');
+* Renewables
+			p_max_pu_t(time,gen)		"Max generation per unit capacity by time [0,1]"
 
-* Data sets , probably a csv
-parameter demand(time,site) /
-	site_a.t1 10
-	site_a.t2 20
-/;
+* Battery
+			duration(gen)				"Duration of battery (t)"
+			energy_capacity(gen)		"Energy capacity (MWh)"
+			efficiency_store(gen)		"Efficiency of storing energy [0,1]"
+		  	efficiency_dispatch(gen)	"Efficiency of dispatching energy [0,1]"
+			soc_min(gen)				"State of charge min [0,1]"
+			soc_max(gen)				"State of charge max [0,1]"
+;
+
+* Data sets
+parameter demand(time,site) "hourly demand";
+$include output-demand.gms
 
 
-** GEN CAPACITYIES TOO WHIT TOO WHOO?!!?
+** ISSUE
+** Project is hardcoded here multiple times!!
 
-p_nom(gen)=10;
-marginal_cost(gen)=10;
+** Set parameters
+p_nom('new_solar')=param_solar('SiteAProject','capacityPower');
+p_nom('new_battery')=param_battery('SiteAProject','power');
+duration('new_battery')=param_battery('SiteAProject','duration');
+
+energy_capacity(gen)=p_nom(gen)*duration(gen);
+
+marginal_cost('new_solar')=0;
+marginal_cost('new_battery')=0;
+
+soc_min(battery)=.15;
+soc_max(battery)=.95;
+
+efficiency_dispatch('new_battery')=param_battery('SiteAProject','dischargeEfficiency');
+efficiency_store('new_battery')=param_battery('SiteAProject','chargeEfficiency');
 
 
 *** this is a data object that needs to be encoded by data id
 ** Supply/Schedule Implementation
 
-set product /energy,demand/;
-set period /period1*period10/;
-set tier /tier1*tier10/;
 
-set weekday_schedule(supply,product,month,hour,period);
-set weekend_schedule(supply,product,month,hour,period);
+set product 	"Product for energy supply" 				
+					/energy,demand/
+	period 		"Periods define different rate structures"	
+					/period1*period10/
+	tier 		"Tiers are used to define different rates based on buy values"
+					/tier1*tier10/;
 
-parameter product_rate(supply,product,period,tier);
+parameter product_rate(supply,product,period,tier) "Rate of energy/demand cost ($/kWh and $/kW)"
+			product_adj(supply,product,period,tier) "Rate of adjustment ($/kWh and $/kW)";
 
-** Schedule definition
+set weekday_schedule(supply,product,month,hour,period) "Supply schedule defining period for weekdays"
+	weekend_schedule(supply,product,month,hour,period) "Supply schedule defining period for weekends";
 
-set weekend_schedule /
-	supply1.energy.m1.h1.period1
-	supply1.energy.m1.h2.period1
-	supply1.energy.m1.h3.period1
+
+** Tariff definition
+
+parameter product_rate(supply,product,period,tier) /
+**ao tariff product_rate
+/;
+parameter product_adj(supply,product,period,tier) /
+**ao tariff product_adj
 /;
 
+set weekend_schedule(supply,product,month,hour,period) /
+$offlisting
+**ao tariff weekend_schedule
+$onlisting
+/;
 
-parameter product_rate /
-	supply1.energy.period1.tier1 10.4
-	supply1.energy.period1.tier2 15.2
+set weekday_schedule(supply,product,month,hour,period) /
+$offlisting
+**ao tariff weekend_schedule
+$onlisting
 /;
 
 

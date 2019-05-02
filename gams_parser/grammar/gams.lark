@@ -1,7 +1,7 @@
 start: statement+
 
 ?statement: [macro_conditional] (symbol_definition 
-			| macro_include
+			| macro
 			| assignment_definition 
 			| equation_definition 
 			| model_definition 
@@ -13,7 +13,15 @@ macro_conditional: "$if" negate? macro_condition
 macro_condition: "set" string -> env_test
 				| expression
 
-macro_include: "$include" filename _NL
+macro: macro_include  _NL
+	| "$" macro_words+ _NL
+
+macro_include: "$include" filename
+macro_words: _M_EMPTY	
+			| _M_LISTING
+_M_EMPTY:	"onempty" | "offempty"
+_M_LISTING: "onlisting" | "offlisting"
+
 
 negate: "not"
 filename: (string | compiler_variable)+ ["." extension]
@@ -74,7 +82,7 @@ table_data 		: (symbol_id | value)+
 ?data_element	: symbol_id
 				| symbol_range
 				| symbol_id value -> data_value
-				| macro_include
+				| macro
 value 			: NUMBER
 
 description		: FLEX_ESCAPED_STRING

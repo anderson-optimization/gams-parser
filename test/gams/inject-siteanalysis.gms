@@ -34,7 +34,16 @@ set
 	day_of_week 		  	"Day of week" 						/dow1*dow7/
 	weekend(day_of_week) 	"Weekend days" 						/dow1,dow7/
 	weekday(day_of_week) 	"Week days"							/dow2*dow6/
+
+    ch(time)              	"These time elements are included in the current solve."
+    chm(month)				"These months are included in the current solve."
 ;
+
+ch(time)=1;
+chm(month)=1;
+set m2t(month,time) /
+	m1.t1*t744
+/;
 
 ** Probably should inject some time structures here
 
@@ -183,7 +192,7 @@ $include output-demand.gms
 ** Set parameters
 p_nom('new_solar')=param_solar('SiteAProject','capacityPower');
 p_nom('new_battery')=param_battery('SiteAProject','power');
-duration('new_battery')=param('SiteAProject','duration');
+duration('new_battery')=param_battery('SiteAProject','duration');
 
 energy_capacity(gen)=p_nom(gen)*duration(gen);
 
@@ -193,8 +202,8 @@ marginal_cost('new_battery')=0;
 soc_min(battery)=.15;
 soc_max(battery)=.95;
 
-efficiency_dispatch('new_battery')=param_battery('SiteAProject','discharge_efficiency');
-efficiency_store('new_battery')=param_battery('SiteAProject','charge_efficiency');
+efficiency_dispatch('new_battery')=param_battery('SiteAProject','dischargeEfficiency');
+efficiency_store('new_battery')=param_battery('SiteAProject','chargeEfficiency');
 
 
 *** this is a data object that needs to be encoded by data id
@@ -225,11 +234,15 @@ parameter product_adj(supply,product,period,tier) /
 /;
 
 set weekend_schedule(supply,product,month,hour,period) /
+$offlisting
 **ao tariff weekend_schedule
+$onlisting
 /;
 
 set weekday_schedule(supply,product,month,hour,period) /
+$offlisting
 **ao tariff weekend_schedule
+$onlisting
 /;
 
 
@@ -377,7 +390,7 @@ project_balance(project,time)$ch(time)..
 				supplyX(supply,time)
 			)
 		- sum(site$project2asset(project,site),
-			demand(site,time)
+			demand(time,site)
 			);
 
 
