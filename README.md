@@ -28,7 +28,7 @@ HOW TO USE HERE
 
 EXAMPLES HERE
 
-## AO Injector 
+## AO GAMS DSL [ Injector ]
 
 This accomplishes goal 2.
 
