@@ -132,10 +132,24 @@ class TreeInjector(Transformer):
 	def cmd_jsondata(self,args):
 		logger.debug("cmd JsonData")
 
-		data = self._data
+		data_selector=args[0]
+
+		if data_selector.data=='data_by_key':
+			print('data',data_selector)
+			key="".join(data_selector.children)
+			data = self._data[key]
+		elif data_selector.data=='data_by_group':
+			group="".join(data_selector.children)
+			data_items=[d for d in self._context['data'] if d['groupKey']==group]
+			if len(data_items)>1:
+				raise Exception("Only support single data selectors for now")
+			data_id,data_name=get_id(data_items[0])
+			data=self._data[data_id]
+		else:
+			raise Exception("Data selector not supported")
 
 		columns=[]
-		for a in args:
+		for a in args[1:]:
 			for c in a.children:
 				columns.append(c)
 
@@ -147,7 +161,7 @@ class TreeInjector(Transformer):
 			print(row_template)
 			row_data=AttrDict(data[r])
 			print("data",row_data)
-			row_str=row_template.format(_index=r,row=row_data)
+			row_str=row_template.format(_index=r,_index_p1=r+1,row=row_data)
 			print('string',row_str)
 
 			out_items.append(row_str)
@@ -238,45 +252,50 @@ class TreeInjector(Transformer):
 		logger.debug('cmd Tariff')
 		tariff_type=args[0].data
 		out_items=[]
-		supply_id='supply1'
-		if tariff_type.startswith("tariff_sched"):
-			if tariff_type=='tariff_sched_weekend':
-				schedule_type_key="Weekend"
-			elif tariff_type=='tariff_sched_weekday':
-				schedule_type_key=='Weekday'
+		print("context",self._context['data'])
+		supply_data=[d for d in self._context['data'] if d['groupKey']=='tourate']
+		for supply in supply_data:
+			supply_id,supply_name=get_id(supply)
+			supply_data=self._data[supply_id]
+			self._add_to_map(item_id=supply_id,item_name=supply_name,item=supply)
+			if tariff_type.startswith("tariff_sched"):
+				if tariff_type=='tariff_sched_weekend':
+					schedule_type_key="Weekend"
+				elif tariff_type=='tariff_sched_weekday':
+					schedule_type_key=='Weekday'
+				else:
+					raise Exception("Dont understand tariff sched param")
+				logger.debug("Generating Tariff Sched")
+				for product in ['demand','energy']:
+					schedule_key="{product}{type}Sched".format(product=product,type=schedule_type_key)
+					schedule=supply_data[schedule_key]
+					for month in range(len(schedule)):
+						month_key="m{}".format(month+1)
+						for hour in range(len(schedule[month])):
+							hour_key="h{}".format(hour+1)
+							period_key="period{}".format(schedule[month][hour])
+							map_item=".".join([supply_name,product,month_key,hour_key,period_key])
+							out_items.append(map_item)
+			elif tariff_type.startswith("tariff_rate"):
+				if tariff_type=='tariff_rate':
+					value_key='rate'
+				elif tariff_type=='tariff_rate_adj':
+					value_key='adj'
+				else:
+					raise Exception("Dont understand tariff rate param")
+				logger.debug("Generating Tariff Rate")
+				for product in ['demand','energy']:
+					data=supply_data[product+'RateStrux']
+					for period in range(len(data)):
+						period_key='period{}'.format(str(period+1))
+						tier_name='{}RateTiers'.format(product)
+						for tier in range(len(data[period][tier_name])):
+							tier_key='tier{}'.format(str(tier+1))
+							key=".".join([supply_name,product,period_key,tier_key])
+							value=data[period][tier_name][tier][value_key]
+							out_items.append("{} {}".format(key,value))
 			else:
-				raise Exception("Dont understand tariff sched param")
-			logger.debug("Generating Tariff Sched")
-			for product in ['demand','energy']:
-				schedule_key="{product}{type}Sched".format(product=product,type=schedule_type_key)
-				schedule=self._data[schedule_key]
-				for month in range(len(schedule)):
-					month_key="m{}".format(month+1)
-					for hour in range(len(schedule[month])):
-						hour_key="h{}".format(hour+1)
-						period_key="period{}".format(schedule[month][hour])
-						map_item=".".join([supply_id,product,month_key,hour_key,period_key])
-						out_items.append(map_item)
-		elif tariff_type.startswith("tariff_rate"):
-			if tariff_type=='tariff_rate':
-				value_key='rate'
-			elif tariff_type=='tariff_rate_adj':
-				value_key='adj'
-			else:
-				raise Exception("Dont understand tariff rate param")
-			logger.debug("Generating Tariff Rate")
-			for product in ['demand','energy']:
-				data=self._data[product+'RateStrux']
-				for period in range(len(data)):
-					period_key='period{}'.format(str(period+1))
-					tier_name='{}RateTiers'.format(product)
-					for tier in range(len(data[period][tier_name])):
-						tier_key='tier{}'.format(str(tier+1))
-						key=".".join([supply_id,product,period_key,tier_key])
-						value=data[period][tier_name][tier][value_key]
-						out_items.append("{} {}".format(key,value))
-		else:
-			raise Exception("Only know about 2 tariff types")
+				raise Exception("Only know about 2 tariff types")
 		return "\n".join(out_items)
 
  	def ao_macro(self,args):

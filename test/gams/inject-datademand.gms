@@ -1,5 +1,6 @@
 
 * Data sets , probably a csv
-parameter gen(site,time) /
-**ao json2data "t{_index}	{row.AverageLoad(kW)}"
-/;
+table demand(time,site)
+	SiteA_Parcel
+**ao json2data group=demand "t{_index_p1}	{row.AverageLoad(kW)}"
+;

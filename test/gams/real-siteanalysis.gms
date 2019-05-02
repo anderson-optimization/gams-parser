@@ -103,7 +103,7 @@ efficiency_dispatch('battery_step')=param_battery('project_a','discharge_efficie
 efficiency_store('battery_step')=param_battery('project_a','charge_efficiency');
 
 * Data sets , probably a csv
-parameter demand(site,time) /
+parameter demand(time,site) /
 	site_a.t1 10
 	site_a.t2 20
 /;
@@ -286,7 +286,7 @@ project_balance(project,time)$ch(time)..
 				supplyX(supply,time)
 			)
 		- sum(site$project2asset(project,site),
-			demand(site,time)
+			demand(time,site)
 			);
 
 

@@ -15,7 +15,11 @@ def test_inject_data_gen():
 		demand=json.load(demand_file)
 		gen=json.load(gen_file)
 		print("Inject data")
-		new_model,inject_map=gp.inject(context=data,data=gen)
+		d_map={
+			"nrel-sam-gen": gen,
+			"-LXKR3vVaHl1b3lDunJL": demand
+		}
+		new_model,inject_map=gp.inject(context=data,data=d_map)
 		print("Output")
 		#print(new_model)
 		inject_simple=[{
@@ -38,7 +42,11 @@ def test_inject_data_demand():
 		demand=json.load(demand_file)
 		gen=json.load(gen_file)
 		print("Inject data")
-		new_model,inject_map=gp.inject(context=data,data=demand)
+		d_map={
+			"nrel-sam-gen": gen,
+			"-LXKR3vVaHl1b3lDunJL": demand
+		}
+		new_model,inject_map=gp.inject(context=data,data=d_map)
 		print("Output")
 		#print(new_model)
 		inject_simple=[{

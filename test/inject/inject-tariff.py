@@ -12,6 +12,9 @@ def test_inject_tariff():
 		tariff=json.load(tariff_file)
 		print(tariff.keys())
 		print("Inject data")
-		new_model,inject_map=gp.inject(context=data,data=tariff)
+		d_map={
+			"-LXKLG1sepBvV6cTX0EN":tariff
+		}
+		new_model,inject_map=gp.inject(context=data,data=d_map)
 		print("Output")
 		print(new_model)
