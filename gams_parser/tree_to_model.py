@@ -193,6 +193,16 @@ class Model(object):
 		self.model_defs=[]
 		self.solve=[]
 
+	def __add__(self,other):
+		model = Model()
+		for s in self.symbols:
+			model.symbols[s]=self.symbols[s]+other.symbols[s]
+		model.equation_defs=self.equation_defs+other.equation_defs
+		model.assignments=self.assignments+other.assignments
+		model.model_defs=self.model_defs+other.model_defs
+		model.solve=self.solve+other.solve
+		return model
+
 	def add_equation(self,e):
 		eqn_def=EquationDefinition()
 		eqn_def.symbol=Symbol(e.children[0])

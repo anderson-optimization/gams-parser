@@ -29,7 +29,7 @@ test_inject:
 	python  ${NOSETEST} -v ${FLAGS} test/inject/inject*.py
 
 test_transform:
-	python  ${NOSETEST} -v ${FLAGS} test/transform/*.py
+	python  ${NOSETEST} -v ${FLAGS} test/transform/transform_add.py
 
 test_gams_parser:
 	python  ${NOSETEST} -v ${FLAGS} test/gams_parser/*.py

@@ -7,7 +7,7 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 
 def test_inject_data_gen():
-	gp = GamsParser('./test/gams/inject-datagen.gms')
+	gp = GamsParser('./test/gams/inject-datagen.inc')
 	with open('./test/ao/scenario-context.json') as in_file, \
 			open('./test/ao/demand.json') as demand_file, \
 			open('./test/ao/nrel-sam-gen.json') as gen_file:
@@ -34,7 +34,7 @@ def test_inject_data_gen():
 			out_file.write(new_model)
 
 def test_inject_data_demand():
-	gp = GamsParser('./test/gams/inject-datademand.gms')
+	gp = GamsParser('./test/gams/inject-datademand.inc')
 	with open('./test/ao/scenario-context.json') as in_file, \
 			open('./test/ao/demand.json') as demand_file, \
 			open('./test/ao/nrel-sam-gen.json') as gen_file:
