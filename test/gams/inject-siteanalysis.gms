@@ -17,43 +17,46 @@ $onempty
 
 ** Time definition
 
-set     
-    time                  "Time index of model. Currently assumed to be hourly.";
-
-alias (time,t);     
-
-set time /t1*t8760/;
 
 set
-    datetime_comp         	"Datetime components used to map a time index to a real datetime." 
-                            									/year,month,day,hour,minute,second/
-	datetime_map(time,datetime_comp) "Map relating model time to a specific date"                            									
+    time 	                "Time index of model (hourly)."  	/t0*t8760/
     year                  	"Years possible in the simulation" 	/y2000*y2040/
     month                 	"Months of the year" 				/m1*m12/
-    m2t(month,time)       	"Map month to time"
 	hour 				  	"Hour of the data" 					/h1*h24/
 	day_of_week 		  	"Day of week" 						/dow1*dow7/
-	weekend(day_of_week) 	"Weekend days" 						/dow1,dow7/
-	weekday(day_of_week) 	"Week days"							/dow2*dow6/
 
+*	Map datetime to model time
+    datetime_comp         	"Datetime components used to map a time index to a real datetime." 
+                            	/year,month,day,hour,minute,dayofweek,weekday,weekend/
+	
+*	Maps
+    m2t(month,time)       	"Map month to time"
+    weekend2t(time)			"Map weekend to time"
+    weekday2t(time)			"Map weekday to time"
+
+*	Subsets of time to include in solve
     ch(time)              	"These time elements are included in the current solve."
     chm(month)				"These months are included in the current solve."
 ;
 
+alias (time,t);   
+
 ch(time)=1;
 chm(month)=1;
 
-
-table datetime_map(time,datetime_comp)
+table datetime_map(time,datetime_comp) "Map relating model time to a specific date"                            									
 $ondelim offlisting
-$include datetime_map_2018.csv
+$include time/datetime_map_2018.csv
 $offdelim onlisting
 ;
 
 display datetime_map;
 
 m2t(month,time)$(datetime_map(time,'month')=ord(month))=Yes;
+weekend2t(time)$(datetime_map(time,'weekend')=1)=Yes;
+weekday2t(time)$(datetime_map(time,'weekday')=1)=Yes;
 
+display weekend2t;
 
 
 ** Probably should inject some time structures here

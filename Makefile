@@ -18,7 +18,7 @@ inspect:
 
 
 
-test: test_parse test_inject test_transform	test_gams_parser test_inject
+test: test_parse test_inject test_transform	test_gams_parser test_inject test_writer
 
 ## Test categories
 
@@ -29,10 +29,14 @@ test_inject:
 	python  ${NOSETEST} -v ${FLAGS} test/inject/inject*.py
 
 test_transform:
-	python  ${NOSETEST} -v ${FLAGS} test/transform/transform_add.py
+	python  ${NOSETEST} -v ${FLAGS} test/transform/*.py
 
 test_gams_parser:
 	python  ${NOSETEST} -v ${FLAGS} test/gams_parser/*.py
+
+test_writer:
+	python  ${NOSETEST} -v ${FLAGS} test/writer/*.py
+
 
 ## Individuals
 

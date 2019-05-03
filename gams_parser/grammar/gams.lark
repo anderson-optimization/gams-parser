@@ -27,7 +27,7 @@ _M_DELIM: "ondelim" | "offdelim"
 
 
 negate: "not"
-filename: (string | compiler_variable)+ ["." extension]
+filename: (string | compiler_variable | "/")+ ["." extension]
 quoted_string: /['"]/ string /['"]/
 compiler_variable: "%" string "%"
 extension: string
