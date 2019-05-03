@@ -27,6 +27,7 @@ set time /t1*t8760/;
 set
     datetime_comp         	"Datetime components used to map a time index to a real datetime." 
                             									/year,month,day,hour,minute,second/
+	datetime_map(time,datetime_comp) "Map relating model time to a specific date"                            									
     year                  	"Years possible in the simulation" 	/y2000*y2040/
     month                 	"Months of the year" 				/m1*m12/
     m2t(month,time)       	"Map month to time"
@@ -41,9 +42,19 @@ set
 
 ch(time)=1;
 chm(month)=1;
-set m2t(month,time) /
-	m1.t1*t744
-/;
+
+
+table datetime_map(time,datetime_comp)
+$ondelim offlisting
+$include datetime_map_2018.csv
+$offdelim onlisting
+;
+
+display datetime_map;
+
+m2t(month,time)$(datetime_map(time,'month')=ord(month))=Yes;
+
+
 
 ** Probably should inject some time structures here
 

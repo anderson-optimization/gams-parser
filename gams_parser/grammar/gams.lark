@@ -2,6 +2,7 @@ start: statement+
 
 ?statement: [macro_conditional] (symbol_definition 
 			| macro
+			| display
 			| assignment_definition 
 			| equation_definition 
 			| model_definition 
@@ -14,13 +15,15 @@ macro_condition: "set" string -> env_test
 				| expression
 
 macro: macro_include  _NL
-	| "$" macro_words+ _NL
+	| "$" macro_words~1..5 [" "]~0..5 _NL
 
 macro_include: "$include" filename
 macro_words: _M_EMPTY	
 			| _M_LISTING
+			| _M_DELIM
 _M_EMPTY:	"onempty" | "offempty"
 _M_LISTING: "onlisting" | "offlisting"
+_M_DELIM: "ondelim" | "offdelim"
 
 
 negate: "not"
@@ -29,6 +32,11 @@ quoted_string: /['"]/ string /['"]/
 compiler_variable: "%" string "%"
 extension: string
 
+// display
+
+display: _DISPLAY symbol_name+ _END
+_DISPLAY: "Display" | "display"
+
 // model_definition
 model_definition: _MODEL string "/" symbol_name+ "/" _END
 
@@ -36,6 +44,7 @@ model_definition: _MODEL string "/" symbol_name+ "/" _END
 solve_definition: _SOLVE string ( "using" model_types sense symbol_name | sense symbol_name "using" model_types) _END
 sense: "minimizing" -> sense_min
 	| "maximizing" 	-> sense_max
+
 
 
 // assignment
