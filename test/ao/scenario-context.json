@@ -219,7 +219,7 @@
           },
           "batterysize": {
             "duration": 2,
-            "power": "       4",
+            "power": 4,
             "type": "parameter:batterysize:default"
           }
         },
@@ -469,7 +469,7 @@
         "item": "project",
         "name": "Power",
         "prop": "step.battery.parameter.batterysize.power",
-        "value": "       4"
+        "value": 4
       }
     ],
     "parameter": {
@@ -483,7 +483,7 @@
           "parameter": {
             "batterysize": {
               "duration": 2,
-              "power": "       4"
+              "power": 4
             }
           }
         }

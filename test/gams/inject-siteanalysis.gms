@@ -38,6 +38,9 @@ set
     month_time_first(month,time) 	"First time of month"
     month_time_last(month,time)		"Last time of month"
 
+    time_first(time)				"First time of analyis"
+    time_last(time)					"Last time of analysis"
+
 
 *	Subsets of time to include in solve
     ch(time)              	"These time elements are included in the current solve."
@@ -56,13 +59,15 @@ $offdelim onlisting
 ;
 
 month2t(month,time)$(datetime_map(time,'month')=ord(month))=Yes;
-hour2t(hour,time)$(datetime_map(time,'hour')=ord(hour))=Yes;
+hour2t(hour,time)$(datetime_map(time,'hour')+1=ord(hour))=Yes;
 weekend2t(time)$(datetime_map(time,'weekend')=1)=Yes;
 weekday2t(time)$(datetime_map(time,'weekday')=1)=Yes;
 
 month_time_first(month,time)$(month2t(month,time) and ord(time)=smin(t$month2t(month,t),ord(t)))=YES;
 month_time_last(month,time)$(month2t(month,time) and ord(time)=smax(t$month2t(month,t),ord(t)))=YES;
 
+time_first(time)$(ord(time)=smin(t,ord(t)))=YES;
+time_last(time)$(ord(time)=smax(t,ord(t)))=YES;
 
 ** AO Items
 
@@ -196,11 +201,15 @@ parameter
 		  	efficiency_dispatch(gen)	"Efficiency of dispatching energy [0,1]"
 			soc_min(gen)				"State of charge min [0,1]"
 			soc_max(gen)				"State of charge max [0,1]"
+			cycle_cost(gen)				"Cost/cycle ($)"
 ;
 
 * Data sets
-parameter demand(time,site) "hourly demand";
+parameter demand(time,site) "hourly demand (MW)";
 $include output-demand.gms
+
+* Convert to MW
+demand(time,site)=demand(time,site)/1000;
 
 
 ** ISSUE
@@ -214,10 +223,11 @@ p_nom('new_solar')		= param_solar('%project%','capacityPower');
 p_nom('new_battery')	= param_battery('%project%','power');
 duration('new_battery')	= param_battery('%project%','duration');
 
-energy_capacity(gen)	= p_nom(gen)*duration(gen);
+energy_capacity(battery)	= p_nom(battery)*duration(battery);
 
 marginal_cost('new_solar')		= 0;
 marginal_cost('new_battery')	= 0;
+cycle_cost('new_battery')		= 0;
 
 soc_min(battery) = .15;
 soc_max(battery) = .95;
@@ -286,15 +296,15 @@ supply_product_period2time(supply,product,period,t)= sum((month,hour)
 
 month2demand_period(month,period)=sum((supply,t)$month2t(month,t),supply_product_period2time(supply,'demand',period,t));
 
-parameter energy_rate(supply,time) 			"Energy rate for supply at time"
-		  demand_rate(supply,month,period)	"Demand rate for supply during month period";
+parameter energy_rate(supply,time) 			"Energy rate for supply at time ($/MWh)"
+		  demand_rate(supply,month,period)	"Demand rate for supply during month period ($/MW)";
 
-energy_rate(supply,time)=sum(period$supply_product_period2time(supply,'energy',period,time),
+energy_rate(supply,time)=1000*sum(period$supply_product_period2time(supply,'energy',period,time),
 								product_rate(supply,'energy',period,'tier1')
 								+ product_adj(supply,'energy',period,'tier1')
 							);
-demand_rate(supply,month,period)=product_rate(supply,'demand',period,'tier1')
-									+product_adj(supply,'demand',period,'tier1');
+demand_rate(supply,month,period)=1000*(product_rate(supply,'demand',period,'tier1')
+									+product_adj(supply,'demand',period,'tier1'));
 
 display energy_rate;
 display demand_rate;
@@ -350,8 +360,12 @@ projectX.up(project,time)=0;
 projectX.lo(project,time)=0;
 
 genX.up(gen,time)=p_nom(gen);
+genX.lo(battery,time)=-p_nom(battery);
 
 sellX.up(supply,time)=0;
+
+energyX.up(battery,time)=soc_max(battery)*energy_capacity(battery);
+*energyX.lo(battery,time)=soc_min(battery)*energy_capacity(battery);
 
 Equations
 *   Objective
@@ -377,6 +391,7 @@ Equations
 	storage_balance(battery,time)		"Storage inventory balance"
 	battery_power(battery,time)			"Max power of battery over all operation"
 	battery_operation(battery,time)		"Battery operational signed"
+	battery_boundary_condition(battery) "Boundary condition for energy of battery"
 ;
 
 *** Equation Definitions
@@ -442,7 +457,8 @@ gen_cost_month(gen,month)$chm(month)..
 gen_cost(gen,time)$ch(time)..
 
 	genC(gen,time) =g=
-		marginal_cost(gen)*genX(gen,time);
+		marginal_cost(gen)*genX(gen,time)
+		+ (cycle_cost(gen)*dispatchX(gen,time))$battery(gen);
 
 
 
@@ -457,10 +473,7 @@ project_balance(project,time)$ch(time)..
 				supplyX(supply,time)
 			)
 		- sum(site$project2asset(project,site),
-			demand(time,site)
-			)
-		+ sum(battery$project2asset(project,battery),
-			storeX(battery,time) - dispatchX(battery,time)*efficiency_dispatch(battery)
+				demand(time,site)
 			);
 
 
@@ -498,8 +511,14 @@ battery_operation(battery,time)$ch(time)..
 
 	genX(battery,time)
 	=e=
-	storeX(battery,time)
-	- dispatchX(battery,time)*efficiency_dispatch(battery);
+	dispatchX(battery,time)*efficiency_dispatch(battery)
+	- storeX(battery,time);
+
+battery_boundary_condition(battery)..
+
+	sum(time_first,energyX(battery,time_first)) 
+	=e=
+	sum(time_last,energyX(battery,time_last));
 
 *****************
 *** Overrides ***
@@ -538,16 +557,17 @@ solve site_analysis using lp minimizing totalC;
 * Project Information
 set project_info_fields "Project information fields" 
 							/year,month,day,hour,
-								demand,gen,batt_store,batt_dispatch,supply_buy,supply_sell,
-								marginal_price,buy_cost,effective_energy_rate/
+								demand,gen,batt_store,batt_dispatch,batt_energy,supply_buy,supply_sell,
+								demand_period,energy_period,
+								marginal_price,buy_cost,effective_energy_rate,energy_rate/
 	month_info_fields	"Results on a monthly basis"
 							/year,month,
 								demand,gen,batt_store,batt_dispatch,supply_buy,supply_sell,
-								max_buy,
+								max_buy,max_demand,
 								energy_cost,demand_cost/
 	month_period_info_fields	"Results on a monthl-period basis"
 							/year,month,period,
-								max_buy,demand_cost/
+								max_buy,max_demand,demand_cost,demand_rate/
 	model_info_fields 	"Optimization solve information fields" 
 							/modelstat,solvestat,objval,best,actual,gap,resusd/
 ;					
@@ -573,24 +593,30 @@ project_info(t,'demand')		= sum(site,demand(t,site));
 project_info(t,'gen')			= sum(gen,genX.l(gen,t));
 project_info(t,'batt_store')	= sum(battery,storeX.l(battery,t));
 project_info(t,'batt_dispatch')	= sum(battery,dispatchX.l(battery,t));
+project_info(t,'batt_energy')	= sum(battery,energyX.l(battery,t));
 project_info(t,'supply_buy')	= sum(supply,buyX.l(supply,t));
 project_info(t,'supply_sell')	= sum(supply,sellX.l(supply,t));
 
+project_info(t,'demand_period') = smax((supply,period)$supply_product_period2time(supply,'demand',period,t),ord(period));
+project_info(t,'energy_period') = smax((supply,period)$supply_product_period2time(supply,'energy',period,t),ord(period));
+
 project_info(t,'marginal_price')   	= project_balance.m('%project%',t); 
+project_info(t,'energy_rate')   	= smax(supply,energy_rate(supply,t));
 project_info(t,'buy_cost')   		= sum(supply,supply_energyCT.l(supply,t));
 
 
 month_info(month,'year')	= sum(t$month_time_first(month,t),project_info(t,'year'));
 month_info(month,'month')	= sum(t$month_time_first(month,t),project_info(t,'month'));
 
-month_info(month,'demand')			= sum(t,project_info(t,'demand'));
-month_info(month,'gen')				= sum(t,project_info(t,'gen'));
-month_info(month,'batt_store')		= sum(t,project_info(t,'batt_store'));
-month_info(month,'batt_dispatch')	= sum(t,project_info(t,'batt_dispatch'));
-month_info(month,'supply_buy')		= sum(t,project_info(t,'supply_buy'));
-month_info(month,'supply_sell')		= sum(t,project_info(t,'supply_sell'));
+month_info(month,'demand')			= sum(t$month2t(month,t),project_info(t,'demand'));
+month_info(month,'gen')				= sum(t$month2t(month,t),project_info(t,'gen'));
+month_info(month,'batt_store')		= sum(t$month2t(month,t),project_info(t,'batt_store'));
+month_info(month,'batt_dispatch')	= sum(t$month2t(month,t),project_info(t,'batt_dispatch'));
+month_info(month,'supply_buy')		= sum(t$month2t(month,t),project_info(t,'supply_buy'));
+month_info(month,'supply_sell')		= sum(t$month2t(month,t),project_info(t,'supply_sell'));
 
 month_info(month,'max_buy') = smax((supply,t)$month2t(month,t),buyX.l(supply,t));
+month_info(month,'max_demand') = smax((site,t)$month2t(month,t),demand(t,site));
 
 month_info(month,'energy_cost')   = sum(supply,supply_energyCM.l(supply,month));
 month_info(month,'demand_cost')   = sum(supply,supply_demandCM.l(supply,month));
@@ -601,7 +627,9 @@ month_period_info(month,period,'month')$month2demand_period(month,period)	= ord(
 month_period_info(month,period,'month')$month2demand_period(month,period)	= ord(period);
 
 month_period_info(month,period,'max_buy')$month2demand_period(month,period) = smax(supply,max_buyX.l(supply,month,period));
+month_period_info(month,period,'max_demand')$month2demand_period(month,period) = smax((site,supply,t)$(month2t(month,t) and supply_product_period2time(supply,'demand',period,t)),demand(t,site));
 month_period_info(month,period,'demand_cost')$month2demand_period(month,period) = sum(supply,supply_demandCMP.l(supply,month,period));
+month_period_info(month,period,'demand_rate')$month2demand_period(month,period) = sum(supply,demand_rate(supply,month,period));
 
 		
 
@@ -617,3 +645,8 @@ display project_info;
 display month_period_info;
 display month_info;
 display model_info;
+
+display energyX.l;
+
+display soc_min,soc_max;
+display energy_capacity;
