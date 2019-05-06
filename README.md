@@ -3,17 +3,28 @@
 
 This python library uses [lark](https://github.com/lark-parser/lark) to parse the algebraic modeling language [GAMS](https://www.gams.com/).  
 
-## Goals
+## Package Overview
 
-Interested in two directions.  Optional 3rd
+### Goals
 
 1. Gather rich data on structure of model in a gams file.
 2. Inject custom defintions and data into gams files based upon a DSL.
-3. [Optional] Gather defined data from model using python api.
+3. Format and write datasets into common GAMS formats
+
+4. [Future direction] Gather defined data from model using python api.
 	- This is probably outside the scope of this library as it requires `GAMS` as a dependency.
 
+### Contents
 
-## GAMS to AST Model [ Parser ]
+- [Parser](#Parser)
+- [Injector](#Injector)
+- [Writer](#Writer)
+
+
+## Parser
+
+GAMS to AST Model
+
 
 This accomplishes goal 1.
 
@@ -28,7 +39,9 @@ HOW TO USE HERE
 
 EXAMPLES HERE
 
-## AO GAMS DSL [ Injector ]
+## Injector
+
+AO GAMS DSL 
 
 This accomplishes goal 2.
 
@@ -249,6 +262,19 @@ supply1.demand.m1.h17.period1
 /;
 ```
 
+
+## Writer
+
+Dataframe to CSV
+
+This writes pandas dataframes to csv in ways that GAMS can easily digest.
+
+
+SHORT PARAGRAPH ON THIS FUNCTIONALITY
+
+HOW TO USE HERE
+
+#### EXAMPLES
 
 ## Grammar
 
