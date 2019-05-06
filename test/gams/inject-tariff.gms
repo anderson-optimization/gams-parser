@@ -32,6 +32,6 @@ set weekend_schedule(supply,product,month,hour,period) /
 /;
 
 set weekday_schedule(supply,product,month,hour,period) /
-**ao tariff weekend_schedule
+**ao tariff weekday_schedule
 /;
 

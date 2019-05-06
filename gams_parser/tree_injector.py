@@ -261,8 +261,9 @@ class TreeInjector(Transformer):
 			if tariff_type.startswith("tariff_sched"):
 				if tariff_type=='tariff_sched_weekend':
 					schedule_type_key="Weekend"
+					print('there')
 				elif tariff_type=='tariff_sched_weekday':
-					schedule_type_key=='Weekday'
+					schedule_type_key='Weekday'
 				else:
 					raise Exception("Dont understand tariff sched param")
 				logger.debug("Generating Tariff Sched")
