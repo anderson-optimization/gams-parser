@@ -2,6 +2,7 @@ start: statement+
 
 ?statement: [macro_conditional] (symbol_definition 
 			| macro
+			| execute
 			| display
 			| assignment_definition 
 			| equation_definition 
@@ -15,22 +16,34 @@ macro_condition: "set" string -> env_test
 				| expression
 
 macro: macro_include  _NL
+	| "$" macro_set _NL
 	| "$" macro_words~1..5 [" "]~0..5 _NL
 
 macro_include: "$include" filename
+macro_set: _M_SET WORD WORD
 macro_words: _M_EMPTY	
 			| _M_LISTING
 			| _M_DELIM
-_M_EMPTY:	"onempty" | "offempty"
-_M_LISTING: "onlisting" | "offlisting"
-_M_DELIM: "ondelim" | "offdelim"
 
+execute: execute_unload _END
+
+execute_unload: _EXECUTE_UNLOAD _QUOTE filename _QUOTE symbol+
 
 negate: "not"
 filename: (string | compiler_variable | "/")+ ["." extension]
 quoted_string: /['"]/ string /['"]/
 compiler_variable: "%" string "%"
 extension: string
+			
+
+_EXECUTE_UNLOAD: "execute_unload"
+
+_M_EMPTY:	"onempty" | "offempty"
+_M_LISTING: "onlisting" | "offlisting"
+_M_DELIM: "ondelim" | "offdelim"
+_M_SET: "set"
+
+
 
 // display
 
@@ -49,7 +62,7 @@ sense: "minimizing" -> sense_min
 
 // assignment
 
-assignment_definition: symbol [conditional] "=" expression _END
+assignment_definition: symbol [conditional]  "=" expression _END
 
 ?expression: symbol
 			| number
@@ -102,6 +115,7 @@ symbol_range    : identifier "*" identifier
 symbol_id 		: identifier 
 				| symbol_id "." identifier
 symbol_element  : _QUOTE identifier _QUOTE
+				| _QUOTE compiler_variable _QUOTE
 ?symbol_index	: "(" index_list ")"
 index_list		: index_item ("," index_item )*
 ?index_item		: symbol_name 
@@ -114,7 +128,19 @@ index_list		: index_item ("," index_item )*
 symbol_name		: identifier
 ?identifier 	: WORD_IDENTIFIER
 sep				: "," | _NL
-suffix			: ".up" | ".lo"
+suffix			:  _SUFFIX
+
+_SUFFIX : ".modelstat"
+		| ".maxobj"
+		| ".solvestat"
+		| ".objval"
+		| ".resusd"
+		| ".objest"
+		| ".gap"
+		| ".up"  
+		| ".lo" 
+		| ".l" 
+		| ".m" 
 
 // Keywords
 _SET: "sets" | "Sets" | "Set" | "SET" | "set"

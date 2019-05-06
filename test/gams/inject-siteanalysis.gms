@@ -50,14 +50,9 @@ $include time/datetime_map_2018.csv
 $offdelim onlisting
 ;
 
-display datetime_map;
-
 m2t(month,time)$(datetime_map(time,'month')=ord(month))=Yes;
 weekend2t(time)$(datetime_map(time,'weekend')=1)=Yes;
 weekday2t(time)$(datetime_map(time,'weekday')=1)=Yes;
-
-display weekend2t;
-
 
 ** Probably should inject some time structures here
 
@@ -202,11 +197,14 @@ $include output-demand.gms
 
 ** ISSUE
 ** Project is hardcoded here multiple times!!
+$set project SiteAProject
+
+p_nom(gen)=0;
 
 ** Set parameters
-p_nom('new_solar')=param_solar('SiteAProject','capacityPower');
-p_nom('new_battery')=param_battery('SiteAProject','power');
-duration('new_battery')=param_battery('SiteAProject','duration');
+p_nom('new_solar')=param_solar('%project%','capacityPower');
+p_nom('new_battery')=param_battery('%project%','power');
+duration('new_battery')=param_battery('%project%','duration');
 
 energy_capacity(gen)=p_nom(gen)*duration(gen);
 
@@ -216,8 +214,8 @@ marginal_cost('new_battery')=0;
 soc_min(battery)=.15;
 soc_max(battery)=.95;
 
-efficiency_dispatch('new_battery')=param_battery('SiteAProject','dischargeEfficiency');
-efficiency_store('new_battery')=param_battery('SiteAProject','chargeEfficiency');
+efficiency_dispatch('new_battery')=param_battery('%project%','dischargeEfficiency');
+efficiency_store('new_battery')=param_battery('%project%','chargeEfficiency');
 
 
 *** this is a data object that needs to be encoded by data id
@@ -391,8 +389,6 @@ gen_cost(gen,time)$ch(time)..
 
 
 
-
-
 project_balance(project,time)$ch(time)..
 
 	projectX(project,time) =e=
@@ -405,6 +401,9 @@ project_balance(project,time)$ch(time)..
 			)
 		- sum(site$project2asset(project,site),
 			demand(time,site)
+			)
+		+ sum(battery$project2asset(project,battery),
+			storeX(battery,time) - dispatchX(battery,time)*efficiency_dispatch(battery)
 			);
 
 
@@ -488,3 +487,47 @@ solve site_analysis using lp minimizing totalC;
 ******************
 * Data exfil
 ************
+
+
+* Project Information
+set project_info_fields "Project information fields" 
+							/year,month,day,hour,
+								demand,gen,batt_store,batt_dispatch,supply,
+								marginal_price/
+	info_info_fields "Optimization solve information fields" 
+							/modelstat,solvestat,objval,best,actual,gap,resusd/
+;					
+
+parameter 
+	project_info(t,project_info_fields) "Information on braz node"
+	model_info(info_info_fields)		"Optimization results"
+;
+
+
+
+
+
+*   Store project information
+project_info(t,'year')	= datetime_map(t,'year');
+project_info(t,'month')	= datetime_map(t,'month');
+project_info(t,'day')	= datetime_map(t,'day');
+project_info(t,'hour')	= datetime_map(t,'hour');
+
+project_info(t,'demand')		= sum(site,demand(t,site));
+project_info(t,'gen')			= sum(gen,genX.l(gen,t));
+project_info(t,'batt_store')	= sum(battery,storeX.l(battery,t));
+project_info(t,'batt_dispatch')	= sum(battery,dispatchX.l(battery,t));
+project_info(t,'supply')		= sum(supply,supplyX.l(supply,t));
+
+project_info(t,'marginal_price')   = project_balance.m('%project%',t); 
+
+*   Store model info
+model_info('modelstat') = site_analysis.modelstat;
+model_info('solvestat') = site_analysis.solvestat;
+model_info('objval')    = site_analysis.objval;
+model_info('resusd')    = site_analysis.resusd;
+
+execute_unload "output" project_info model_info;
+
+display project_info;
+display model_info;
