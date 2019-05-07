@@ -2,3 +2,4 @@ __pycache__
 *.lst
 *.pyc
 tmp
+*.exe
