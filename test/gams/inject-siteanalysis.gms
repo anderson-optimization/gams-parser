@@ -208,8 +208,11 @@ parameter
 parameter demand(time,site) "hourly demand (MW)";
 $include output-demand.gms
 
+$include output-gen.gms
+
 * Convert to MW
 demand(time,site)=demand(time,site)/1000;
+p_max_pu_t(time,gen)=p_max_pu_t(time,gen)/1000;
 
 
 ** ISSUE
@@ -306,10 +309,6 @@ energy_rate(supply,time)=1000*sum(period$supply_product_period2time(supply,'ener
 demand_rate(supply,month,period)=1000*(product_rate(supply,'demand',period,'tier1')
 									+product_adj(supply,'demand',period,'tier1'));
 
-display energy_rate;
-display demand_rate;
-
-
 
 *****************
 *** Overrides ***
@@ -352,7 +351,7 @@ Variables
 	energyX(gen,time)		"Amount of energy at time (storage unit)";
 
 ** Bounds
-Positive variables genC,genCM,genX,storeX,dispatchX,energyX;
+Positive variables genC,genCM,storeX,dispatchX,energyX;
 Positive variables supply_energyCM,supply_demandCM,supply_energyCT,supply_demandCMP;
 Positive variables buyX,sellX,max_buyX;
 
@@ -360,7 +359,13 @@ projectX.up(project,time)=0;
 projectX.lo(project,time)=0;
 
 genX.up(gen,time)=p_nom(gen);
+genX.lo(gen,time)=0;
 genX.lo(battery,time)=-p_nom(battery);
+
+genX.up(renewable,time)=p_max_pu_t(time,renewable);
+parameter p_min(gen);
+p_min(renewable)=smin(t,p_max_pu_t(t,renewable));
+genX.lo(renewable,time)=p_min(renewable);
 
 sellX.up(supply,time)=0;
 
@@ -558,6 +563,7 @@ solve site_analysis using lp minimizing totalC;
 set project_info_fields "Project information fields" 
 							/year,month,day,hour,
 								demand,gen,batt_store,batt_dispatch,batt_energy,supply_buy,supply_sell,
+								solar,wind,solar_resource,wind_resource,
 								demand_period,energy_period,
 								marginal_price,buy_cost,effective_energy_rate,energy_rate/
 	month_info_fields	"Results on a monthly basis"
@@ -591,6 +597,10 @@ project_info(t,'hour')	= datetime_map(t,'hour');
 
 project_info(t,'demand')		= sum(site,demand(t,site));
 project_info(t,'gen')			= sum(gen,genX.l(gen,t));
+project_info(t,'solar')			= sum(solar,genX.l(solar,t));
+project_info(t,'solar_resource')= sum(solar,p_max_pu_t(t,solar));
+project_info(t,'wind')			= sum(wind,genX.l(wind,t));
+project_info(t,'wind_resource')	= sum(wind,p_max_pu_t(t,wind));
 project_info(t,'batt_store')	= sum(battery,storeX.l(battery,t));
 project_info(t,'batt_dispatch')	= sum(battery,dispatchX.l(battery,t));
 project_info(t,'batt_energy')	= sum(battery,energyX.l(battery,t));
@@ -645,8 +655,3 @@ display project_info;
 display month_period_info;
 display month_info;
 display model_info;
-
-display energyX.l;
-
-display soc_min,soc_max;
-display energy_capacity;
