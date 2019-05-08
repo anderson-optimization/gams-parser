@@ -31,8 +31,11 @@ RUN \
  pip3 install gdxpds -t .pypath/ 
 
 COPY gdx_to_csv.py /bin/gdx_to_csv.py
+COPY format.json $TASKPATH/format.json
 
 RUN chmod +x /bin/gdx_to_csv.py
+
+WORKDIR /root
 
 CMD ['gdx_to_csv.py']
 

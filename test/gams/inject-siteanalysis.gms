@@ -634,7 +634,7 @@ month_info(month,'demand_cost')   = sum(supply,supply_demandCM.l(supply,month));
 		
 month_period_info(month,period,'year')$month2demand_period(month,period)	= sum(t$month_time_first(month,t),project_info(t,'year'));
 month_period_info(month,period,'month')$month2demand_period(month,period)	= ord(month);
-month_period_info(month,period,'month')$month2demand_period(month,period)	= ord(period);
+month_period_info(month,period,'period')$month2demand_period(month,period)	= ord(period);
 
 month_period_info(month,period,'max_buy')$month2demand_period(month,period) = smax(supply,max_buyX.l(supply,month,period));
 month_period_info(month,period,'max_demand')$month2demand_period(month,period) = smax((site,supply,t)$(month2t(month,t) and supply_product_period2time(supply,'demand',period,t)),demand(t,site));
@@ -649,7 +649,7 @@ model_info('solvestat') = site_analysis.solvestat;
 model_info('objval')    = site_analysis.objval;
 model_info('resusd')    = site_analysis.resusd;
 
-execute_unload "output" project_info model_info;
+execute_unload "output" project_info model_info month_period_info month_info;
 
 display project_info;
 display month_period_info;

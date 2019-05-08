@@ -42,11 +42,12 @@ import os
 
 import gdxpds
 import pandas as pd
+import json
 
 logger = logging.getLogger(__name__)
 
 
-def convert_gdx_to_csv(in_gdx, out_dir, gams_dir=None, wide=False):
+def convert_gdx_to_csv(in_gdx, out_dir, gams_dir=None, wide=False, frmt=None):
     # check inputs
     if not os.path.exists(os.path.dirname(out_dir)):
         raise RuntimeError("Parent directory of output directory '{}' does not exist.".format(out_dir))
@@ -63,21 +64,29 @@ def convert_gdx_to_csv(in_gdx, out_dir, gams_dir=None, wide=False):
         if os.path.exists(csv_path):
             logger.info("Overwriting '{}'".format(csv_path))
         if wide:
-            idx=df.columns[:-1]
-            print('index',idx)
-            print(df.head())
-            df=df.set_index(list(idx))
-            print('df idx',df.head())
-            df=df.unstack()
-            print('df_unstack',df.head())
-            print('index',df.index)
-            if 't' == df.index.name:
-                df.index=df.index.str.replace('t','').astype(int)
-                df=df.sort_index()
-            if isinstance(df,pd.DataFrame):
+            idx=list(df.columns[:-1])
+            logger.debug('Index {}'.format(idx))
+            df=df.set_index(idx).unstack()
+            if isinstance(df,pd.DataFrame) and df.columns.nlevels>1:
                 df.columns=df.columns.droplevel(0)
             while df.index.nlevels>1:
                 df.index = df.index.droplevel(0)
+
+        print()
+        if frmt and symbol_name in frmt:
+            logger.info("Format symbol {}".format(symbol_name))
+            frmt_symbol=frmt[symbol_name]
+            print(frmt_symbol)
+            if 'columns' in frmt_symbol:
+                columns=frmt_symbol['columns']
+                for c in columns:
+                    if c not in df:
+                        df[c]=0
+                df=df[columns]
+            if 'index_name' in frmt_symbol:
+                df.index.name=frmt_symbol['index_name']
+            if 'sort' in frmt_symbol:
+                df=df.sort_values(by=frmt_symbol['sort'])
         df.to_csv(csv_path)
 
 if __name__ == "__main__":
@@ -92,11 +101,17 @@ if __name__ == "__main__":
     parser.add_argument('-g', '--gams_dir', help='''Path to GAMS installation
                         directory.''', default = None)
     parser.add_argument('-w', '--wide', help='''Transform to wide format''', action='store_true', default = False)
+    parser.add_argument('-f', '--format', help='''Format dataset definitions''', default = "/var/task/format.json")
         
     args = parser.parse_args()
     
     if not args.gams_dir and 'GAMSPATH' in os.environ:
         args.gams_dir=os.environ['GAMSPATH']
-        print("gams_dir",args.gams_dir)
 
-    convert_gdx_to_csv(args.in_gdx, os.path.realpath(args.out_dir), args.gams_dir, args.wide)
+    if args.format:
+        with open(args.format,'r') as infile:
+            frmt_data=json.load(infile)
+    else:
+        frmt_data={}
+
+    convert_gdx_to_csv(args.in_gdx, os.path.realpath(args.out_dir), args.gams_dir, wide=args.wide,frmt=frmt_data)
