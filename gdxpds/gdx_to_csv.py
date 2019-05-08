@@ -65,18 +65,16 @@ def convert_gdx_to_csv(in_gdx, out_dir, gams_dir=None, wide=False, frmt=None):
             logger.info("Overwriting '{}'".format(csv_path))
         if wide:
             idx=list(df.columns[:-1])
-            logger.debug('Index {}'.format(idx))
+            logger.info('Setting index {}'.format(idx))
             df=df.set_index(idx).unstack()
             if isinstance(df,pd.DataFrame) and df.columns.nlevels>1:
                 df.columns=df.columns.droplevel(0)
             while df.index.nlevels>1:
                 df.index = df.index.droplevel(0)
 
-        print()
         if frmt and symbol_name in frmt:
             logger.info("Format symbol {}".format(symbol_name))
             frmt_symbol=frmt[symbol_name]
-            print(frmt_symbol)
             if 'columns' in frmt_symbol:
                 columns=frmt_symbol['columns']
                 for c in columns:
