@@ -50,7 +50,7 @@ def get_id(item):
 			item_name
 		)
 
-	print("item_name",item_id,item_name)
+#	print("item_name",item_id,item_name)
 
 	return item_id,item_name
 
@@ -79,15 +79,15 @@ class TreeInjector(Transformer):
 		logger.debug("Start")
 		return "".join(args),self._map
 
- 	def statement(self,args):
+	def statement(self,args):
 		#logger.debug('Statement')
 		return "".join(args)
 
- 	def white_space(self,args):
+	def white_space(self,args):
 		logger.debug("White space")
 		return args[0].value
 
- 	def newline(self,args):
+	def newline(self,args):
 		return args[0].value
 
 	def filter(self,args):
@@ -134,8 +134,8 @@ class TreeInjector(Transformer):
 
 		data_selector=args[0]
 
+		out_items=[]
 		if data_selector.data=='data_by_key':
-			print('data',data_selector)
 			key="".join(data_selector.children)
 			data = self._data[key]
 		elif data_selector.data=='data_by_group':
@@ -145,24 +145,20 @@ class TreeInjector(Transformer):
 				raise Exception("Only support single data selectors for now")
 			data_id,data_name=get_id(data_items[0])
 			data=self._data[data_id]
+			out_items.append('\t{}'.format(data_name))
 		else:
 			raise Exception("Data selector not supported")
+
 
 		columns=[]
 		for a in args[1:]:
 			for c in a.children:
 				columns.append(c)
 
-		out_items=[]
 		for r in range(len(data)):
-			print(r)
-			print(columns)
 			row_template="".join(columns)
-			print(row_template)
 			row_data=AttrDict(data[r])
-			print("data",row_data)
 			row_str=row_template.format(_index=r,_index_p1=r+1,row=row_data)
-			print('string',row_str)
 
 			out_items.append(row_str)
 
@@ -252,7 +248,7 @@ class TreeInjector(Transformer):
 		logger.debug('cmd Tariff')
 		tariff_type=args[0].data
 		out_items=[]
-		print("context",self._context['data'])
+#		print("context",self._context['data'])
 		supply_data=[d for d in self._context['data'] if d['groupKey']=='tourate']
 		for supply in supply_data:
 			supply_id,supply_name=get_id(supply)
@@ -261,7 +257,7 @@ class TreeInjector(Transformer):
 			if tariff_type.startswith("tariff_sched"):
 				if tariff_type=='tariff_sched_weekend':
 					schedule_type_key="Weekend"
-					print('there')
+#					print('there')
 				elif tariff_type=='tariff_sched_weekday':
 					schedule_type_key='Weekday'
 				else:
@@ -293,13 +289,14 @@ class TreeInjector(Transformer):
 						for tier in range(len(data[period][tier_name])):
 							tier_key='tier{}'.format(str(tier+1))
 							key=".".join([supply_name,product,period_key,tier_key])
-							value=data[period][tier_name][tier][value_key]
-							out_items.append("{} {}".format(key,value))
+							if value_key in data[period][tier_name][tier]:
+								value=data[period][tier_name][tier][value_key]
+								out_items.append("{} {}".format(key,value))
 			else:
 				raise Exception("Only know about 2 tariff types")
 		return "\n".join(out_items)
 
- 	def ao_macro(self,args):
+	def ao_macro(self,args):
 		logger.debug("AO Macro - Inject Info")
 		args = [a for a in args if a != '']
 		if len(args)==1 and args[0].type=="NL":

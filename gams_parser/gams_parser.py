@@ -54,8 +54,8 @@ class GamsParser():
 		logger.debug("GamsParser : Inject : 1. Parse")
 		self.text+="\n"
 		pt= lark_ao_inject.parse(self.text)
-		print("Parse Tree")
-		print(pt.pretty())
+		#print("Parse Tree")
+		#print(pt.pretty())
 		logger.debug("GamsParser : Inject : 2. Transform")
 		TI=TreeInjector(context,data=data)
 		new_model,inject_map=TI.transform(pt)
