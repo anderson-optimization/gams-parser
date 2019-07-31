@@ -270,7 +270,7 @@ class TreeInjector(Transformer):
 						month_key="m{}".format(month+1)
 						for hour in range(len(schedule[month])):
 							hour_key="h{}".format(hour+1)
-							period_key="period{}".format(schedule[month][hour])
+							period_key="period{}".format(schedule[month][hour]+1)
 							map_item=".".join([supply_name,product,month_key,hour_key,period_key])
 							out_items.append(map_item)
 			elif tariff_type.startswith("tariff_rate"):

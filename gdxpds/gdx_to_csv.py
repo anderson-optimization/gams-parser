@@ -106,6 +106,9 @@ if __name__ == "__main__":
     if not args.gams_dir and 'GAMSPATH' in os.environ:
         args.gams_dir=os.environ['GAMSPATH']
 
+    if args.gams_dir:
+        gdxpds.load_gdxcc(args.gams_dir)
+
     if args.format:
         with open(args.format,'r') as infile:
             frmt_data=json.load(infile)
