@@ -15,7 +15,7 @@ setuptools.setup(
     packages=['gams_parser'],
     package_dir={'gams_parser':'gams_parser'},
     install_requires=['lark-parser','pandas'],
-    package_data={'gams_parser': ['gams_parser/grammar/*.lark']},
+    package_data={'gams_parser': ['grammar/*.lark']},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
