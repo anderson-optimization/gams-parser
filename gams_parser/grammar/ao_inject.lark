@@ -52,7 +52,7 @@ ANY				: /.+/
 WORD			: /[\w-]+/
 WORD_AO 		: /[a-zA-Z][\w:]*/
 WORD_SELECTOR	: /[a-zA-Z][\w:\.-]*/
-WORD_TEMPLATE	: /[\w:\.\{\}\t\(\)]+/
+WORD_TEMPLATE	: /[\w:\.\{\}\t\(\)\[\]]+/
 
 %ignore WS
 

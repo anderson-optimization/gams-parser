@@ -135,6 +135,8 @@ class TreeInjector(Transformer):
 		data_selector=args[0]
 
 		out_items=[]
+		data_item=None
+		data_by_col=None
 		if data_selector.data=='data_by_key':
 			key="".join(data_selector.children)
 			data = self._data[key]
@@ -143,7 +145,8 @@ class TreeInjector(Transformer):
 			data_items=[d for d in self._context['data'] if d['groupKey']==group]
 			if len(data_items)>1:
 				raise Exception("Only support single data selectors for now")
-			data_id,data_name=get_id(data_items[0])
+			data_item=data_items[0]
+			data_id,data_name=get_id(data_item)
 			data=self._data[data_id]
 			out_items.append('\t{}'.format(data_name))
 		else:
@@ -158,10 +161,10 @@ class TreeInjector(Transformer):
 		for r in range(len(data)):
 			row_template="".join(columns)
 			row_data=AttrDict(data[r])
-			row_str=row_template.format(_index=r,_index_p1=r+1,row=row_data)
-
+			if data_item:
+				data_by_col = [data[r][c['prop']] for c in data_item['item']['columns']]
+			row_str=row_template.format(_index=r,_index_p1=r+1,row=row_data,col=data_by_col)
 			out_items.append(row_str)
-
 
 		return "\n".join(out_items)
 
@@ -200,7 +203,11 @@ class TreeInjector(Transformer):
 						logger.debug("Adding {key}={val}".format(key=key,val=val))
 						out_items.append(item_name+'.'+key+" "+str(val))
 					elif isinstance(val,str):
-						logger.debug("Ignoring {key}={val}".format(key=key,val=val))
+						try: 
+							val=float(val)
+							out_items.append(item_name+'.'+key+" "+str(val))
+						except ValueError as verr:
+							logger.debug("Ignoring string {key}={val}".format(key=key,val=val))
 					else:
 						logger.debug("Unknown {key}={val}".format(key=key,val=val))
 			if isinstance(value,str):
